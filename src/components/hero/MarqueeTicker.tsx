@@ -1,18 +1,18 @@
 'use client';
 
 import React from 'react';
-import { Zap, Plug, Coffee, Volume2, ShieldCheck, MapPin, Laptop, Activity } from 'lucide-react';
+import { Coffee, Heart, Smile, Sparkles, MapPin, Wifi, Plug, Compass } from 'lucide-react';
 
 export default function MarqueeTicker() {
   const tickerItems = [
-    { icon: Zap, label: 'Uji Kecepatan Wi-Fi 50+ Mbps' },
-    { icon: Plug, label: 'Colokan Tersedia di Meja' },
-    { icon: Coffee, label: 'Kopi & Menu Pendamping' },
-    { icon: Volume2, label: 'Area Tenang untuk Bekerja' },
-    { icon: ShieldCheck, label: 'Data Terverifikasi Lapangan' },
+    { icon: Coffee, label: 'Kopi Seduh Segar & Pilihan Minuman' },
+    { icon: Smile, label: 'Suasana Nyaman untuk Singgah' },
+    { icon: Sparkles, label: 'Sudut Asri Melepas Penat' },
+    { icon: Plug, label: 'Stopkontak Siap Pakai di Meja' },
+    { icon: Wifi, label: 'Koneksi Wi-Fi Stabil & Cepat' },
+    { icon: Heart, label: 'Ramah untuk Kumpul Bersama Kawan' },
+    { icon: Compass, label: 'Rekomendasi Terkurasi di Kota Solo' },
     { icon: MapPin, label: 'Kawasan Surakarta & Sekitarnya' },
-    { icon: Laptop, label: 'Ramah Laptop & Kerja Remote' },
-    { icon: Activity, label: 'Pantauan Keramaian Kafe' },
   ];
 
   return (

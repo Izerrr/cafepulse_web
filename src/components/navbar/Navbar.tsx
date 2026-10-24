@@ -35,7 +35,7 @@ export default function Navbar({
               cafepulse<span className="text-crema-500">.</span>
             </span>
             <span className="text-xs font-mono text-roast-400 hidden sm:inline">
-              / Surakarta
+              / Panduan Kafe Solo
             </span>
           </div>
         </div>
@@ -47,7 +47,7 @@ export default function Navbar({
           {onFilterBookmarks && (
             <button
               onClick={onFilterBookmarks}
-              className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs transition-colors ${
+              className={`flex items-center gap-1.5 rounded-full border px-3.5 py-1.5 text-xs transition-colors ${
                 isBookmarkActive
                   ? 'border-crema-500 bg-crema-50 text-crema-500 font-semibold'
                   : 'border-canvas-border bg-white text-roast-600 hover:border-canvas-border-hover hover:text-roast-900'
@@ -55,7 +55,7 @@ export default function Navbar({
               title="Lihat kafe yang kamu simpan"
             >
               <Bookmark className={`h-3.5 w-3.5 ${isBookmarkActive ? 'fill-crema-500' : ''}`} />
-              <span className="hidden xs:inline">Favorit</span>
+              <span className="hidden xs:inline">Tersimpan</span>
               {totalBookmarks > 0 && (
                 <span className="rounded-full bg-roast-900/8 px-1.5 py-0.2 text-[10px] font-mono font-medium text-roast-700">
                   {totalBookmarks}
@@ -68,13 +68,13 @@ export default function Navbar({
           <a
             href="#developer-api"
             onClick={scrollToApi}
-            className="hidden md:flex items-center gap-1.5 rounded-full border border-canvas-border bg-white px-3 py-1.5 text-xs font-medium text-roast-600 transition-colors hover:border-canvas-border-hover hover:text-roast-900"
+            className="hidden md:flex items-center gap-1.5 rounded-full border border-canvas-border bg-white px-3 py-1.5 text-xs font-medium text-roast-500 transition-colors hover:border-canvas-border-hover hover:text-roast-900"
           >
             <Code2 className="h-3.5 w-3.5 text-crema-500" />
-            <span>API Terbuka</span>
+            <span>Akses API</span>
           </a>
 
-          {/* Add Cafe Button (Onlines Pill Style) */}
+          {/* Add Cafe Button (Warm & Welcoming) */}
           <button
             onClick={onOpenAddModal}
             className="flex items-center gap-1.5 rounded-full bg-roast-900 px-4 py-1.5 text-xs font-semibold text-white transition-all hover:bg-crema-500 active:scale-95 shadow-sm"

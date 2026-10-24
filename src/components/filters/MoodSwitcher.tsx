@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Target, Users, Coffee, Bookmark } from 'lucide-react';
+import { Coffee, Heart, BookOpen, Bookmark } from 'lucide-react';
 
 export type MoodMode = 'ALL' | 'DEEP_WORK' | 'MEETING' | 'BOOKMARKS';
 
@@ -21,25 +21,25 @@ export default function MoodSwitcher({
       id: 'ALL' as MoodMode,
       icon: Coffee,
       label: 'Semua Kafe',
-      desc: 'Tampilkan seluruh direktori',
-    },
-    {
-      id: 'DEEP_WORK' as MoodMode,
-      icon: Target,
-      label: 'Deep Work / Skripsi',
-      desc: 'Wi-Fi kencang & colokan banyak',
+      desc: 'Jelajahi seluruh sudut Solo',
     },
     {
       id: 'MEETING' as MoodMode,
-      icon: Users,
-      label: 'Diskusi & Meeting',
-      desc: 'Ruang ber-AC & area luas',
+      icon: Heart,
+      label: 'Santai & Singgah',
+      desc: 'Ngobrol akrab & suasana hangat',
+    },
+    {
+      id: 'DEEP_WORK' as MoodMode,
+      icon: BookOpen,
+      label: 'Fokus & Nugas',
+      desc: 'Tenang, Wi-Fi kencang, colokan siap',
     },
     {
       id: 'BOOKMARKS' as MoodMode,
       icon: Bookmark,
       label: `Tersimpan (${totalBookmarks})`,
-      desc: 'Daftar kafe favoritmu',
+      desc: 'Koleksi kafe favoritmu',
     },
   ];
 
@@ -47,7 +47,7 @@ export default function MoodSwitcher({
     <div className="border-b border-canvas-border bg-canvas-bg py-4 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl flex flex-wrap items-center gap-2">
         <span className="text-[11px] font-mono text-roast-400 uppercase tracking-wider mr-2 hidden sm:inline">
-          Filter Cepat:
+          Cari Berdasarkan Suasana:
         </span>
 
         {moods.map((m) => {

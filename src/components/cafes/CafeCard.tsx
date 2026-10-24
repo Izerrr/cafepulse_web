@@ -30,19 +30,19 @@ export default function CafeCard({
     switch (density) {
       case 'LOW':
         return {
-          text: 'Sepi (Fokus)',
+          text: 'Tenang & Teduh',
           dot: 'bg-emerald-500',
           badge: 'border-emerald-200 bg-emerald-50 text-emerald-800',
         };
       case 'MODERATE':
         return {
-          text: 'Sedang (Santai)',
+          text: 'Nyaman & Santai',
           dot: 'bg-amber-500',
           badge: 'border-amber-200 bg-amber-50 text-amber-800',
         };
       case 'HIGH':
         return {
-          text: 'Ramai (Sosial)',
+          text: 'Ramai & Akrab',
           dot: 'bg-rose-500',
           badge: 'border-rose-200 bg-rose-50 text-rose-800',
         };
@@ -190,7 +190,7 @@ export default function CafeCard({
           onClick={() => onExplore(cafe)}
           className="flex flex-1 items-center justify-center gap-2 rounded-full bg-roast-900 py-2.5 text-xs font-semibold text-white transition-all hover:bg-crema-500 active:scale-98 shadow-xs"
         >
-          <span>Lihat Lembar Verifikasi</span>
+          <span>Lihat Suasana &amp; Detail</span>
           <ArrowRight className="h-3.5 w-3.5" />
         </button>
 

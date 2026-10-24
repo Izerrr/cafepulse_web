@@ -3,7 +3,7 @@
 import React, { useRef, useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { ArrowDown, Code2, Coffee, Sparkles } from 'lucide-react';
+import { ArrowDown, Coffee, Sparkles, Heart, Compass, BookOpen } from 'lucide-react';
 import GrillaCeldas from './GrillaCeldas';
 import AnimatedCursors from './AnimatedCursors';
 import TypingCodeBlock from './TypingCodeBlock';
@@ -28,30 +28,25 @@ export default function OnlinesHero({
     onToggleFocusMode?.(next);
   };
 
-  const scrollToApi = (e: React.MouseEvent) => {
-    e.preventDefault();
-    document.getElementById('developer-api')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
   return (
     <section
       ref={heroRef}
       className="relative w-full overflow-hidden bg-canvas-bg border-b border-canvas-border select-none min-h-[750px] lg:min-h-[860px] flex flex-col justify-between"
     >
-      {/* 1. Dotted Coordinate Grid with warm amber hover trail */}
+      {/* 1. Dotted Coordinate Grid with warm golden amber hover trail */}
       <GrillaCeldas cellSize={55} highlightCount={14} />
 
-      {/* 2. Collaborative Figma Cursors wandering the canvas */}
+      {/* 2. Collaborative Figma Cursors (Penikmat Kopi, Teman Ngobrol, Mahasiswa, etc.) */}
       <AnimatedCursors />
 
-      {/* 3. Center Canvas & Floating Artifacts */}
+      {/* 3. Center Canvas & Floating Welcoming Artifacts */}
       <div className="relative mx-auto w-full max-w-7xl flex-1 px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center py-12 lg:py-16">
         
         {/* =======================================================================
-            FLOATING STUDIO ARTIFACTS (Warm Coffee Aesthetic)
+            FLOATING WELCOMING CAFE ARTIFACTS
            ======================================================================= */}
 
-        {/* Top Left: Wireframe Blueprint */}
+        {/* Top Left: Welcoming Coffee & Book Card */}
         <motion.div
           drag
           dragConstraints={heroRef}
@@ -60,29 +55,31 @@ export default function OnlinesHero({
           whileDrag={{ scale: 1.06, cursor: 'grabbing', zIndex: 40 }}
           animate={{
             y: [0, -8, 0],
-            rotate: [5.8, 6.8, 5.8],
+            rotate: [3.5, 4.5, 3.5],
           }}
           transition={{
             duration: 6,
             repeat: Infinity,
             ease: 'easeInOut',
           }}
-          className="hidden md:flex absolute top-10 left-6 lg:left-12 z-10 flex-col items-center gap-1.5 p-2.5 rounded-2xl border border-canvas-border bg-white/95 shadow-md backdrop-blur-md"
+          className="hidden md:flex absolute top-12 left-6 lg:left-14 z-10 flex-col gap-2 p-3.5 rounded-2xl border border-canvas-border bg-white/95 shadow-md backdrop-blur-md max-w-[210px]"
         >
-          <div className="relative w-44 h-32">
-            <Image
-              src="/onlines/wireframe.svg"
-              alt="Floorplan Wireframe"
-              fill
-              className="object-contain"
-            />
+          <div className="flex items-center gap-2 text-crema-600">
+            <div className="flex h-6 w-6 items-center justify-center rounded-full bg-crema-100">
+              <Coffee className="h-3.5 w-3.5" />
+            </div>
+            <span className="text-xs font-bold text-roast-900">Ruang &amp; Kopi</span>
           </div>
-          <span className="font-mono text-[10px] text-roast-400 tracking-tight">
-            Denah &amp; Akses Meja Kerja
-          </span>
+          <p className="text-[11px] leading-relaxed text-roast-700">
+            Kopi seduh segar, semilir angin sepoi, dan playlist lagu yang menenangkan hati.
+          </p>
+          <div className="flex items-center gap-1 text-[10px] font-mono text-roast-400 border-t border-canvas-border pt-1.5">
+            <Heart className="h-3 w-3 fill-rose-500 text-rose-500" />
+            <span>Favorit warga Solo</span>
+          </div>
         </motion.div>
 
-        {/* Bottom Right: Live Code Typing Widget */}
+        {/* Bottom Right: Live Recommendation Typewriter Widget */}
         <motion.div
           drag
           dragConstraints={heroRef}
@@ -91,7 +88,7 @@ export default function OnlinesHero({
           whileDrag={{ scale: 1.06, cursor: 'grabbing', zIndex: 40 }}
           animate={{
             y: [0, 8, 0],
-            rotate: [-5.9, -4.9, -5.9],
+            rotate: [-4.2, -3.2, -4.2],
           }}
           transition={{
             duration: 7,
@@ -103,7 +100,7 @@ export default function OnlinesHero({
           <TypingCodeBlock />
         </motion.div>
 
-        {/* Figma Comment Bubble 1 (Top Right) */}
+        {/* Figma Comment Bubble 1 (Top Right: Review Mahasiswa) */}
         <motion.div
           drag
           dragConstraints={heroRef}
@@ -130,16 +127,16 @@ export default function OnlinesHero({
           </div>
           <div className="flex flex-col gap-0.5 text-xs">
             <div className="flex items-center gap-1.5 font-sans text-[11px] text-roast-900">
-              <strong className="font-semibold text-crema-600">Mahasiswa UNS</strong>
-              <span className="text-roast-400">baru saja</span>
+              <strong className="font-semibold text-crema-600">Dian Pramesti</strong>
+              <span className="text-roast-400">pengunjung</span>
             </div>
             <p className="font-sans text-[11px] leading-relaxed text-roast-700">
-              Wi-Fi 85 Mbps kencang &amp; stabil buat nugas dan Zoom.
+              Enak banget buat ngobrol santai sore hari, suasananya syahdu dan gak bising.
             </p>
           </div>
         </motion.div>
 
-        {/* Figma Comment Bubble 2 (Bottom Left) */}
+        {/* Figma Comment Bubble 2 (Bottom Left: Review Penikmat Kopi) */}
         <motion.div
           drag
           dragConstraints={heroRef}
@@ -166,16 +163,16 @@ export default function OnlinesHero({
           </div>
           <div className="flex flex-col gap-0.5 text-xs">
             <div className="flex items-center gap-1.5 font-sans text-[11px] text-roast-900">
-              <strong className="font-semibold text-crema-600">Remote Worker</strong>
-              <span className="text-roast-400">terverifikasi</span>
+              <strong className="font-semibold text-crema-600">Reza Pratama</strong>
+              <span className="text-roast-400">singgah</span>
             </div>
             <p className="font-sans text-[11px] leading-relaxed text-roast-700">
-              Colokan ada di setiap meja, AC dingin &amp; kopinya mantap.
+              Colokan aman di dekat jendela, AC dingin, kopinya pas banget di lidah.
             </p>
           </div>
         </motion.div>
 
-        {/* Mode Switch Pill (Above Center Title) */}
+        {/* Welcoming Mood Switch Pill (Above Center Title) */}
         <motion.div
           animate={{
             y: [0, -4, 0],
@@ -190,11 +187,13 @@ export default function OnlinesHero({
           <button
             onClick={toggleFocus}
             className="onlines-switch-pill cursor-pointer hover:shadow-md transition-all active:scale-95"
-            title="Beralih ke mode fokus (hanya tampilkan kafe sepi)"
+            title="Pilih antara suasana tenang untuk fokus atau semua kafe"
           >
-            <span className="font-sans text-xs font-semibold text-roast-850">
-              Mode Fokus (Sepi)
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-xs font-semibold text-roast-900">
+                {isFocusMode ? '🌾 Suasana: Tenang & Teduh' : '☕ Suasana: Semua Pilihan Kafe'}
+              </span>
+            </div>
             <div
               className={`w-10 h-6 rounded-full p-0.5 flex items-center transition-colors ${
                 isFocusMode ? 'bg-crema-500 justify-end' : 'bg-roast-200 justify-start'
@@ -235,64 +234,67 @@ export default function OnlinesHero({
           </h1>
         </motion.div>
 
-        {/* Floating App Badges */}
+        {/* Floating Welcoming Badges (Coffee, Book, Nature) */}
         <div className="hidden lg:block pointer-events-none" aria-hidden="true">
           <motion.div
             animate={{ y: [0, -6, 0], rotate: [0, 4, 0] }}
             transition={{ duration: 5, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute top-28 left-[38%] w-12 h-12 rounded-2xl bg-white/95 border border-canvas-border shadow-md backdrop-blur-md flex items-center justify-center pointer-events-auto cursor-grab"
+            className="absolute top-28 left-[38%] rounded-full bg-white/95 border border-canvas-border px-3.5 py-1.5 shadow-md backdrop-blur-md flex items-center gap-1.5 pointer-events-auto cursor-grab text-xs font-semibold text-roast-850"
           >
-            <Image src="/onlines/app-vscode.svg" alt="VS Code" width="22" height="22" />
+            <span>☕</span>
+            <span>Kopi Pilihan</span>
           </motion.div>
 
           <motion.div
             animate={{ y: [0, 7, 0], rotate: [0, -3, 0] }}
             transition={{ duration: 5.8, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute top-24 right-[34%] w-12 h-12 rounded-2xl bg-white/95 border border-canvas-border shadow-md backdrop-blur-md flex items-center justify-center pointer-events-auto cursor-grab"
+            className="absolute top-24 right-[34%] rounded-full bg-white/95 border border-canvas-border px-3.5 py-1.5 shadow-md backdrop-blur-md flex items-center gap-1.5 pointer-events-auto cursor-grab text-xs font-semibold text-roast-850"
           >
-            <Image src="/onlines/app-figma.webp" alt="Figma" width="18" height="22" />
+            <span>🌿</span>
+            <span>Sudut Asri</span>
           </motion.div>
 
           <motion.div
             animate={{ y: [0, -5, 0] }}
             transition={{ duration: 6.5, repeat: Infinity, ease: 'easeInOut' }}
-            className="absolute bottom-28 left-[44%] w-12 h-12 rounded-2xl bg-white/95 border border-canvas-border shadow-md backdrop-blur-md flex items-center justify-center pointer-events-auto cursor-grab"
+            className="absolute bottom-28 left-[44%] rounded-full bg-white/95 border border-canvas-border px-3.5 py-1.5 shadow-md backdrop-blur-md flex items-center gap-1.5 pointer-events-auto cursor-grab text-xs font-semibold text-roast-850"
           >
-            <Coffee className="w-5 h-5 text-crema-500" />
+            <BookOpen className="w-3.5 h-3.5 text-crema-500" />
+            <span>Nyaman Nugas</span>
           </motion.div>
         </div>
 
-        {/* Human Copywriting (Warm Cafe Aesthetic) */}
+        {/* Human, Welcoming Copywriting for the General Public */}
         <div className="mt-8 max-w-2xl text-center z-10">
           <p className="text-sm sm:text-base font-normal leading-relaxed text-roast-700">
-            Direktori kurasi kafe dan ruang kerja ramah laptop di Surakarta.
-            Uji nyata throughput Wi-Fi, colokan listrik per meja, dan tingkat kebisingan lapangan.
+            Temukan sudut singgah ternyamanmu di Surakarta.
+            Dari tempat ngobrol santai bersama sahabat, sudut teduh untuk membaca, hingga ruang tenang untuk menuntaskan skripsi dan pekerjaan.
           </p>
 
           <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
             <button
               onClick={onScrollToExplore}
-              className="inline-flex items-center gap-2 rounded-full bg-roast-900 px-5 py-2.5 text-xs font-semibold text-white shadow-sm transition-all hover:bg-crema-500 active:scale-95"
+              className="inline-flex items-center gap-2 rounded-full bg-roast-900 px-6 py-2.5 text-xs font-semibold text-white shadow-sm transition-all hover:bg-crema-500 active:scale-95"
             >
-              <span>Jelajahi Direktori Kafe</span>
+              <Compass className="h-3.5 w-3.5 text-crema-300" />
+              <span>Jelajahi Sudut Kafe Solo</span>
               <ArrowDown className="h-3.5 w-3.5" />
             </button>
 
-            <a
-              href="#developer-api"
-              onClick={scrollToApi}
+            <button
+              onClick={toggleFocus}
               className="inline-flex items-center gap-2 rounded-full border border-canvas-border bg-white px-4 py-2.5 text-xs font-semibold text-roast-900 transition-all hover:border-canvas-border-hover hover:bg-canvas-surface active:scale-95"
             >
-              <Code2 className="h-3.5 w-3.5 text-crema-500" />
-              <span>Akses REST API</span>
-            </a>
+              <Coffee className="h-3.5 w-3.5 text-crema-500" />
+              <span>{isFocusMode ? 'Tampilkan Semua Kafe' : 'Cari yang Tenang'}</span>
+            </button>
           </div>
 
           <div className="mt-4 flex items-center justify-center gap-2 text-[11px] font-mono text-roast-400">
             <Sparkles className="h-3 w-3 text-crema-500" />
-            <span>Semua elemen kartu di atas dapat di-drag bebas</span>
+            <span>Pilihan kafe terverifikasi langsung oleh komunitas Surakarta</span>
             <span>&middot;</span>
-            <span>{totalCafes} lokasi terverifikasi</span>
+            <span>{totalCafes} lokasi siap dikunjungi</span>
           </div>
         </div>
 

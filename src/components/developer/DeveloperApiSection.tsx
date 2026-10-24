@@ -56,16 +56,15 @@ for cafe in data.get('data', []):
             <div className="lg:col-span-5 space-y-4">
               <div className="inline-flex items-center gap-2 rounded-full border border-crema-500/30 bg-crema-500/10 px-3.5 py-1 text-xs text-crema-300">
                 <Code2 className="h-3.5 w-3.5 text-crema-400" />
-                <span className="font-mono">REST API Publik</span>
+                <span className="font-mono">Keterbukaan Data Komunitas</span>
               </div>
 
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight">
-                Gunakan data CafePulse untuk proyekmu<span className="text-crema-400">.</span>
+                Akses data CafePulse untuk karya &amp; penelitianmu<span className="text-crema-400">.</span>
               </h2>
 
               <p className="text-sm leading-relaxed text-[#C5B8B1]">
-                Sedang membuat tugas akhir, aplikasi mobile, bot Telegram, atau visualisasi peta sebaran kafe di Surakarta?
-                Data direktori CafePulse terbuka untuk umum dan dapat diakses gratis via REST API dengan CORS aktif.
+                Selain sebagai direktori kafe publik, seluruh data kafe di Surakarta terbuka gratis bagi mahasiswa yang menyusun tugas akhir, pegiat riset, atau pengembang aplikasi melalui REST API dengan dukungan CORS penuh.
               </p>
 
               <div className="pt-2 flex flex-wrap items-center gap-3">

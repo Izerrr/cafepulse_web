@@ -13,36 +13,36 @@ interface CursorConfig {
 
 const CURSORS: CursorConfig[] = [
   {
-    id: 'fullstack',
-    label: 'Fullstack Dev',
-    color: '#00B5CE', // Turquesa from onlines
-    initialPos: { top: '65%', left: '28%' },
+    id: 'penikmat-kopi',
+    label: 'Penikmat Kopi',
+    color: '#C86237', // Warm terracotta roast
+    initialPos: { top: '65%', left: '26%' },
     path: [
       [0, 0], [140, -180], [-100, -260], [180, -90], [-120, 30], [50, 40], [0, 0]
     ],
   },
   {
-    id: 'mahasiswa',
-    label: 'Mahasiswa UNS',
-    color: '#EF5533', // Naranja from onlines
+    id: 'teman-ngobrol',
+    label: 'Teman Ngobrol',
+    color: '#D97706', // Warm caramel
     initialPos: { top: '35%', right: '14%' },
     path: [
       [0, 0], [-160, -120], [-240, 40], [-80, 160], [70, 200], [140, 50], [0, 0]
     ],
   },
   {
-    id: 'remote',
-    label: 'Remote Worker',
-    color: '#1BC47D', // Verde from onlines
+    id: 'mahasiswa-nugas',
+    label: 'Mahasiswa Nugas',
+    color: '#0284C7', // Gentle calm blue
     initialPos: { top: '22%', left: '48%' },
     path: [
       [0, 0], [150, 100], [240, -60], [100, -180], [-70, -200], [-180, -70], [0, 0]
     ],
   },
   {
-    id: 'ui',
-    label: 'UI/UX Designer',
-    color: '#6465ED', // Violeta from onlines
+    id: 'pencari-ketenangan',
+    label: 'Pencari Ketenangan',
+    color: '#10B981', // Forest sage green
     initialPos: { top: '48%', left: '12%' },
     path: [
       [0, 0], [200, -80], [260, 70], [140, 190], [-40, 140], [-100, 40], [0, 0]
@@ -54,114 +54,101 @@ export default function AnimatedCursors() {
   const containerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
+    // Only animate on desktop with hover
+    if (typeof window === 'undefined') return;
+    const canHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+    if (!canHover) return;
 
-    // Check prefers-reduced-motion
-    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    let animFrame: number;
+    let startTime: number | null = null;
+    const duration = 16000; // 16s loop
 
-    let animId: number;
-    const startTime = performance.now();
+    const step = (timestamp: number) => {
+      if (!startTime) startTime = timestamp;
+      const elapsed = (timestamp - startTime) % duration;
+      const progress = elapsed / duration;
 
-    const cursorStates = CURSORS.map((c, i) => ({
-      ...c,
-      currentIndex: 0,
-      phase: 'move' as 'move' | 'pause',
-      phaseStart: startTime + i * 400,
-      currentX: 0,
-      currentY: 0,
-      fromX: 0,
-      fromY: 0,
-      toX: c.path[0][0],
-      toY: c.path[0][1],
-      moveDuration: 2800 + (i % 3) * 400,
-      pauseDuration: 900 + (i % 2) * 300,
-    }));
-
-    const easeInOutSine = (t: number) => -(Math.cos(Math.PI * t) - 1) / 2;
-
-    const tick = (now: number) => {
-      cursorStates.forEach((st) => {
-        const el = container.querySelector(`[data-cursor-id="${st.id}"]`) as HTMLElement;
+      CURSORS.forEach((c) => {
+        const el = document.getElementById(`live-cursor-${c.id}`);
         if (!el) return;
 
-        const elapsed = now - st.phaseStart;
+        const path = c.path;
+        const totalSegments = path.length - 1;
+        const currentSegmentProgress = (progress * totalSegments) % 1;
+        const segmentIndex = Math.min(
+          Math.floor(progress * totalSegments),
+          totalSegments - 1
+        );
 
-        if (st.phase === 'pause') {
-          if (elapsed >= st.pauseDuration) {
-            const nextIdx = (st.currentIndex + 1) % st.path.length;
-            st.fromX = st.path[st.currentIndex][0];
-            st.fromY = st.path[st.currentIndex][1];
-            st.toX = st.path[nextIdx][0];
-            st.toY = st.path[nextIdx][1];
-            st.currentIndex = nextIdx;
-            st.phase = 'move';
-            st.phaseStart = now;
-          }
-        } else {
-          const progress = Math.min(elapsed / st.moveDuration, 1);
-          const eased = easeInOutSine(progress);
+        const p1 = path[segmentIndex];
+        const p2 = path[segmentIndex + 1];
 
-          st.currentX = st.fromX + (st.toX - st.fromX) * eased;
-          st.currentY = st.fromY + (st.toY - st.fromY) * eased;
+        // Smooth cubic easing
+        const t = currentSegmentProgress;
+        const eased = t < 0.5 ? 2 * t * t : -1 + (4 - 2 * t) * t;
 
-          if (progress >= 1) {
-            st.phase = 'pause';
-            st.phaseStart = now;
-          }
-        }
+        const x = p1[0] + (p2[0] - p1[0]) * eased;
+        const y = p1[1] + (p2[1] - p1[1]) * eased;
 
-        el.style.transform = `translate3d(${st.currentX.toFixed(1)}px, ${st.currentY.toFixed(1)}px, 0)`;
+        el.style.transform = `translate(${x}px, ${y}px)`;
       });
 
-      animId = requestAnimationFrame(tick);
+      animFrame = requestAnimationFrame(step);
     };
 
-    animId = requestAnimationFrame(tick);
+    animFrame = requestAnimationFrame(step);
 
-    return () => cancelAnimationFrame(animId);
+    return () => {
+      cancelAnimationFrame(animFrame);
+    };
   }, []);
 
   return (
     <div
       ref={containerRef}
-      className="pointer-events-none absolute inset-0 z-20 overflow-hidden hidden sm:block"
+      className="hidden md:block pointer-events-none absolute inset-0 z-20 overflow-hidden"
       aria-hidden="true"
     >
       {CURSORS.map((c) => (
         <div
           key={c.id}
-          data-cursor-id={c.id}
+          id={`live-cursor-${c.id}`}
           style={{
             position: 'absolute',
             top: c.initialPos.top,
             left: c.initialPos.left,
             right: c.initialPos.right,
+            transition: 'opacity 0.4s ease',
             willChange: 'transform',
           }}
-          className="flex flex-col items-start transition-opacity duration-700"
+          className="flex flex-col items-start select-none"
         >
-          {/* Custom SVG Figma Arrow Pointer with shadow */}
+          {/* Authentic Figma-style SVG Pointer */}
           <svg
             width="17"
-            height="19"
-            viewBox="0 0 22 24"
+            height="18"
+            viewBox="0 0 17 18"
             fill="none"
-            className="drop-shadow-md select-none"
+            xmlns="http://www.w3.org/2000/svg"
+            style={{ filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.18))' }}
           >
             <path
-              d="M6.47489 17.1216L4.00903 2.58942C3.93912 2.17746 4.3754 1.86658 4.74197 2.06714L17.5232 9.06009C17.9445 9.29057 17.8302 9.92457 17.355 9.99355L11.0105 10.9145C10.8527 10.9374 10.7153 11.0342 10.6406 11.1752L7.40964 17.272C7.18605 17.694 6.55477 17.5923 6.47489 17.1216Z"
+              d="M0 0V15.2L4.6 11.2L8.2 17.6L10.8 16.2L7.2 9.8L12.8 9.6L0 0Z"
               fill={c.color}
-              stroke="#FFFFFF"
-              strokeWidth="1.5"
+            />
+            <path
+              d="M1 1.8V13.4L4.8 10.1L8.5 16.6L9.7 15.9L6 9.4L10.7 9.2L1 1.8Z"
+              fill={c.color}
             />
           </svg>
+
+          {/* Friendly Role Badge */}
           <span
             style={{
               backgroundColor: c.color,
               color: c.textColor || '#FFFFFF',
             }}
-            className="ml-2 -mt-1 rounded-r-md rounded-bl-md px-2 py-0.5 text-[11px] font-sans font-semibold tracking-tight shadow-md select-none whitespace-nowrap"
+            className="mt-0.5 ml-2.5 inline-flex items-center rounded-r-md rounded-bl-md px-2 py-0.5 font-sans text-[11px] font-semibold tracking-tight shadow-sm"
           >
             {c.label}
           </span>
@@ -170,4 +157,3 @@ export default function AnimatedCursors() {
     </div>
   );
 }
-

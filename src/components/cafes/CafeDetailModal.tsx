@@ -99,7 +99,7 @@ export default function CafeDetailModal({
         <div className="flex items-center justify-between border-b border-canvas-border bg-canvas-surface px-6 py-4">
           <div className="flex items-center gap-2 text-xs text-roast-500">
             <span className="font-mono font-semibold text-roast-900">Kafe #{currentCafe.id}</span>
-            <span>/ Lembar Verifikasi Spesifikasi</span>
+            <span>/ Suasana &amp; Fasilitas Lengkap</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -139,7 +139,7 @@ export default function CafeDetailModal({
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
                 <span className="text-xs font-mono text-roast-400 uppercase tracking-wider">
-                  Katalog Kafe Surakarta
+                  Sudut Kafe Surakarta
                 </span>
                 <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-roast-900">
                   {currentCafe.name}
@@ -181,7 +181,7 @@ export default function CafeDetailModal({
           {/* Technical Specs Grid */}
           <div>
             <h3 className="text-xs font-mono font-semibold text-roast-400 uppercase tracking-wider mb-3">
-              Spesifikasi Fasilitas Kerja
+              Kenyamanan &amp; Fasilitas Tempat
             </h3>
             
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
@@ -251,7 +251,7 @@ export default function CafeDetailModal({
           {/* Kelengkapan Ruangan */}
           <div>
             <h3 className="text-xs font-mono font-semibold text-roast-400 uppercase tracking-wider mb-3">
-              Kelengkapan Ruangan
+              Fasilitas Pendukung
             </h3>
             
             <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3 text-xs">
@@ -294,7 +294,7 @@ export default function CafeDetailModal({
           <div className="border-t border-canvas-border pt-5">
             <div className="flex items-center justify-between mb-3.5">
               <h3 className="text-xs font-mono font-semibold text-roast-400 uppercase tracking-wider">
-                Ulasan Lapangan ({reviews.length})
+                Ulasan &amp; Cerita Pengunjung ({reviews.length})
               </h3>
               <div className="flex items-center gap-1 text-xs text-roast-900">
                 <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
