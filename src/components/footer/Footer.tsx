@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Coffee, ArrowUpRight, Terminal } from 'lucide-react';
+import { Coffee, ArrowUpRight } from 'lucide-react';
 
 export default function Footer() {
   const scrollToTop = () => {
@@ -9,7 +9,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="border-t border-[#2F2723] bg-[#0A0807] text-[#9C9289]">
+    <footer className="border-t border-white/[0.06] bg-[#090807] text-[#A3988E]">
       
       {/* Upper Grid */}
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
@@ -18,79 +18,79 @@ export default function Footer() {
           {/* Brand Col */}
           <div className="space-y-4 md:col-span-5">
             <div className="flex items-center gap-3">
-              <div className="flex h-9 w-9 items-center justify-center border border-[#E08E45] bg-[#1C1816]">
-                <Coffee className="h-4 w-4 text-[#E08E45]" />
+              <div className="flex h-8 w-8 items-center justify-center rounded-xl border border-amber-500/20 bg-gradient-to-b from-[#211B17] to-[#120F0D] text-[#E59850]">
+                <Coffee className="h-4 w-4" />
               </div>
-              <span className="font-['Syne'] text-2xl font-extrabold uppercase tracking-tight text-[#F7F3EE]">
-                CAFE<span className="text-[#E08E45]">PULSE</span>
+              <span className="text-lg font-semibold tracking-tight text-[#F9F6F0]">
+                Cafe<span className="text-[#E59850]">Pulse</span>
               </span>
             </div>
 
-            <p className="font-['Inter'] text-sm leading-relaxed text-[#D8D0C7] max-w-sm">
-              The high-fidelity workspace index for remote workers, founders, and creatives.
-              Crafted in editorial neo-brutalist styling inspired by racing engineering &amp; cafe culture.
+            <p className="text-xs leading-relaxed text-[#D5CCC2] max-w-sm">
+              The high-fidelity workspace index for remote professionals, founders, and students in Surakarta.
+              Independently measured for true throughput, power access, and cognitive calm.
             </p>
 
-            <div className="flex flex-wrap gap-2 font-['JetBrains_Mono'] text-[11px]">
-              <span className="border border-[#2F2723] bg-[#161311] px-2 py-0.5 text-[#E08E45]">
-                [SURAKARTA INDEX]
+            <div className="flex flex-wrap gap-2 text-[11px]">
+              <span className="rounded-full border border-white/[0.08] bg-white/[0.02] px-2.5 py-0.5 text-[#E59850]">
+                Surakarta Chapter
               </span>
-              <span className="border border-[#2F2723] bg-[#161311] px-2 py-0.5 text-[#F7F3EE]">
-                [SUPABASE POWERED]
+              <span className="rounded-full border border-white/[0.08] bg-white/[0.02] px-2.5 py-0.5 text-[#D5CCC2]">
+                Supabase Connected
               </span>
             </div>
           </div>
 
-          {/* Quick Telemetry & Endpoints */}
-          <div className="space-y-3 font-['JetBrains_Mono'] text-xs md:col-span-4">
-            <div className="font-['Syne'] text-sm font-bold uppercase tracking-wider text-[#F7F3EE]">
-              SYSTEM TELEMETRY
+          {/* Telemetry Links */}
+          <div className="space-y-3 text-xs md:col-span-4">
+            <div className="font-semibold text-[#F9F6F0]">
+              System Telemetry
             </div>
             
-            <ul className="space-y-2 text-[#D8D0C7]">
-              <li className="flex items-center justify-between border-b border-[#2F2723]/60 pb-1.5">
-                <span className="text-[#9C9289]">REST API</span>
+            <ul className="space-y-2 text-[#D5CCC2]">
+              <li className="flex items-center justify-between border-b border-white/[0.05] pb-1.5">
+                <span className="text-[#A3988E]">REST API</span>
                 <a
                   href="https://api.cafepulse.izerworks.my.id/db-check"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#E08E45] hover:underline flex items-center gap-1"
+                  className="text-[#E59850] hover:underline flex items-center gap-1 font-medium"
                 >
                   api.cafepulse.izerworks.my.id
                   <ArrowUpRight className="h-3 w-3" />
                 </a>
               </li>
-              <li className="flex items-center justify-between border-b border-[#2F2723]/60 pb-1.5">
-                <span className="text-[#9C9289]">Database Engine</span>
-                <span className="text-[#F7F3EE]">Supabase PostgreSQL</span>
+              <li className="flex items-center justify-between border-b border-white/[0.05] pb-1.5">
+                <span className="text-[#A3988E]">Database Engine</span>
+                <span className="text-[#F9F6F0]">Supabase PostgreSQL</span>
               </li>
-              <li className="flex items-center justify-between border-b border-[#2F2723]/60 pb-1.5">
-                <span className="text-[#9C9289]">CORS Policy</span>
-                <span className="text-emerald-400">ENABLED (ALL ORIGINS)</span>
+              <li className="flex items-center justify-between border-b border-white/[0.05] pb-1.5">
+                <span className="text-[#A3988E]">CORS Policy</span>
+                <span className="text-emerald-400">Enabled (Wildcard)</span>
               </li>
-              <li className="flex items-center justify-between border-b border-[#2F2723]/60 pb-1.5">
-                <span className="text-[#9C9289]">Frontend Domain</span>
-                <span className="text-[#F7F3EE]">cafepulse.izerworks.my.id</span>
+              <li className="flex items-center justify-between border-b border-white/[0.05] pb-1.5">
+                <span className="text-[#A3988E]">Frontend Host</span>
+                <span className="text-[#F9F6F0]">cafepulse.izerworks.my.id</span>
               </li>
             </ul>
           </div>
 
-          {/* Back to top & Edition */}
-          <div className="flex flex-col justify-between font-['JetBrains_Mono'] text-xs md:col-span-3 md:items-end">
+          {/* Back to top */}
+          <div className="flex flex-col justify-between text-xs md:col-span-3 md:items-end">
             <div>
-              <div className="font-['Syne'] text-sm font-bold uppercase tracking-wider text-[#F7F3EE]">
-                EDITION 2026
+              <div className="font-semibold text-[#F9F6F0]">
+                CafePulse Studio
               </div>
-              <p className="mt-1 text-[11px] text-[#9C9289]">
-                VERSION 1.0.4 — PROD BUILD
+              <p className="mt-1 text-[11px] text-[#A3988E]">
+                Edition 2026 &middot; Production
               </p>
             </div>
 
             <button
               onClick={scrollToTop}
-              className="mt-6 flex items-center gap-2 border border-[#2F2723] bg-[#161311] px-4 py-2 font-['JetBrains_Mono'] text-xs uppercase text-[#F7F3EE] transition-all hover:border-[#E08E45] hover:text-[#E08E45]"
+              className="mt-6 flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.02] px-4 py-2 text-xs text-[#F9F6F0] transition-all hover:border-amber-500/40 hover:text-[#E59850]"
             >
-              <span>BACK TO TOP</span>
+              <span>Back to Top</span>
               <ArrowUpRight className="h-3.5 w-3.5 -rotate-45" />
             </button>
           </div>
@@ -98,16 +98,16 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Bottom Bar */}
-      <div className="border-t border-[#2F2723] bg-[#080706] py-4 font-['JetBrains_Mono'] text-[11px] text-[#574B43]">
+      {/* Bottom Sub-bar */}
+      <div className="border-t border-white/[0.05] bg-[#070605] py-4 text-xs text-[#6B6158]">
         <div className="mx-auto flex max-w-7xl flex-col items-center justify-between gap-2 px-4 sm:flex-row sm:px-6 lg:px-8">
           <div>
-            &copy; 2026 CAFEPULSE WEB. ALL BENCHMARKS AUDITED INDEPENDENTLY.
+            &copy; 2026 CafePulse. All benchmarks independently audited.
           </div>
-          <div className="flex items-center gap-4 text-[#9C9289]">
-            <span>DESIGN × PERFORMANCE</span>
-            <span>•</span>
-            <span>LANDO NORRIS × CAFE AESTHETIC</span>
+          <div className="flex items-center gap-3 text-[#A3988E]">
+            <span>Crafted for focused work</span>
+            <span>&middot;</span>
+            <span>Surakarta</span>
           </div>
         </div>
       </div>

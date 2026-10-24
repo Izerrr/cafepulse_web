@@ -1,38 +1,28 @@
 @import "tailwindcss";
 
 @theme {
-  --font-syne: 'Syne', sans-serif;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
-  --font-sans: 'Inter', sans-serif;
 
-  --color-roast-950: #0F0D0C;
-  --color-roast-900: #161311;
-  --color-roast-850: #1C1816;
-  --color-roast-800: #26201D;
-  --color-roast-700: #2F2723;
-  --color-roast-600: #423832;
-  --color-roast-500: #574B43;
+  --color-roast-950: #0B0908;
+  --color-roast-900: #12100E;
+  --color-roast-850: #171412;
+  --color-roast-800: #211C19;
+  --color-roast-700: #2E2723;
+  --color-roast-600: #443A34;
 
-  --color-crema-500: #E08E45;
-  --color-crema-400: #F59E0B;
-  --color-crema-300: #FBBF24;
-
+  --color-amber-crema: #E59850;
+  --color-amber-crema-hover: #F0A560;
   --color-terracotta: #C86237;
-  --color-terracotta-dark: #A84F29;
 
-  --color-oatmilk: #F7F3EE;
-  --color-oatmilk-muted: #D8D0C7;
-  --color-warm-sand: #9C9289;
-
-  --color-pulse-green: #10B981;
-  --color-pulse-amber: #F59E0B;
-  --color-pulse-red: #EF4444;
-  --color-pulse-blue: #3B82F6;
+  --color-oatmilk: #F9F6F0;
+  --color-oatmilk-muted: #D5CCC2;
+  --color-warm-sand: #9E9388;
 }
 
 :root {
-  --background: #0F0D0C;
-  --foreground: #F7F3EE;
+  --background: #0B0908;
+  --foreground: #F9F6F0;
 }
 
 body {
@@ -40,36 +30,53 @@ body {
   color: var(--foreground);
   font-family: var(--font-sans);
   overflow-x: hidden;
+  letter-spacing: -0.01em;
 }
 
-/* Custom scrollbar for dark roast theme */
+/* Custom smooth dark scrollbar */
 ::-webkit-scrollbar {
-  width: 8px;
-  height: 8px;
+  width: 6px;
+  height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #0F0D0C;
+  background: #0B0908;
 }
 ::-webkit-scrollbar-thumb {
-  background: #2F2723;
-  border-radius: 4px;
+  background: #2E2723;
+  border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #E08E45;
+  background: #E59850;
 }
 
-/* Neo-brutalist solid shadow utilities */
-.brutalist-shadow-amber {
-  box-shadow: 4px 4px 0px #E08E45;
-}
-.brutalist-shadow-black {
-  box-shadow: 4px 4px 0px #000000;
-}
-.brutalist-shadow-subtle {
-  box-shadow: 3px 3px 0px #2F2723;
+/* Elegant glassmorphism and subtle lighting */
+.glass-surface {
+  background: rgba(23, 20, 18, 0.7);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.07);
 }
 
-/* Marquee infinite scroll ticker */
+.glass-surface-hover {
+  transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glass-surface-hover:hover {
+  background: rgba(28, 24, 21, 0.85);
+  border-color: rgba(229, 152, 80, 0.3);
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px -10px rgba(0, 0, 0, 0.6), 0 0 20px -5px rgba(229, 152, 80, 0.1);
+}
+
+/* Refined ambient glow */
+.ambient-glow-amber {
+  box-shadow: 0 0 30px -8px rgba(229, 152, 80, 0.18);
+}
+
+.ambient-glow-emerald {
+  box-shadow: 0 0 20px -5px rgba(16, 185, 129, 0.25);
+}
+
+/* Marquee infinite scroll ticker - smooth & subtle */
 @keyframes marquee {
   0% {
     transform: translateX(0%);
@@ -88,20 +95,3 @@ body {
 .animate-marquee:hover {
   animation-play-state: paused;
 }
-
-/* Pulse beacon animation */
-@keyframes pulseGlow {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-  }
-  50% {
-    opacity: 0.4;
-    transform: scale(1.15);
-  }
-}
-
-.animate-pulse-glow {
-  animation: pulseGlow 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
-}
-

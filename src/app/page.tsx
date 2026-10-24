@@ -13,7 +13,7 @@ import CafeDetailModal from '@/components/cafes/CafeDetailModal';
 import AddCafeModal from '@/components/cafes/AddCafeModal';
 import EditCafeModal from '@/components/cafes/EditCafeModal';
 import Footer from '@/components/footer/Footer';
-import { Plus, Coffee, Sparkles, RefreshCw, AlertCircle } from 'lucide-react';
+import { Plus, Coffee, RefreshCw, AlertCircle } from 'lucide-react';
 
 const initialFilters: FilterState = {
   search: '',
@@ -38,7 +38,6 @@ export default function HomePage() {
     exploreRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Fetch cafes using React Query
   const {
     data: cafeResponse,
     isLoading,
@@ -56,28 +55,23 @@ export default function HomePage() {
 
   const allCafes = cafeResponse?.data || [];
 
-  // Client-side additional filtering for speed, plugs, noise, AC, outdoor, prayer room
   const filteredCafes = useMemo(() => {
     return allCafes.filter((cafe) => {
       const amenities = cafe.amenities;
       if (!amenities) return true;
 
-      // Wi-Fi speed threshold
       if (filters.minWifiSpeed > 0 && amenities.wifi_speed_mbps < filters.minWifiSpeed) {
         return false;
       }
 
-      // Plug score filter
       if (filters.plugScore !== 'ALL' && amenities.plug_score !== filters.plugScore) {
         return false;
       }
 
-      // Noise level filter
       if (filters.noiseLevel !== 'ALL' && amenities.noise_level !== filters.noiseLevel) {
         return false;
       }
 
-      // Amenities checkboxes
       if (filters.acOnly && !amenities.air_conditioned) return false;
       if (filters.outdoorOnly && !amenities.has_outdoor) return false;
       if (filters.prayerRoomOnly && !amenities.has_prayer_room) return false;
@@ -87,7 +81,7 @@ export default function HomePage() {
   }, [allCafes, filters]);
 
   return (
-    <main className="min-h-screen bg-[#0F0D0C] text-[#F7F3EE] selection:bg-[#E08E45] selection:text-[#0F0D0C]">
+    <main className="min-h-screen bg-[#0B0908] text-[#F9F6F0] selection:bg-[#E59850] selection:text-[#0B0908]">
       
       {/* Top Navbar */}
       <Navbar onOpenAddModal={() => setIsAddModalOpen(true)} />
@@ -113,7 +107,7 @@ export default function HomePage() {
         />
 
         {/* Cafe Grid Container */}
-        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
           
           {/* Loading Skeleton */}
           {isLoading && (
@@ -121,20 +115,20 @@ export default function HomePage() {
               {[1, 2, 3].map((n) => (
                 <div
                   key={n}
-                  className="animate-pulse border border-[#2F2723] bg-[#161311] p-6 space-y-4"
+                  className="animate-pulse rounded-2xl border border-white/[0.06] bg-[#14110F] p-6 space-y-4"
                 >
                   <div className="flex justify-between items-center">
-                    <div className="h-6 w-32 bg-[#2F2723]" />
-                    <div className="h-4 w-20 bg-[#2F2723]" />
+                    <div className="h-5 w-28 rounded-full bg-white/[0.05]" />
+                    <div className="h-4 w-16 rounded-full bg-white/[0.05]" />
                   </div>
-                  <div className="h-8 w-3/4 bg-[#2F2723]" />
-                  <div className="h-4 w-1/2 bg-[#2F2723]" />
-                  <div className="grid grid-cols-3 gap-2 py-4">
-                    <div className="h-16 bg-[#0F0D0C]" />
-                    <div className="h-16 bg-[#0F0D0C]" />
-                    <div className="h-16 bg-[#0F0D0C]" />
+                  <div className="h-6 w-3/4 rounded-lg bg-white/[0.05]" />
+                  <div className="h-4 w-1/2 rounded-lg bg-white/[0.05]" />
+                  <div className="grid grid-cols-3 gap-2.5 py-3">
+                    <div className="h-16 rounded-xl bg-white/[0.03]" />
+                    <div className="h-16 rounded-xl bg-white/[0.03]" />
+                    <div className="h-16 rounded-xl bg-white/[0.03]" />
                   </div>
-                  <div className="h-10 bg-[#2F2723]" />
+                  <div className="h-10 rounded-xl bg-white/[0.05]" />
                 </div>
               ))}
             </div>
@@ -142,23 +136,20 @@ export default function HomePage() {
 
           {/* Error State */}
           {isError && (
-            <div className="border border-red-900/60 bg-red-950/20 p-8 text-center font-['JetBrains_Mono']">
+            <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-8 text-center">
               <AlertCircle className="mx-auto h-8 w-8 text-red-400 mb-3" />
-              <h3 className="text-lg font-bold text-[#F7F3EE] uppercase">
-                COMMUNICATION DISRUPTION
+              <h3 className="text-base font-semibold text-[#F9F6F0]">
+                Unable to load workspaces
               </h3>
-              <p className="mt-1 text-sm text-[#9C9289]">
-                Unable to retrieve workspaces from CafePulse backend API.
-              </p>
-              <p className="mt-1 text-xs text-red-400">
-                {(error as Error)?.message || 'Network error'}
+              <p className="mt-1 text-xs text-[#A3988E]">
+                {(error as Error)?.message || 'Communication error with CafePulse API.'}
               </p>
               <button
                 onClick={() => refetch()}
-                className="mt-5 inline-flex items-center gap-2 border border-[#E08E45] bg-[#E08E45] px-4 py-2 text-xs font-bold uppercase text-[#0F0D0C] hover:bg-[#F59E0B]"
+                className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#E59850] px-4 py-2 text-xs font-semibold text-[#0B0908] hover:bg-[#F0A560]"
               >
                 <RefreshCw className="h-3.5 w-3.5" />
-                <span>RETRY SYNC</span>
+                <span>Retry</span>
               </button>
             </div>
           )}
@@ -167,26 +158,26 @@ export default function HomePage() {
           {!isLoading && !isError && (
             <>
               {filteredCafes.length === 0 ? (
-                <div className="border border-[#2F2723] bg-[#161311] p-12 text-center font-['JetBrains_Mono']">
-                  <Coffee className="mx-auto h-10 w-10 text-[#574B43] mb-4" />
-                  <h3 className="font-['Syne'] text-xl font-bold uppercase text-[#F7F3EE]">
-                    NO SPACES MATCH THE CHOSEN CRITERIA
+                <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-12 text-center">
+                  <Coffee className="mx-auto h-10 w-10 text-[#6B6158] mb-3" />
+                  <h3 className="text-lg font-semibold text-[#F9F6F0]">
+                    No spaces match the selected filters
                   </h3>
-                  <p className="mt-2 text-xs text-[#9C9289] max-w-md mx-auto">
-                    Try relaxing the Wi-Fi speed threshold or resetting filter chips to view all audited workspaces.
+                  <p className="mt-1.5 text-xs text-[#A3988E] max-w-md mx-auto">
+                    Try adjusting the Wi-Fi speed threshold or clearing filters to see all available spaces.
                   </p>
                   <div className="mt-6 flex items-center justify-center gap-3">
                     <button
                       onClick={() => setFilters(initialFilters)}
-                      className="border border-[#2F2723] bg-[#1C1816] px-4 py-2 text-xs font-bold uppercase text-[#F7F3EE] hover:border-[#E08E45]"
+                      className="rounded-full border border-white/[0.08] bg-white/[0.02] px-4 py-2 text-xs font-semibold text-[#F9F6F0] hover:border-amber-500/40"
                     >
-                      RESET FILTERS
+                      Reset Filters
                     </button>
                     <button
                       onClick={() => setIsAddModalOpen(true)}
-                      className="border border-[#E08E45] bg-[#E08E45] px-4 py-2 text-xs font-bold uppercase text-[#0F0D0C] hover:bg-[#F59E0B]"
+                      className="rounded-full bg-[#E59850] px-4 py-2 text-xs font-semibold text-[#0B0908] hover:bg-[#F0A560]"
                     >
-                      + SUBMIT NEW CAFE
+                      + Add New Cafe
                     </button>
                   </div>
                 </div>
@@ -209,13 +200,13 @@ export default function HomePage() {
 
       </div>
 
-      {/* Floating Action Button for Quick Add */}
+      {/* Floating Action Button */}
       <button
         onClick={() => setIsAddModalOpen(true)}
-        className="fixed bottom-6 right-6 z-40 flex h-14 w-14 items-center justify-center border-2 border-[#0F0D0C] bg-[#E08E45] text-[#0F0D0C] shadow-2xl brutalist-shadow-black transition-all hover:scale-105 hover:bg-[#F59E0B] active:translate-x-0.5 active:translate-y-0.5"
-        title="Add New Workspace"
+        className="fixed bottom-6 right-6 z-40 flex h-13 w-13 items-center justify-center rounded-full bg-[#E59850] text-[#0B0908] shadow-2xl transition-all hover:scale-105 hover:bg-[#F0A560] hover:shadow-[0_0_30px_-5px_rgba(229,152,80,0.5)] active:scale-95"
+        title="Submit Workspace"
       >
-        <Plus className="h-7 w-7 stroke-[2.5]" />
+        <Plus className="h-6 w-6 stroke-[2.5]" />
       </button>
 
       {/* Modals */}

@@ -3,22 +3,21 @@ import './globals.css';
 import QueryProvider from '@/components/providers/QueryProvider';
 
 export const metadata: Metadata = {
-  title: 'CafePulse — Work-Friendly Spaces & Verified Cafe Directory',
+  title: 'CafePulse — Curated Workspaces & Remote-Friendly Cafe Directory',
   description:
-    'Curated directory of work-ready cafes with verified high-speed Wi-Fi, power plug availability, and live crowd density metrics. Editorial neo-brutalist edition.',
+    'Discover curated, work-optimized cafes in Surakarta. Independently verified for high-speed Wi-Fi, power plug availability, quiet acoustics, and live crowd density.',
   keywords: [
-    'work friendly cafe',
-    'coworking space',
-    'wifi cafe',
-    'surakarta cafe',
-    'remote work coffee',
     'cafepulse',
+    'work friendly cafe',
+    'cafe wifi solo',
+    'coworking cafe surakarta',
+    'remote work coffee',
   ],
-  authors: [{ name: 'CafePulse Studio' }],
+  authors: [{ name: 'CafePulse' }],
   openGraph: {
-    title: 'CafePulse — Find Your Pulse. Coffee & Coworking.',
+    title: 'CafePulse — Work-Friendly Spaces & Verified Cafe Directory',
     description:
-      'Verified Wi-Fi speeds, plug capacity, and live crowd density for remote workers and coffee lovers.',
+      'Independently verified Wi-Fi throughput, power socket density, and ambient acoustics for remote workers.',
     url: 'https://cafepulse.izerworks.my.id',
     siteName: 'CafePulse',
     type: 'website',
@@ -31,19 +30,18 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className="dark">
+    <html lang="id" className="dark">
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link
-          href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Syne:wght@700;800;900&family=Inter:wght@400;500;600;700&display=swap"
+          href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
           rel="stylesheet"
         />
       </head>
-      <body className="min-h-screen bg-[#0F0D0C] text-[#F7F3EE] antialiased selection:bg-[#E08E45] selection:text-[#0F0D0C]">
+      <body className="min-h-screen bg-[#0B0908] text-[#F9F6F0] antialiased selection:bg-[#E59850] selection:text-[#0B0908]">
         <QueryProvider>{children}</QueryProvider>
       </body>
     </html>
   );
 }
-

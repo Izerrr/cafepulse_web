@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { CreateCafeInput, CrowdDensity, NoiseLevel, PlugScore, WifiStability } from '@/types/cafe';
-import { X, Plus, AlertCircle, CheckCircle2, Loader2, Sparkles } from 'lucide-react';
+import { X, Plus, AlertCircle, Loader2 } from 'lucide-react';
 
 interface AddCafeModalProps {
   isOpen: boolean;
@@ -73,47 +73,46 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-[#0F0D0C]/85 backdrop-blur-md transition-opacity"
+        className="fixed inset-0 bg-[#0B0908]/80 backdrop-blur-md transition-opacity"
         onClick={onClose}
       />
 
       {/* Modal Dialog */}
-      <div className="relative z-10 flex max-h-[92vh] w-full max-w-2xl flex-col border border-[#E08E45] bg-[#161311] brutalist-shadow-amber shadow-2xl overflow-hidden">
+      <div className="relative z-10 flex max-h-[90vh] w-full max-w-2xl flex-col rounded-3xl border border-white/[0.09] bg-[#14110F] shadow-2xl overflow-hidden">
         
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-[#2F2723] bg-[#0F0D0C] px-5 py-4">
-          <div className="flex items-center gap-2 font-['JetBrains_Mono'] text-xs">
-            <span className="border border-[#E08E45] bg-[#1C1816] px-2 py-0.5 font-bold text-[#E08E45]">
-              [INDEX NEW WORKSPACE]
+        <div className="flex items-center justify-between border-b border-white/[0.06] bg-[#0E0C0B] px-6 py-4">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-semibold text-[#F9F6F0]">
+              Submit Work-Friendly Cafe
             </span>
-            <span className="text-[#9C9289] hidden sm:inline">REST API POST</span>
           </div>
 
           <button
             onClick={onClose}
-            className="flex h-7 w-7 items-center justify-center border border-[#2F2723] bg-[#1C1816] text-[#9C9289] transition-colors hover:border-red-500 hover:text-red-400"
+            className="flex h-7 w-7 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.03] text-[#A3988E] transition-colors hover:border-red-500/40 hover:text-red-400"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
         {/* Scrollable Form Body */}
-        <form onSubmit={handleSubmit} className="overflow-y-auto p-5 sm:p-7 space-y-5">
+        <form onSubmit={handleSubmit} className="overflow-y-auto p-6 sm:p-8 space-y-6">
           {errorMessage && (
-            <div className="flex items-start gap-2.5 border border-red-800/80 bg-red-950/30 p-3 font-['JetBrains_Mono'] text-xs text-red-400">
+            <div className="flex items-start gap-2.5 rounded-xl border border-red-500/20 bg-red-500/10 p-3 text-xs text-red-400">
               <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
               <span>{errorMessage}</span>
             </div>
           )}
 
           {/* Section 1: Basic Identifiers */}
-          <div className="space-y-3">
-            <h4 className="font-['Syne'] text-sm font-bold uppercase tracking-wider text-[#E08E45]">
-              1. SPACE IDENTIFIERS
+          <div className="space-y-4">
+            <h4 className="text-xs font-semibold tracking-wide text-[#E59850] uppercase">
+              1. Space Information
             </h4>
 
             <div>
-              <label className="block font-['JetBrains_Mono'] text-xs uppercase text-[#9C9289] mb-1">
+              <label className="block text-xs font-medium text-[#A3988E] mb-1.5">
                 Cafe Name *
               </label>
               <input
@@ -122,12 +121,12 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
                 value={formData.name}
                 onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                 placeholder="e.g. Ruang Temu Coffee & Space"
-                className="w-full border border-[#2F2723] bg-[#0F0D0C] px-3 py-2 font-['JetBrains_Mono'] text-xs text-[#F7F3EE] outline-none transition-colors focus:border-[#E08E45]"
+                className="w-full rounded-xl border border-white/[0.08] bg-[#0E0C0B] px-3.5 py-2.5 text-xs text-[#F9F6F0] placeholder-[#6B6158] outline-none transition-all focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/30"
               />
             </div>
 
             <div>
-              <label className="block font-['JetBrains_Mono'] text-xs uppercase text-[#9C9289] mb-1">
+              <label className="block text-xs font-medium text-[#A3988E] mb-1.5">
                 Full Street Address *
               </label>
               <input
@@ -136,13 +135,13 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
                 value={formData.address}
                 onChange={(e) => setFormData({ ...formData, address: e.target.value })}
                 placeholder="e.g. Jl. Slamet Riyadi No. 120, Surakarta"
-                className="w-full border border-[#2F2723] bg-[#0F0D0C] px-3 py-2 font-['JetBrains_Mono'] text-xs text-[#F7F3EE] outline-none transition-colors focus:border-[#E08E45]"
+                className="w-full rounded-xl border border-white/[0.08] bg-[#0E0C0B] px-3.5 py-2.5 text-xs text-[#F9F6F0] placeholder-[#6B6158] outline-none transition-all focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/30"
               />
             </div>
 
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
-                <label className="block font-['JetBrains_Mono'] text-xs uppercase text-[#9C9289] mb-1">
+                <label className="block text-xs font-medium text-[#A3988E] mb-1.5">
                   Opening Hours
                 </label>
                 <input
@@ -150,12 +149,12 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
                   value={formData.opening_hours}
                   onChange={(e) => setFormData({ ...formData, opening_hours: e.target.value })}
                   placeholder="08:00 - 23:00"
-                  className="w-full border border-[#2F2723] bg-[#0F0D0C] px-3 py-2 font-['JetBrains_Mono'] text-xs text-[#F7F3EE] outline-none transition-colors focus:border-[#E08E45]"
+                  className="w-full rounded-xl border border-white/[0.08] bg-[#0E0C0B] px-3.5 py-2.5 text-xs text-[#F9F6F0] placeholder-[#6B6158] outline-none transition-all focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/30"
                 />
               </div>
 
               <div>
-                <label className="block font-['JetBrains_Mono'] text-xs uppercase text-[#9C9289] mb-1">
+                <label className="block text-xs font-medium text-[#A3988E] mb-1.5">
                   Crowd Density
                 </label>
                 <select
@@ -166,25 +165,25 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
                       crowd_density: e.target.value as CrowdDensity,
                     })
                   }
-                  className="w-full border border-[#2F2723] bg-[#0F0D0C] px-3 py-2 font-['JetBrains_Mono'] text-xs text-[#F7F3EE] outline-none transition-colors focus:border-[#E08E45]"
+                  className="w-full rounded-xl border border-white/[0.08] bg-[#0E0C0B] px-3.5 py-2.5 text-xs text-[#F9F6F0] outline-none transition-all focus:border-amber-500/50"
                 >
-                  <option value="LOW">LOW (Quiet / High Focus)</option>
-                  <option value="MODERATE">MODERATE (Balanced)</option>
-                  <option value="HIGH">HIGH (Busy / Social)</option>
+                  <option value="LOW">Low (Quiet / Focus Ready)</option>
+                  <option value="MODERATE">Moderate (Balanced)</option>
+                  <option value="HIGH">High (Social / Busy)</option>
                 </select>
               </div>
             </div>
           </div>
 
           {/* Section 2: Hardware Telemetry */}
-          <div className="space-y-3 border-t border-[#2F2723] pt-4">
-            <h4 className="font-['Syne'] text-sm font-bold uppercase tracking-wider text-[#E08E45]">
-              2. HARDWARE &amp; AMENITIES TELEMETRY
+          <div className="space-y-4 border-t border-white/[0.06] pt-5">
+            <h4 className="text-xs font-semibold tracking-wide text-[#E59850] uppercase">
+              2. Hardware &amp; Facilities
             </h4>
 
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
-                <label className="block font-['JetBrains_Mono'] text-xs uppercase text-[#9C9289] mb-1">
+                <label className="block text-xs font-medium text-[#A3988E] mb-1.5">
                   Wi-Fi Speed (Mbps)
                 </label>
                 <input
@@ -201,12 +200,12 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
                       },
                     })
                   }
-                  className="w-full border border-[#2F2723] bg-[#0F0D0C] px-3 py-2 font-['JetBrains_Mono'] text-xs text-[#F7F3EE] outline-none transition-colors focus:border-[#E08E45]"
+                  className="w-full rounded-xl border border-white/[0.08] bg-[#0E0C0B] px-3.5 py-2.5 text-xs text-[#F9F6F0] outline-none transition-all focus:border-amber-500/50"
                 />
               </div>
 
               <div>
-                <label className="block font-['JetBrains_Mono'] text-xs uppercase text-[#9C9289] mb-1">
+                <label className="block text-xs font-medium text-[#A3988E] mb-1.5">
                   Wi-Fi Stability
                 </label>
                 <select
@@ -220,19 +219,19 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
                       },
                     })
                   }
-                  className="w-full border border-[#2F2723] bg-[#0F0D0C] px-3 py-2 font-['JetBrains_Mono'] text-xs text-[#F7F3EE] outline-none transition-colors focus:border-[#E08E45]"
+                  className="w-full rounded-xl border border-white/[0.08] bg-[#0E0C0B] px-3.5 py-2.5 text-xs text-[#F9F6F0] outline-none transition-all focus:border-amber-500/50"
                 >
-                  <option value="EXCELLENT">EXCELLENT (&lt; 15ms latency)</option>
-                  <option value="GOOD">GOOD (Stable browsing &amp; calls)</option>
-                  <option value="FAIR">FAIR (Occasional jitter)</option>
-                  <option value="POOR">POOR</option>
+                  <option value="EXCELLENT">Excellent (&lt; 15ms latency)</option>
+                  <option value="GOOD">Good (Stable calls &amp; video)</option>
+                  <option value="FAIR">Fair (Occasional jitter)</option>
+                  <option value="POOR">Poor</option>
                 </select>
               </div>
             </div>
 
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
               <div>
-                <label className="block font-['JetBrains_Mono'] text-xs uppercase text-[#9C9289] mb-1">
+                <label className="block text-xs font-medium text-[#A3988E] mb-1.5">
                   Plug Score (Outlets)
                 </label>
                 <select
@@ -246,18 +245,18 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
                       },
                     })
                   }
-                  className="w-full border border-[#2F2723] bg-[#0F0D0C] px-3 py-2 font-['JetBrains_Mono'] text-xs text-[#F7F3EE] outline-none transition-colors focus:border-[#E08E45]"
+                  className="w-full rounded-xl border border-white/[0.08] bg-[#0E0C0B] px-3.5 py-2.5 text-xs text-[#F9F6F0] outline-none transition-all focus:border-amber-500/50"
                 >
-                  <option value="PLENTY">PLENTY (At almost every desk)</option>
-                  <option value="MODERATE">MODERATE (Available at select desks)</option>
-                  <option value="LIMITED">LIMITED (Few wall plugs)</option>
-                  <option value="NONE">NONE</option>
+                  <option value="PLENTY">Plenty (At almost every desk)</option>
+                  <option value="MODERATE">Moderate (Available at select desks)</option>
+                  <option value="LIMITED">Limited (Few wall plugs)</option>
+                  <option value="NONE">None</option>
                 </select>
               </div>
 
               <div>
-                <label className="block font-['JetBrains_Mono'] text-xs uppercase text-[#9C9289] mb-1">
-                  Acoustic Noise Level
+                <label className="block text-xs font-medium text-[#A3988E] mb-1.5">
+                  Acoustic Noise Profile
                 </label>
                 <select
                   value={formData.amenities.noise_level}
@@ -270,23 +269,23 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
                       },
                     })
                   }
-                  className="w-full border border-[#2F2723] bg-[#0F0D0C] px-3 py-2 font-['JetBrains_Mono'] text-xs text-[#F7F3EE] outline-none transition-colors focus:border-[#E08E45]"
+                  className="w-full rounded-xl border border-white/[0.08] bg-[#0E0C0B] px-3.5 py-2.5 text-xs text-[#F9F6F0] outline-none transition-all focus:border-amber-500/50"
                 >
-                  <option value="QUIET">QUIET (Library / Deep Focus)</option>
-                  <option value="MODERATE">MODERATE (Light Cafe Music)</option>
-                  <option value="NOISY">NOISY (High Chatter / Loud Music)</option>
+                  <option value="QUIET">Quiet (Deep Focus Zone)</option>
+                  <option value="MODERATE">Moderate (Light Cafe Music)</option>
+                  <option value="NOISY">Noisy (High Chatter)</option>
                 </select>
               </div>
             </div>
 
             {/* Checkbox Amenities */}
             <div className="pt-2">
-              <label className="block font-['JetBrains_Mono'] text-xs uppercase text-[#9C9289] mb-2">
-                Included Facilities
+              <label className="block text-xs font-medium text-[#A3988E] mb-2">
+                Available Amenities
               </label>
-              <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 font-['JetBrains_Mono'] text-xs">
+              <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3 text-xs">
                 
-                <label className="flex items-center gap-2 border border-[#2F2723] bg-[#0F0D0C] p-2.5 cursor-pointer hover:border-[#E08E45]">
+                <label className="flex items-center gap-2.5 rounded-xl border border-white/[0.08] bg-[#0E0C0B] p-3 cursor-pointer hover:border-amber-500/40 transition-colors">
                   <input
                     type="checkbox"
                     checked={formData.amenities.air_conditioned}
@@ -299,12 +298,12 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
                         },
                       })
                     }
-                    className="accent-[#E08E45]"
+                    className="accent-[#E59850] rounded"
                   />
                   <span>Air Conditioned</span>
                 </label>
 
-                <label className="flex items-center gap-2 border border-[#2F2723] bg-[#0F0D0C] p-2.5 cursor-pointer hover:border-[#E08E45]">
+                <label className="flex items-center gap-2.5 rounded-xl border border-white/[0.08] bg-[#0E0C0B] p-3 cursor-pointer hover:border-amber-500/40 transition-colors">
                   <input
                     type="checkbox"
                     checked={formData.amenities.has_outdoor}
@@ -317,12 +316,12 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
                         },
                       })
                     }
-                    className="accent-[#E08E45]"
+                    className="accent-[#E59850] rounded"
                   />
                   <span>Outdoor Area</span>
                 </label>
 
-                <label className="flex items-center gap-2 border border-[#2F2723] bg-[#0F0D0C] p-2.5 cursor-pointer hover:border-[#E08E45]">
+                <label className="flex items-center gap-2.5 rounded-xl border border-white/[0.08] bg-[#0E0C0B] p-3 cursor-pointer hover:border-amber-500/40 transition-colors">
                   <input
                     type="checkbox"
                     checked={formData.amenities.has_prayer_room}
@@ -335,7 +334,7 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
                         },
                       })
                     }
-                    className="accent-[#E08E45]"
+                    className="accent-[#E59850] rounded"
                   />
                   <span>Prayer Room</span>
                 </label>
@@ -345,21 +344,21 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
           </div>
 
           {/* Submit Action */}
-          <div className="border-t border-[#2F2723] pt-5">
+          <div className="border-t border-white/[0.06] pt-5">
             <button
               type="submit"
               disabled={mutation.isPending}
-              className="flex w-full items-center justify-center gap-2 border border-[#E08E45] bg-[#E08E45] py-3 font-['JetBrains_Mono'] text-xs font-bold uppercase tracking-wider text-[#0F0D0C] transition-all hover:bg-[#F59E0B] brutalist-shadow-black disabled:opacity-50"
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-[#E59850] py-3 text-xs font-semibold text-[#0B0908] transition-all hover:bg-[#F0A560] active:scale-[0.98] disabled:opacity-50"
             >
               {mutation.isPending ? (
                 <>
                   <Loader2 className="h-4 w-4 animate-spin" />
-                  <span>TRANSMITTING TO BACKEND...</span>
+                  <span>Submitting to Directory...</span>
                 </>
               ) : (
                 <>
                   <Plus className="h-4 w-4" />
-                  <span>PUBLISH WORKSPACE TO DIRECTORY</span>
+                  <span>Publish Workspace to Directory</span>
                 </>
               )}
             </button>
@@ -370,4 +369,3 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
     </div>
   );
 }
-

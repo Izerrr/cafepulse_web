@@ -4,7 +4,6 @@ import React from 'react';
 import { Cafe } from '@/types/cafe';
 import {
   Wifi,
-  Zap,
   Plug,
   Volume2,
   Clock,
@@ -12,7 +11,6 @@ import {
   ArrowUpRight,
   Edit2,
   Star,
-  CheckCircle2,
 } from 'lucide-react';
 
 interface CafeCardProps {
@@ -33,22 +31,22 @@ export default function CafeCard({ cafe, onExplore, onEdit }: CafeCardProps) {
     switch (crowd) {
       case 'LOW':
         return {
-          bg: 'bg-emerald-950/40 border-emerald-800/60 text-emerald-400',
+          bg: 'bg-emerald-500/[0.08] border-emerald-500/20 text-emerald-400',
           dot: 'bg-emerald-400',
-          label: 'LOW CROWD (DEEP WORK)',
+          label: 'Low Crowd · Ideal for Focus',
         };
       case 'MODERATE':
         return {
-          bg: 'bg-amber-950/40 border-amber-800/60 text-amber-400',
+          bg: 'bg-amber-500/[0.08] border-amber-500/20 text-amber-400',
           dot: 'bg-amber-400',
-          label: 'MODERATE CROWD',
+          label: 'Moderate Crowd',
         };
       case 'HIGH':
       default:
         return {
-          bg: 'bg-red-950/40 border-red-800/60 text-red-400',
-          dot: 'bg-red-400',
-          label: 'HIGH CROWD (BUSY)',
+          bg: 'bg-rose-500/[0.08] border-rose-500/20 text-rose-400',
+          dot: 'bg-rose-400',
+          label: 'High Density · Social',
         };
     }
   };
@@ -56,15 +54,15 @@ export default function CafeCard({ cafe, onExplore, onEdit }: CafeCardProps) {
   const crowdConfig = getCrowdConfig(cafe.crowd_density);
 
   return (
-    <div className="group relative flex flex-col justify-between border border-[#2F2723] bg-[#161311] p-5 transition-all duration-200 hover:-translate-y-1 hover:border-[#E08E45] hover:shadow-[4px_4px_0px_#E08E45]">
+    <div className="group relative flex flex-col justify-between rounded-2xl border border-white/[0.07] bg-gradient-to-b from-[#161311] to-[#100E0C] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-amber-500/30 hover:shadow-2xl hover:shadow-black/50">
       
       {/* Top Meta Bar */}
       <div>
-        <div className="flex items-center justify-between gap-2 border-b border-[#2F2723]/60 pb-3">
+        <div className="flex items-center justify-between gap-2 border-b border-white/[0.05] pb-3.5">
           
-          {/* Live Crowd Pulse Dot & Badge */}
+          {/* Live Crowd Pulse Badge */}
           <div
-            className={`flex items-center gap-2 border px-2.5 py-1 font-['JetBrains_Mono'] text-[10px] font-bold uppercase tracking-wider ${crowdConfig.bg}`}
+            className={`flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium ${crowdConfig.bg}`}
           >
             <span className="relative flex h-2 w-2">
               <span
@@ -78,121 +76,119 @@ export default function CafeCard({ cafe, onExplore, onEdit }: CafeCardProps) {
           </div>
 
           {/* Opening Hours */}
-          <div className="flex items-center gap-1.5 font-['JetBrains_Mono'] text-xs text-[#9C9289]">
-            <Clock className="h-3.5 w-3.5 text-[#E08E45]" />
+          <div className="flex items-center gap-1.5 text-xs text-[#A3988E]">
+            <Clock className="h-3.5 w-3.5 text-[#E59850]" />
             <span>{cafe.opening_hours || '08:00 - 22:00'}</span>
           </div>
 
         </div>
 
-        {/* Cafe Name & Address */}
+        {/* Cafe Name & Location */}
         <div className="mt-4">
           <div className="flex items-start justify-between gap-2">
-            <h2 className="font-['Syne'] text-2xl font-bold uppercase tracking-tight text-[#F7F3EE] group-hover:text-[#E08E45] transition-colors">
+            <h2 className="text-xl font-bold tracking-tight text-[#F9F6F0] group-hover:text-[#E59850] transition-colors">
               {cafe.name}
             </h2>
-            <div className="flex items-center gap-1 border border-[#2F2723] bg-[#1C1816] px-2 py-0.5 font-['JetBrains_Mono'] text-[11px] text-[#E08E45]">
-              <Star className="h-3 w-3 fill-[#E08E45] text-[#E08E45]" />
+            <div className="flex items-center gap-1 rounded-full border border-amber-500/20 bg-amber-500/[0.08] px-2.5 py-0.5 text-xs font-semibold text-[#E59850]">
+              <Star className="h-3 w-3 fill-[#E59850] text-[#E59850]" />
               <span>5.0</span>
             </div>
           </div>
 
-          <div className="mt-2 flex items-center gap-1.5 font-['JetBrains_Mono'] text-xs text-[#9C9289]">
+          <div className="mt-2 flex items-center gap-1.5 text-xs text-[#A3988E]">
             <MapPin className="h-3.5 w-3.5 shrink-0 text-[#C86237]" />
             <span className="truncate">{cafe.address}</span>
           </div>
         </div>
 
-        {/* Spec Metrics Matrix (Wi-Fi, Plugs, Noise) */}
-        <div className="mt-5 grid grid-cols-3 gap-2 border-y border-[#2F2723]/80 py-3.5">
+        {/* 3 Metric Gauge Boxes */}
+        <div className="mt-5 grid grid-cols-3 gap-2.5 border-y border-white/[0.06] py-3.5">
           
-          {/* Metric 1: Wi-Fi Speed */}
-          <div className="border border-[#2F2723] bg-[#0F0D0C] p-2.5 text-center">
-            <div className="flex items-center justify-center gap-1 font-['JetBrains_Mono'] text-[10px] text-[#9C9289] uppercase">
+          {/* Wi-Fi Speed */}
+          <div className="rounded-xl border border-white/[0.05] bg-[#0E0C0B]/60 p-2.5 text-center">
+            <div className="flex items-center justify-center gap-1 text-[11px] text-[#A3988E]">
               <Wifi className="h-3 w-3 text-blue-400" />
-              <span>WI-FI SPEED</span>
+              <span>Wi-Fi</span>
             </div>
-            <div className="mt-1 font-['Syne'] text-2xl font-extrabold text-[#F7F3EE]">
+            <div className="mt-1 text-xl font-bold tracking-tight text-[#F9F6F0]">
               {wifiSpeed}
-              <span className="ml-0.5 font-['JetBrains_Mono'] text-[10px] font-normal text-blue-400">
-                MBPS
-              </span>
+              <span className="ml-0.5 text-[10px] font-normal text-blue-400">Mbps</span>
             </div>
-            <div className="mt-0.5 font-['JetBrains_Mono'] text-[9px] uppercase tracking-wider text-blue-400">
+            <div className="mt-0.5 text-[10px] font-medium text-blue-400">
               ⚡ {wifiStability}
             </div>
           </div>
 
-          {/* Metric 2: Sockets */}
-          <div className="border border-[#2F2723] bg-[#0F0D0C] p-2.5 text-center">
-            <div className="flex items-center justify-center gap-1 font-['JetBrains_Mono'] text-[10px] text-[#9C9289] uppercase">
-              <Plug className="h-3 w-3 text-[#E08E45]" />
-              <span>SOCKETS</span>
+          {/* Sockets */}
+          <div className="rounded-xl border border-white/[0.05] bg-[#0E0C0B]/60 p-2.5 text-center">
+            <div className="flex items-center justify-center gap-1 text-[11px] text-[#A3988E]">
+              <Plug className="h-3 w-3 text-[#E59850]" />
+              <span>Sockets</span>
             </div>
-            <div className="mt-1 font-['Syne'] text-xl font-bold uppercase text-[#E08E45]">
+            <div className="mt-1 text-base font-bold text-[#E59850]">
               {plugScore}
             </div>
-            <div className="mt-0.5 font-['JetBrains_Mono'] text-[9px] uppercase text-[#9C9289]">
-              {plugScore === 'PLENTY' ? 'EVERY DESK' : 'LIMITED'}
+            <div className="mt-0.5 text-[10px] text-[#A3988E]">
+              {plugScore === 'PLENTY' ? 'At each desk' : 'Select areas'}
             </div>
           </div>
 
-          {/* Metric 3: Noise Level */}
-          <div className="border border-[#2F2723] bg-[#0F0D0C] p-2.5 text-center">
-            <div className="flex items-center justify-center gap-1 font-['JetBrains_Mono'] text-[10px] text-[#9C9289] uppercase">
+          {/* Acoustics */}
+          <div className="rounded-xl border border-white/[0.05] bg-[#0E0C0B]/60 p-2.5 text-center">
+            <div className="flex items-center justify-center gap-1 text-[11px] text-[#A3988E]">
               <Volume2 className="h-3 w-3 text-emerald-400" />
-              <span>ACOUSTICS</span>
+              <span>Noise</span>
             </div>
-            <div className="mt-1 font-['Syne'] text-xl font-bold uppercase text-emerald-400">
+            <div className="mt-1 text-base font-bold text-emerald-400">
               {noiseLevel}
             </div>
-            <div className="mt-0.5 font-['JetBrains_Mono'] text-[9px] uppercase text-[#9C9289]">
-              {noiseLevel === 'QUIET' ? 'FOCUS ZONE' : 'AMBIENT CHAT'}
+            <div className="mt-0.5 text-[10px] text-[#A3988E]">
+              {noiseLevel === 'QUIET' ? 'Deep focus' : 'Cafe music'}
             </div>
           </div>
 
         </div>
 
         {/* Amenities Micro-Badges */}
-        <div className="mt-4 flex flex-wrap items-center gap-1.5 font-['JetBrains_Mono'] text-[11px]">
+        <div className="mt-4 flex flex-wrap items-center gap-1.5 text-xs">
           {amenities?.air_conditioned && (
-            <span className="border border-[#2F2723] bg-[#1C1816] px-2 py-0.5 text-[#D8D0C7]">
-              ❄️ AIR CONDITIONED
+            <span className="rounded-full border border-white/[0.06] bg-white/[0.02] px-2.5 py-0.5 text-[#D5CCC2]">
+              ❄️ AC
             </span>
           )}
           {amenities?.has_outdoor && (
-            <span className="border border-[#2F2723] bg-[#1C1816] px-2 py-0.5 text-[#D8D0C7]">
-              🌿 OUTDOOR AREA
+            <span className="rounded-full border border-white/[0.06] bg-white/[0.02] px-2.5 py-0.5 text-[#D5CCC2]">
+              🌿 Outdoor
             </span>
           )}
           {amenities?.has_prayer_room && (
-            <span className="border border-[#2F2723] bg-[#1C1816] px-2 py-0.5 text-[#D8D0C7]">
-              🕌 PRAYER ROOM
+            <span className="rounded-full border border-white/[0.06] bg-white/[0.02] px-2.5 py-0.5 text-[#D5CCC2]">
+              🕌 Mushola
             </span>
           )}
-          <span className="border border-[#2F2723] bg-[#1C1816] px-2 py-0.5 text-[#9C9289]">
-            💬 {cafe.total_reviews} {cafe.total_reviews === 1 ? 'REVIEW' : 'REVIEWS'}
+          <span className="rounded-full border border-white/[0.06] bg-white/[0.02] px-2.5 py-0.5 text-[#A3988E]">
+            💬 {cafe.total_reviews} {cafe.total_reviews === 1 ? 'review' : 'reviews'}
           </span>
         </div>
       </div>
 
       {/* Action Footer */}
-      <div className="mt-6 flex items-center gap-2 border-t border-[#2F2723]/60 pt-4">
+      <div className="mt-6 flex items-center gap-2 border-t border-white/[0.06] pt-4">
         
         {/* Explore Button */}
         <button
           onClick={() => onExplore(cafe)}
-          className="group/btn flex flex-1 items-center justify-center gap-2 border border-[#E08E45] bg-[#E08E45] py-2.5 font-['JetBrains_Mono'] text-xs font-bold uppercase tracking-wider text-[#0F0D0C] transition-all hover:bg-[#F59E0B] active:translate-x-0.5 active:translate-y-0.5"
+          className="group/btn flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#E59850] py-2.5 text-xs font-semibold text-[#0B0908] transition-all hover:bg-[#F0A560] active:scale-[0.98]"
         >
-          <span>EXPLORE SPACE &amp; REVIEWS</span>
+          <span>Explore Details</span>
           <ArrowUpRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
         </button>
 
-        {/* Quick Edit Specs */}
+        {/* Edit Button */}
         <button
           onClick={() => onEdit(cafe)}
-          title="Edit space amenities"
-          className="flex h-10 w-10 items-center justify-center border border-[#2F2723] bg-[#1C1816] text-[#9C9289] transition-colors hover:border-[#E08E45] hover:text-[#E08E45]"
+          title="Edit space specs"
+          className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.02] text-[#A3988E] transition-colors hover:border-amber-500/40 hover:text-[#E59850]"
         >
           <Edit2 className="h-4 w-4" />
         </button>
@@ -202,4 +198,3 @@ export default function CafeCard({ cafe, onExplore, onEdit }: CafeCardProps) {
     </div>
   );
 }
-

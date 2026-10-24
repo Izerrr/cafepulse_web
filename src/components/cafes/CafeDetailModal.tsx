@@ -11,12 +11,9 @@ import {
   Wifi,
   Plug,
   Volume2,
-  Navigation,
   Share2,
   Edit2,
   Star,
-  CheckCircle2,
-  AlertCircle,
   ExternalLink,
 } from 'lucide-react';
 
@@ -31,7 +28,6 @@ export default function CafeDetailModal({
   onClose,
   onEdit,
 }: CafeDetailModalProps) {
-  // Lock body scroll while modal is open
   useEffect(() => {
     if (cafe) {
       document.body.style.overflow = 'hidden';
@@ -46,8 +42,7 @@ export default function CafeDetailModal({
     }
   }, [cafe, onClose]);
 
-  // Fetch full details including reviews
-  const { data: detailData, isLoading } = useQuery({
+  const { data: detailData } = useQuery({
     queryKey: ['cafe-detail', cafe?.id],
     queryFn: () => (cafe ? api.getCafeById(cafe.id) : null),
     enabled: !!cafe,
@@ -78,20 +73,20 @@ export default function CafeDetailModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-[#0F0D0C]/80 backdrop-blur-md transition-opacity"
+        className="fixed inset-0 bg-[#0B0908]/80 backdrop-blur-md transition-opacity"
         onClick={onClose}
       />
 
-      {/* Modal Dialog Container */}
-      <div className="relative z-10 flex max-h-[92vh] w-full max-w-3xl flex-col border border-[#E08E45] bg-[#161311] brutalist-shadow-amber shadow-2xl overflow-hidden">
+      {/* Modal Container */}
+      <div className="relative z-10 flex max-h-[90vh] w-full max-w-3xl flex-col rounded-3xl border border-white/[0.09] bg-[#14110F] shadow-2xl overflow-hidden">
         
         {/* Top Control Bar */}
-        <div className="flex items-center justify-between border-b border-[#2F2723] bg-[#0F0D0C] px-5 py-3.5">
-          <div className="flex items-center gap-2 font-['JetBrains_Mono'] text-xs text-[#9C9289]">
-            <span className="border border-[#2F2723] bg-[#1C1816] px-2 py-0.5 font-bold text-[#E08E45]">
-              [NODE #{currentCafe.id}]
+        <div className="flex items-center justify-between border-b border-white/[0.06] bg-[#0E0C0B] px-6 py-4">
+          <div className="flex items-center gap-2 text-xs text-[#A3988E]">
+            <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-2.5 py-0.5 text-xs font-semibold text-[#E59850]">
+              Space #{currentCafe.id}
             </span>
-            <span className="hidden sm:inline">WORKSPACE VERIFICATION SHEET</span>
+            <span className="hidden sm:inline">Workspace Audit Sheet</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -100,236 +95,231 @@ export default function CafeDetailModal({
                 onClose();
                 onEdit(currentCafe);
               }}
-              className="flex items-center gap-1.5 border border-[#2F2723] bg-[#1C1816] px-2.5 py-1 font-['JetBrains_Mono'] text-xs text-[#F7F3EE] transition-colors hover:border-[#E08E45] hover:text-[#E08E45]"
+              className="flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-xs text-[#F9F6F0] transition-colors hover:border-amber-500/40 hover:text-[#E59850]"
             >
               <Edit2 className="h-3.5 w-3.5" />
-              <span>EDIT</span>
+              <span>Edit</span>
             </button>
 
             <button
               onClick={handleShare}
-              className="flex items-center gap-1.5 border border-[#2F2723] bg-[#1C1816] px-2.5 py-1 font-['JetBrains_Mono'] text-xs text-[#F7F3EE] transition-colors hover:border-[#E08E45] hover:text-[#E08E45]"
+              className="flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-xs text-[#F9F6F0] transition-colors hover:border-amber-500/40 hover:text-[#E59850]"
             >
               <Share2 className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">SHARE</span>
+              <span className="hidden sm:inline">Share</span>
             </button>
 
             <button
               onClick={onClose}
-              className="flex h-7 w-7 items-center justify-center border border-[#2F2723] bg-[#1C1816] text-[#9C9289] transition-colors hover:border-red-500 hover:text-red-400"
+              className="flex h-7 w-7 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.03] text-[#A3988E] transition-colors hover:border-red-500/40 hover:text-red-400"
             >
               <X className="h-4 w-4" />
             </button>
           </div>
         </div>
 
-        {/* Modal Scrollable Content */}
-        <div className="overflow-y-auto p-5 sm:p-7 space-y-6">
+        {/* Scrollable Content */}
+        <div className="overflow-y-auto p-6 sm:p-8 space-y-6">
           
-          {/* Header Banner */}
-          <div className="relative border border-[#2F2723] bg-[#1C1816] p-5 sm:p-6">
+          {/* Header Card */}
+          <div className="rounded-2xl border border-white/[0.07] bg-gradient-to-b from-white/[0.03] to-transparent p-6">
             <div className="flex flex-wrap items-center justify-between gap-3">
               <div>
-                <span className="font-['JetBrains_Mono'] text-[11px] font-bold uppercase tracking-wider text-[#E08E45]">
-                  SURAKARTA WORKSPACE INDEX
+                <span className="text-xs font-medium text-[#E59850]">
+                  Surakarta Workspace Directory
                 </span>
-                <h1 className="mt-1 font-['Syne'] text-3xl font-extrabold uppercase tracking-tight text-[#F7F3EE] sm:text-4xl">
+                <h1 className="mt-1 text-2xl sm:text-3xl font-bold tracking-tight text-[#F9F6F0]">
                   {currentCafe.name}
                 </h1>
               </div>
 
               {/* Crowd Density Badge */}
-              <div className="border border-[#2F2723] bg-[#0F0D0C] px-3 py-1.5 font-['JetBrains_Mono'] text-xs">
-                <span className="text-[#9C9289] uppercase">CURRENT CROWD: </span>
-                <span className="font-bold text-[#10B981]">
-                  {currentCafe.crowd_density === 'LOW' && '🟢 LOW DENSITY'}
-                  {currentCafe.crowd_density === 'MODERATE' && '🟡 MODERATE DENSITY'}
-                  {currentCafe.crowd_density === 'HIGH' && '🔴 HIGH DENSITY'}
-                </span>
+              <div className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3.5 py-1 text-xs font-medium text-emerald-400">
+                {currentCafe.crowd_density === 'LOW' && '🟢 Low Density · Focus Ready'}
+                {currentCafe.crowd_density === 'MODERATE' && '🟡 Moderate Density'}
+                {currentCafe.crowd_density === 'HIGH' && '🔴 High Density'}
               </div>
             </div>
 
             {/* Address & Hours */}
-            <div className="mt-4 grid grid-cols-1 gap-2 border-t border-[#2F2723] pt-4 font-['JetBrains_Mono'] text-xs text-[#D8D0C7] sm:grid-cols-2">
+            <div className="mt-4 grid grid-cols-1 gap-2 border-t border-white/[0.06] pt-4 text-xs text-[#D5CCC2] sm:grid-cols-2">
               <div className="flex items-center gap-2">
                 <MapPin className="h-4 w-4 shrink-0 text-[#C86237]" />
                 <span>{currentCafe.address}</span>
               </div>
               <div className="flex items-center gap-2 sm:justify-end">
-                <Clock className="h-4 w-4 shrink-0 text-[#E08E45]" />
-                <span>HOURS: {currentCafe.opening_hours || '08:00 - 22:00'}</span>
+                <Clock className="h-4 w-4 shrink-0 text-[#E59850]" />
+                <span>Hours: {currentCafe.opening_hours || '08:00 - 22:00'}</span>
               </div>
             </div>
 
-            {/* Maps Launch Button */}
-            <div className="mt-4 flex items-center justify-between border-t border-[#2F2723] pt-3">
-              <span className="font-['JetBrains_Mono'] text-[11px] text-[#9C9289]">
-                GEO: {currentCafe.latitude?.toFixed(4)}, {currentCafe.longitude?.toFixed(4)}
+            {/* Map Link */}
+            <div className="mt-4 flex items-center justify-between border-t border-white/[0.06] pt-3">
+              <span className="text-xs text-[#A3988E]">
+                Coordinates: {currentCafe.latitude?.toFixed(4)}, {currentCafe.longitude?.toFixed(4)}
               </span>
               <a
                 href={mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 font-['JetBrains_Mono'] text-xs font-bold text-[#E08E45] hover:underline"
+                className="flex items-center gap-1.5 text-xs font-semibold text-[#E59850] hover:underline"
               >
-                <span>OPEN IN GOOGLE MAPS</span>
+                <span>Open in Google Maps</span>
                 <ExternalLink className="h-3.5 w-3.5" />
               </a>
             </div>
           </div>
 
-          {/* Deep Spec Telemetry Grid */}
+          {/* Metric Telemetry Cards */}
           <div>
-            <h3 className="font-['Syne'] text-lg font-bold uppercase tracking-wider text-[#F7F3EE] mb-3">
-              HARDWARE &amp; AMBIENT METRICS
+            <h3 className="text-sm font-semibold text-[#F9F6F0] mb-3">
+              Hardware &amp; Ambient Telemetry
             </h3>
             
             <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               
-              {/* Wi-Fi Speed Card */}
-              <div className="border border-[#2F2723] bg-[#141110] p-4">
-                <div className="flex items-center justify-between text-[#9C9289]">
-                  <span className="font-['JetBrains_Mono'] text-[11px] uppercase">WI-FI THROUGHPUT</span>
+              {/* Wi-Fi */}
+              <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4">
+                <div className="flex items-center justify-between text-[#A3988E]">
+                  <span className="text-xs">Wi-Fi Throughput</span>
                   <Wifi className="h-4 w-4 text-blue-400" />
                 </div>
-                <div className="mt-2 font-['Syne'] text-3xl font-extrabold text-[#F7F3EE]">
+                <div className="mt-2 text-2xl font-bold tracking-tight text-[#F9F6F0]">
                   {amenities?.wifi_speed_mbps || 0}
-                  <span className="ml-1 font-['JetBrains_Mono'] text-xs font-normal text-blue-400">
-                    MBPS
-                  </span>
+                  <span className="ml-1 text-xs font-normal text-blue-400">Mbps</span>
                 </div>
-                <div className="mt-1 font-['JetBrains_Mono'] text-[11px] text-[#9C9289]">
-                  Stability: <span className="font-bold text-blue-400">{amenities?.wifi_stability || 'FAIR'}</span>
+                <div className="mt-1 text-xs text-[#A3988E]">
+                  Stability: <span className="font-semibold text-blue-400">{amenities?.wifi_stability || 'FAIR'}</span>
                 </div>
               </div>
 
-              {/* Power Socket Card */}
-              <div className="border border-[#2F2723] bg-[#141110] p-4">
-                <div className="flex items-center justify-between text-[#9C9289]">
-                  <span className="font-['JetBrains_Mono'] text-[11px] uppercase">POWER OUTLETS</span>
-                  <Plug className="h-4 w-4 text-[#E08E45]" />
+              {/* Sockets */}
+              <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4">
+                <div className="flex items-center justify-between text-[#A3988E]">
+                  <span className="text-xs">Power Sockets</span>
+                  <Plug className="h-4 w-4 text-[#E59850]" />
                 </div>
-                <div className="mt-2 font-['Syne'] text-3xl font-extrabold text-[#E08E45]">
+                <div className="mt-2 text-2xl font-bold tracking-tight text-[#E59850]">
                   {amenities?.plug_score || 'MODERATE'}
                 </div>
-                <div className="mt-1 font-['JetBrains_Mono'] text-[11px] text-[#9C9289]">
-                  {amenities?.plug_score === 'PLENTY' ? 'Outlets at every seat' : 'Available at select tables'}
+                <div className="mt-1 text-xs text-[#A3988E]">
+                  {amenities?.plug_score === 'PLENTY' ? 'Sockets at every desk' : 'Select work tables'}
                 </div>
               </div>
 
-              {/* Noise Level Card */}
-              <div className="border border-[#2F2723] bg-[#141110] p-4">
-                <div className="flex items-center justify-between text-[#9C9289]">
-                  <span className="font-['JetBrains_Mono'] text-[11px] uppercase">AMBIENT SOUND</span>
+              {/* Noise */}
+              <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4">
+                <div className="flex items-center justify-between text-[#A3988E]">
+                  <span className="text-xs">Acoustic Profile</span>
                   <Volume2 className="h-4 w-4 text-emerald-400" />
                 </div>
-                <div className="mt-2 font-['Syne'] text-3xl font-extrabold text-emerald-400">
+                <div className="mt-2 text-2xl font-bold tracking-tight text-emerald-400">
                   {amenities?.noise_level || 'QUIET'}
                 </div>
-                <div className="mt-1 font-['JetBrains_Mono'] text-[11px] text-[#9C9289]">
-                  {amenities?.noise_level === 'QUIET' ? 'Ideal for video calls & deep focus' : 'Lively cafe atmosphere'}
+                <div className="mt-1 text-xs text-[#A3988E]">
+                  {amenities?.noise_level === 'QUIET' ? 'Ideal for video calls' : 'Ambient cafe chatter'}
                 </div>
               </div>
 
             </div>
           </div>
 
-          {/* Facility Checklist */}
+          {/* Facilities Checklist */}
           <div>
-            <h3 className="font-['Syne'] text-lg font-bold uppercase tracking-wider text-[#F7F3EE] mb-3">
-              FACILITY CHECKLIST
+            <h3 className="text-sm font-semibold text-[#F9F6F0] mb-3">
+              Facility Checklist
             </h3>
             
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 font-['JetBrains_Mono'] text-xs">
+            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3 text-xs">
               <div
-                className={`flex items-center gap-2.5 border p-3 ${
+                className={`flex items-center gap-2.5 rounded-xl border p-3 ${
                   amenities?.air_conditioned
-                    ? 'border-[#2F2723] bg-[#161311] text-[#F7F3EE]'
-                    : 'border-[#2F2723]/40 bg-[#0F0D0C] text-[#574B43]'
+                    ? 'border-white/[0.08] bg-white/[0.02] text-[#F9F6F0]'
+                    : 'border-white/[0.04] bg-transparent text-[#6B6158]'
                 }`}
               >
-                <span className="text-base">❄️</span>
+                <span>❄️</span>
                 <span>Air Conditioned Area</span>
               </div>
 
               <div
-                className={`flex items-center gap-2.5 border p-3 ${
+                className={`flex items-center gap-2.5 rounded-xl border p-3 ${
                   amenities?.has_outdoor
-                    ? 'border-[#2F2723] bg-[#161311] text-[#F7F3EE]'
-                    : 'border-[#2F2723]/40 bg-[#0F0D0C] text-[#574B43]'
+                    ? 'border-white/[0.08] bg-white/[0.02] text-[#F9F6F0]'
+                    : 'border-white/[0.04] bg-transparent text-[#6B6158]'
                 }`}
               >
-                <span className="text-base">🌿</span>
-                <span>Outdoor / Smoking Space</span>
+                <span>🌿</span>
+                <span>Outdoor Workspace</span>
               </div>
 
               <div
-                className={`flex items-center gap-2.5 border p-3 ${
+                className={`flex items-center gap-2.5 rounded-xl border p-3 ${
                   amenities?.has_prayer_room
-                    ? 'border-[#2F2723] bg-[#161311] text-[#F7F3EE]'
-                    : 'border-[#2F2723]/40 bg-[#0F0D0C] text-[#574B43]'
+                    ? 'border-white/[0.08] bg-white/[0.02] text-[#F9F6F0]'
+                    : 'border-white/[0.04] bg-transparent text-[#6B6158]'
                 }`}
               >
-                <span className="text-base">🕌</span>
+                <span>🕌</span>
                 <span>Mushola / Prayer Room</span>
               </div>
             </div>
           </div>
 
           {/* Community Reviews Section */}
-          <div className="border-t border-[#2F2723] pt-5">
+          <div className="border-t border-white/[0.06] pt-5">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="font-['Syne'] text-lg font-bold uppercase tracking-wider text-[#F7F3EE]">
-                COMMUNITY REVIEWS &amp; VERIFICATION ({reviews.length})
+              <h3 className="text-sm font-semibold text-[#F9F6F0]">
+                Community Reviews ({reviews.length})
               </h3>
-              <div className="flex items-center gap-1 font-['JetBrains_Mono'] text-xs text-[#E08E45]">
-                <Star className="h-4 w-4 fill-[#E08E45]" />
-                <span className="font-bold">5.0 / 5.0</span>
+              <div className="flex items-center gap-1 text-xs text-[#E59850]">
+                <Star className="h-3.5 w-3.5 fill-[#E59850]" />
+                <span className="font-semibold">5.0 / 5.0</span>
               </div>
             </div>
 
             {reviews.length === 0 ? (
-              <div className="border border-[#2F2723] bg-[#141110] p-6 text-center font-['JetBrains_Mono'] text-xs text-[#9C9289]">
+              <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-6 text-center text-xs text-[#A3988E]">
                 <p>No community reviews recorded yet.</p>
-                <p className="mt-1 text-[#574B43]">Be the first remote worker to submit a verification review.</p>
+                <p className="mt-1 text-[#6B6158]">Be the first remote worker to submit an audit review.</p>
               </div>
             ) : (
               <div className="space-y-3">
                 {reviews.map((rev) => (
                   <div
                     key={rev.id}
-                    className="border border-[#2F2723] bg-[#141110] p-4 transition-colors hover:border-[#E08E45]/40"
+                    className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4 transition-colors hover:border-amber-500/30"
                   >
-                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#2F2723]/60 pb-2.5 font-['JetBrains_Mono'] text-xs">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.05] pb-2 text-xs">
                       <div className="flex items-center gap-2">
-                        <span className="font-bold text-[#F7F3EE]">CONTRIBUTOR #{rev.user_id || rev.id}</span>
-                        <div className="flex text-[#E08E45]">
+                        <span className="font-semibold text-[#F9F6F0]">Contributor #{rev.user_id || rev.id}</span>
+                        <div className="flex text-[#E59850]">
                           {Array.from({ length: rev.rating || 5 }).map((_, i) => (
-                            <Star key={i} className="h-3 w-3 fill-[#E08E45]" />
+                            <Star key={i} className="h-3 w-3 fill-[#E59850]" />
                           ))}
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 text-[11px] text-[#9C9289]">
+                      <div className="flex items-center gap-2 text-[11px] text-[#A3988E]">
                         {rev.verified_wifi_speed && (
-                          <span className="border border-blue-900/40 bg-blue-950/20 px-1.5 py-0.5 text-blue-400">
-                            ⚡ {rev.verified_wifi_speed} MBPS
+                          <span className="rounded-full bg-blue-500/10 px-2 py-0.5 text-blue-400">
+                            ⚡ {rev.verified_wifi_speed} Mbps
                           </span>
                         )}
                         {rev.verified_crowd && (
-                          <span className="border border-emerald-900/40 bg-emerald-950/20 px-1.5 py-0.5 text-emerald-400">
-                            CROWD: {rev.verified_crowd}
+                          <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-emerald-400">
+                            Crowd: {rev.verified_crowd}
                           </span>
                         )}
                       </div>
                     </div>
 
-                    <p className="mt-3 font-['Inter'] text-sm leading-relaxed text-[#D8D0C7]">
+                    <p className="mt-3 text-sm leading-relaxed text-[#D5CCC2]">
                       &ldquo;{rev.comment}&rdquo;
                     </p>
 
-                    <div className="mt-2 text-right font-['JetBrains_Mono'] text-[10px] text-[#574B43]">
-                      AUDITED: {rev.created_at ? rev.created_at.slice(0, 10) : '2026-10-04'}
+                    <div className="mt-2 text-right text-[11px] text-[#6B6158]">
+                      Audited: {rev.created_at ? rev.created_at.slice(0, 10) : '2026-10-04'}
                     </div>
                   </div>
                 ))}

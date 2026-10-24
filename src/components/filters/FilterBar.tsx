@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Search, X, SlidersHorizontal, RotateCcw, Check } from 'lucide-react';
+import { Search, X, RotateCcw } from 'lucide-react';
 import { CrowdDensity, NoiseLevel, PlugScore } from '@/types/cafe';
 
 export interface FilterState {
@@ -39,47 +39,47 @@ export default function FilterBar({
     filters.prayerRoomOnly;
 
   return (
-    <div className="border-b border-[#2F2723] bg-[#141110]/95 p-4 sm:p-6">
+    <div className="border-b border-white/[0.06] bg-[#0E0C0B]/80 backdrop-blur-md p-4 sm:p-6">
       <div className="mx-auto max-w-7xl">
         
         {/* Top Search Input & Count Header */}
-        <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+        <div className="flex flex-col gap-3.5 md:flex-row md:items-center md:justify-between">
           
-          {/* Brutalist Search Bar */}
+          {/* Sleek Search Input */}
           <div className="relative flex-1 max-w-xl">
-            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#9C9289]" />
+            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#A3988E]" />
             <input
               type="text"
               value={filters.search}
               onChange={(e) =>
                 onChange((prev) => ({ ...prev, search: e.target.value }))
               }
-              placeholder="SEARCH BY CAFE NAME OR ADDRESS (E.G. SLAMET RIYADI, JEBRES)..."
-              className="w-full border border-[#2F2723] bg-[#0F0D0C] py-2.5 pl-10 pr-10 font-['JetBrains_Mono'] text-xs text-[#F7F3EE] placeholder-[#574B43] outline-none transition-colors focus:border-[#E08E45]"
+              placeholder="Search by cafe name or area (e.g. Slamet Riyadi, Jebres)..."
+              className="w-full rounded-xl border border-white/[0.08] bg-[#14110F] py-2.5 pl-10 pr-10 text-xs text-[#F9F6F0] placeholder-[#6B6158] outline-none transition-all focus:border-amber-500/50 focus:ring-1 focus:ring-amber-500/30"
             />
             {filters.search && (
               <button
                 onClick={() => onChange((prev) => ({ ...prev, search: '' }))}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#9C9289] hover:text-[#F7F3EE]"
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#A3988E] hover:text-[#F9F6F0]"
               >
                 <X className="h-4 w-4" />
               </button>
             )}
           </div>
 
-          {/* Results Badge & Reset Button */}
+          {/* Results Badge & Reset */}
           <div className="flex items-center justify-between gap-3 sm:justify-end">
-            <div className="border border-[#2F2723] bg-[#1C1816] px-3 py-2 font-['JetBrains_Mono'] text-xs font-bold text-[#E08E45]">
-              [{totalResults} {totalResults === 1 ? 'SPACE' : 'SPACES'} MATCHED]
+            <div className="rounded-full border border-amber-500/20 bg-amber-500/[0.07] px-3.5 py-1 text-xs font-medium text-[#E59850]">
+              {totalResults} {totalResults === 1 ? 'space found' : 'spaces found'}
             </div>
 
             {isFiltered && (
               <button
                 onClick={onReset}
-                className="flex items-center gap-1.5 border border-[#2F2723] bg-[#161311] px-3 py-2 font-['JetBrains_Mono'] text-xs text-[#9C9289] transition-colors hover:border-[#E08E45] hover:text-[#F7F3EE]"
+                className="flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.02] px-3 py-1 text-xs text-[#A3988E] transition-colors hover:border-amber-500/30 hover:text-[#F9F6F0]"
               >
-                <RotateCcw className="h-3.5 w-3.5" />
-                <span>RESET</span>
+                <RotateCcw className="h-3 w-3" />
+                <span>Reset</span>
               </button>
             )}
           </div>
@@ -87,11 +87,10 @@ export default function FilterBar({
         </div>
 
         {/* Filter Chips Bar */}
-        <div className="mt-4 flex flex-wrap items-center gap-2 pt-3 border-t border-[#2F2723]/60 font-['JetBrains_Mono'] text-xs">
+        <div className="mt-4 flex flex-wrap items-center gap-2 pt-3 border-t border-white/[0.05] text-xs">
           
-          {/* Crowd Density Filter */}
-          <span className="text-[#9C9289] uppercase text-[11px] font-bold mr-1">
-            CROWD:
+          <span className="text-[#A3988E] text-[11px] font-medium mr-1">
+            Crowd:
           </span>
           {(['ALL', 'LOW', 'MODERATE'] as const).map((density) => {
             const isActive = filters.crowdDensity === density;
@@ -101,29 +100,29 @@ export default function FilterBar({
                 onClick={() =>
                   onChange((prev) => ({ ...prev, crowdDensity: density }))
                 }
-                className={`border px-2.5 py-1 transition-all ${
+                className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
                   isActive
-                    ? 'border-[#E08E45] bg-[#E08E45] font-bold text-[#0F0D0C]'
-                    : 'border-[#2F2723] bg-[#161311] text-[#D8D0C7] hover:border-[#574B43]'
+                    ? 'bg-[#E59850] text-[#0B0908] font-semibold'
+                    : 'border border-white/[0.08] bg-white/[0.02] text-[#D5CCC2] hover:border-white/20'
                 }`}
               >
-                {density === 'LOW' && '🟢 '}
-                {density === 'MODERATE' && '🟡 '}
-                {density}
+                {density === 'LOW' && '🟢 Low'}
+                {density === 'MODERATE' && '🟡 Moderate'}
+                {density === 'ALL' && 'All'}
               </button>
             );
           })}
 
-          <div className="h-4 w-[1px] bg-[#2F2723] mx-1 hidden sm:block" />
+          <div className="h-3.5 w-[1px] bg-white/[0.08] mx-1 hidden sm:block" />
 
           {/* Wi-Fi Thresholds */}
-          <span className="text-[#9C9289] uppercase text-[11px] font-bold mr-1">
-            WI-FI:
+          <span className="text-[#A3988E] text-[11px] font-medium mr-1">
+            Wi-Fi:
           </span>
           {[
-            { label: 'ANY SPEED', val: 0 },
-            { label: '⚡ > 50 MBPS', val: 50 },
-            { label: '🚀 > 80 MBPS', val: 80 },
+            { label: 'Any', val: 0 },
+            { label: '⚡ > 50 Mbps', val: 50 },
+            { label: '🚀 > 80 Mbps', val: 80 },
           ].map((item) => {
             const isActive = filters.minWifiSpeed === item.val;
             return (
@@ -132,10 +131,10 @@ export default function FilterBar({
                 onClick={() =>
                   onChange((prev) => ({ ...prev, minWifiSpeed: item.val }))
                 }
-                className={`border px-2.5 py-1 transition-all ${
+                className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
                   isActive
-                    ? 'border-blue-500 bg-blue-500 font-bold text-white'
-                    : 'border-[#2F2723] bg-[#161311] text-[#D8D0C7] hover:border-[#574B43]'
+                    ? 'bg-blue-500 text-white font-semibold shadow-sm'
+                    : 'border border-white/[0.08] bg-white/[0.02] text-[#D5CCC2] hover:border-white/20'
                 }`}
               >
                 {item.label}
@@ -143,12 +142,9 @@ export default function FilterBar({
             );
           })}
 
-          <div className="h-4 w-[1px] bg-[#2F2723] mx-1 hidden sm:block" />
+          <div className="h-3.5 w-[1px] bg-white/[0.08] mx-1 hidden sm:block" />
 
-          {/* Socket Availability */}
-          <span className="text-[#9C9289] uppercase text-[11px] font-bold mr-1">
-            SOCKETS:
-          </span>
+          {/* Sockets */}
           <button
             onClick={() =>
               onChange((prev) => ({
@@ -156,16 +152,16 @@ export default function FilterBar({
                 plugScore: prev.plugScore === 'PLENTY' ? 'ALL' : 'PLENTY',
               }))
             }
-            className={`border px-2.5 py-1 transition-all ${
+            className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
               filters.plugScore === 'PLENTY'
-                ? 'border-[#E08E45] bg-[#E08E45] font-bold text-[#0F0D0C]'
-                : 'border-[#2F2723] bg-[#161311] text-[#D8D0C7] hover:border-[#574B43]'
+                ? 'bg-[#E59850] text-[#0B0908] font-semibold'
+                : 'border border-white/[0.08] bg-white/[0.02] text-[#D5CCC2] hover:border-white/20'
             }`}
           >
-            🔌 PLENTY ONLY
+            🔌 Plenty Sockets
           </button>
 
-          {/* Noise level filter */}
+          {/* Quiet Zone */}
           <button
             onClick={() =>
               onChange((prev) => ({
@@ -173,24 +169,24 @@ export default function FilterBar({
                 noiseLevel: prev.noiseLevel === 'QUIET' ? 'ALL' : 'QUIET',
               }))
             }
-            className={`border px-2.5 py-1 transition-all ${
+            className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
               filters.noiseLevel === 'QUIET'
-                ? 'border-emerald-500 bg-emerald-500 font-bold text-[#0F0D0C]'
-                : 'border-[#2F2723] bg-[#161311] text-[#D8D0C7] hover:border-[#574B43]'
+                ? 'bg-emerald-500 text-[#0B0908] font-semibold'
+                : 'border border-white/[0.08] bg-white/[0.02] text-[#D5CCC2] hover:border-white/20'
             }`}
           >
-            🔇 QUIET ONLY
+            🔇 Quiet Zone
           </button>
 
-          {/* AC / Outdoor / Prayer room amenities */}
+          {/* Amenities toggles */}
           <button
             onClick={() =>
               onChange((prev) => ({ ...prev, acOnly: !prev.acOnly }))
             }
-            className={`border px-2.5 py-1 transition-all ${
+            className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
               filters.acOnly
-                ? 'border-[#E08E45] bg-[#1C1816] text-[#E08E45] font-bold'
-                : 'border-[#2F2723] bg-[#161311] text-[#9C9289] hover:border-[#574B43]'
+                ? 'border border-amber-500/50 bg-amber-500/10 text-[#E59850] font-semibold'
+                : 'border border-white/[0.08] bg-white/[0.02] text-[#A3988E] hover:border-white/20'
             }`}
           >
             ❄️ AC
@@ -200,13 +196,13 @@ export default function FilterBar({
             onClick={() =>
               onChange((prev) => ({ ...prev, prayerRoomOnly: !prev.prayerRoomOnly }))
             }
-            className={`border px-2.5 py-1 transition-all ${
+            className={`rounded-full px-3 py-1 text-xs font-medium transition-all ${
               filters.prayerRoomOnly
-                ? 'border-[#E08E45] bg-[#1C1816] text-[#E08E45] font-bold'
-                : 'border-[#2F2723] bg-[#161311] text-[#9C9289] hover:border-[#574B43]'
+                ? 'border border-amber-500/50 bg-amber-500/10 text-[#E59850] font-semibold'
+                : 'border border-white/[0.08] bg-white/[0.02] text-[#A3988E] hover:border-white/20'
             }`}
           >
-            🕌 MUSHOLA
+            🕌 Mushola
           </button>
 
         </div>
@@ -215,4 +211,3 @@ export default function FilterBar({
     </div>
   );
 }
-
