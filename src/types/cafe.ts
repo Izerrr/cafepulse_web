@@ -92,3 +92,4 @@ export interface UpdateCafeInput {
   is_active?: boolean;
   amenities?: Partial<CafeAmenities>;
 }
+

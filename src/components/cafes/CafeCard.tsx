@@ -202,3 +202,4 @@ export default function CafeCard({ cafe, onExplore, onEdit }: CafeCardProps) {
     </div>
   );
 }
+

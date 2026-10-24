@@ -292,3 +292,4 @@ export default function EditCafeModal({ cafe, onClose }: EditCafeModalProps) {
     </div>
   );
 }
+

@@ -134,3 +134,4 @@ export default function HeroSection({ onScrollToExplore, totalCafes = 2 }: HeroS
     </section>
   );
 }
+

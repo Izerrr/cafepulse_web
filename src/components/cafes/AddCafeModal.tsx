@@ -370,3 +370,4 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
     </div>
   );
 }
+
