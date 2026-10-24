@@ -57,3 +57,4 @@ export function useBookmarks() {
     totalBookmarks: bookmarkedIds.length,
   };
 }
+
