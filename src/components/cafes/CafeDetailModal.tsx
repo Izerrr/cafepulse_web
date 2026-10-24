@@ -58,31 +58,48 @@ export default function CafeDetailModal({
     if (navigator.share) {
       navigator.share({
         title: currentCafe.name,
-        text: `Cek ${currentCafe.name} di CafePulse - Wi-Fi ${amenities?.wifi_speed_mbps || 0} Mbps, colokan ${amenities?.plug_score}.`,
+        text: `Cek ${currentCafe.name} di cafepulse. - Wi-Fi ${amenities?.wifi_speed_mbps || 0} Mbps, colokan ${amenities?.plug_score}.`,
         url: window.location.href,
       }).catch(() => {});
     } else {
       navigator.clipboard.writeText(window.location.href);
-      alert('Tautan berhasil disalin ke clipboard.');
+      alert('Tautan berhasil disalin ke papan klip.');
     }
   };
 
   const mapsUrl = `https://www.google.com/maps/search/?api=1&query=${currentCafe.latitude},${currentCafe.longitude}`;
 
+  const getCrowdBadge = (density: string) => {
+    switch (density) {
+      case 'LOW':
+        return { text: '🟢 Sepi (Kondusif)', badge: 'border-emerald-200 bg-emerald-50 text-emerald-800' };
+      case 'MODERATE':
+        return { text: '🟡 Keramaian Sedang', badge: 'border-amber-200 bg-amber-50 text-amber-800' };
+      case 'HIGH':
+        return { text: '🔴 Ramai', badge: 'border-rose-200 bg-rose-50 text-rose-800' };
+      default:
+        return { text: 'Normal', badge: 'border-gray-200 bg-gray-50 text-gray-700' };
+    }
+  };
+
+  const crowd = getCrowdBadge(currentCafe.crowd_density);
+
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6">
+      {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-[#09090B]/80 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
-      <div className="relative z-10 flex max-h-[90vh] w-full max-w-2xl flex-col rounded-xl border border-white/10 bg-[#121215] shadow-2xl overflow-hidden">
+      {/* Modal Dialog */}
+      <div className="relative z-10 flex max-h-[90vh] w-full max-w-2xl flex-col rounded-2xl border border-[#111111]/15 bg-white text-[#111111] shadow-2xl overflow-hidden">
         
         {/* Top Control Bar */}
-        <div className="flex items-center justify-between border-b border-white/[0.08] bg-[#0E0E11] px-5 py-3.5">
+        <div className="flex items-center justify-between border-b border-[#111111]/8 bg-[#FAFAFC] px-6 py-4">
           <div className="flex items-center gap-2 text-xs text-[#71717A]">
-            <span className="font-mono text-[#D4D4D8]">Kafe #{currentCafe.id}</span>
-            <span>/ Lembar Verifikasi</span>
+            <span className="font-mono font-semibold text-[#111111]">Kafe #{currentCafe.id}</span>
+            <span>/ Lembar Verifikasi Spesifikasi</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -91,15 +108,15 @@ export default function CafeDetailModal({
                 onClose();
                 onEdit(currentCafe);
               }}
-              className="flex items-center gap-1.5 rounded-lg border border-white/10 px-2.5 py-1 text-xs text-[#EDEDED] transition-colors hover:border-white/20"
+              className="flex items-center gap-1.5 rounded-full border border-[#111111]/15 bg-white px-3 py-1.5 text-xs font-semibold text-[#111111] transition-colors hover:border-[#111111]/30 hover:bg-[#F5F5F7]"
             >
               <Edit2 className="h-3 w-3" />
-              <span>Edit</span>
+              <span>Edit Data</span>
             </button>
 
             <button
               onClick={handleShare}
-              className="flex items-center gap-1.5 rounded-lg border border-white/10 px-2.5 py-1 text-xs text-[#EDEDED] transition-colors hover:border-white/20"
+              className="flex items-center gap-1.5 rounded-full border border-[#111111]/15 bg-white px-3 py-1.5 text-xs font-semibold text-[#111111] transition-colors hover:border-[#111111]/30 hover:bg-[#F5F5F7]"
             >
               <Share2 className="h-3 w-3" />
               <span>Bagikan</span>
@@ -107,55 +124,53 @@ export default function CafeDetailModal({
 
             <button
               onClick={onClose}
-              className="flex h-6 w-6 items-center justify-center rounded-lg border border-white/10 text-[#71717A] transition-colors hover:text-white"
+              className="flex h-7 w-7 items-center justify-center rounded-full border border-[#111111]/15 bg-white text-[#71717A] transition-colors hover:text-[#111111] hover:border-[#111111]/30"
             >
-              <X className="h-3.5 w-3.5" />
+              <X className="h-4 w-4" />
             </button>
           </div>
         </div>
 
-        {/* Content */}
-        <div className="overflow-y-auto p-5 sm:p-6 space-y-5">
+        {/* Scrollable Content */}
+        <div className="overflow-y-auto p-6 space-y-6">
           
           {/* Header Card */}
-          <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-5">
+          <div className="rounded-xl border border-[#111111]/10 bg-[#F9F9FB] p-5">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
-                <span className="text-xs text-[#71717A]">
+                <span className="text-xs font-mono text-[#888888] uppercase tracking-wider">
                   Katalog Kafe Surakarta
                 </span>
-                <h1 className="mt-1 text-xl sm:text-2xl font-bold tracking-tight text-[#EDEDED]">
+                <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-[#111111]">
                   {currentCafe.name}
                 </h1>
               </div>
 
-              <div className="rounded-md border border-white/10 bg-white/[0.04] px-2.5 py-1 text-xs text-[#D4D4D8]">
-                {currentCafe.crowd_density === 'LOW' && '🟢 Sepi (Fokus)'}
-                {currentCafe.crowd_density === 'MODERATE' && '🟡 Keramaian Sedang'}
-                {currentCafe.crowd_density === 'HIGH' && '🔴 Ramai'}
+              <div className={`rounded-full border px-3 py-1 text-xs font-semibold ${crowd.badge}`}>
+                {crowd.text}
               </div>
             </div>
 
-            <div className="mt-3.5 grid grid-cols-1 gap-2 border-t border-white/[0.06] pt-3 text-xs text-[#A1A1AA] sm:grid-cols-2">
+            <div className="mt-3.5 grid grid-cols-1 gap-2 border-t border-[#111111]/8 pt-3 text-xs text-[#555555] sm:grid-cols-2">
               <div className="flex items-center gap-2">
-                <MapPin className="h-3.5 w-3.5 shrink-0 text-[#71717A]" />
+                <MapPin className="h-3.5 w-3.5 shrink-0 text-[#888888]" />
                 <span>{currentCafe.address}</span>
               </div>
               <div className="flex items-center gap-2 sm:justify-end">
-                <Clock className="h-3.5 w-3.5 shrink-0 text-[#71717A]" />
-                <span>Jam Buka: {currentCafe.opening_hours || '08:00 - 22:00'}</span>
+                <Clock className="h-3.5 w-3.5 shrink-0 text-[#888888]" />
+                <span className="font-mono">Buka: {currentCafe.opening_hours || '08:00 - 22:00'}</span>
               </div>
             </div>
 
-            <div className="mt-3 flex items-center justify-between border-t border-white/[0.06] pt-3 text-xs">
-              <span className="text-[#71717A] font-mono">
-                GPS: {currentCafe.latitude?.toFixed(4)}, {currentCafe.longitude?.toFixed(4)}
+            <div className="mt-3 flex items-center justify-between border-t border-[#111111]/8 pt-3 text-xs">
+              <span className="text-[#888888] font-mono">
+                Koordinat: {currentCafe.latitude?.toFixed(4)}, {currentCafe.longitude?.toFixed(4)}
               </span>
               <a
                 href={mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 font-medium text-[#EDEDED] hover:underline"
+                className="flex items-center gap-1.5 font-semibold text-[#0070F3] hover:underline"
               >
                 <span>Buka di Google Maps</span>
                 <ExternalLink className="h-3 w-3" />
@@ -165,67 +180,86 @@ export default function CafeDetailModal({
 
           {/* Technical Specs Grid */}
           <div>
-            <h3 className="text-xs font-semibold text-[#A1A1AA] uppercase tracking-wide mb-2.5">
+            <h3 className="text-xs font-mono font-semibold text-[#888888] uppercase tracking-wider mb-3">
               Spesifikasi Fasilitas Kerja
             </h3>
             
-            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
+            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
               
-              <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3.5">
+              <div className="rounded-xl border border-[#111111]/8 bg-[#F9F9FB] p-4">
                 <div className="flex items-center justify-between text-[#71717A] text-xs">
                   <span>Kecepatan Unduh</span>
-                  <Wifi className="h-3.5 w-3.5 text-blue-400" />
+                  <Wifi className="h-3.5 w-3.5 text-[#0070F3]" />
                 </div>
-                <div className="mt-2 text-2xl font-bold font-mono text-[#EDEDED]">
+                <div className="mt-2 text-2xl font-bold font-mono text-[#111111]">
                   {amenities?.wifi_speed_mbps || 0}
                   <span className="ml-1 text-xs font-normal text-[#71717A]">Mbps</span>
                 </div>
                 <div className="mt-1 text-xs text-[#71717A]">
-                  Stabilitas: <span className="text-blue-400 font-medium">{amenities?.wifi_stability || 'FAIR'}</span>
+                  Stabilitas:{' '}
+                  <span className="text-[#0070F3] font-semibold">
+                    {amenities?.wifi_stability === 'EXCELLENT'
+                      ? 'Sangat Stabil'
+                      : amenities?.wifi_stability === 'GOOD'
+                      ? 'Stabil'
+                      : 'Cukup'}
+                  </span>
                 </div>
               </div>
 
-              <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3.5">
+              <div className="rounded-xl border border-[#111111]/8 bg-[#F9F9FB] p-4">
                 <div className="flex items-center justify-between text-[#71717A] text-xs">
                   <span>Ketersediaan Daya</span>
-                  <Plug className="h-3.5 w-3.5 text-[#E59850]" />
+                  <Plug className="h-3.5 w-3.5 text-[#E08E45]" />
                 </div>
-                <div className="mt-2 text-xl font-bold text-[#EDEDED]">
-                  {amenities?.plug_score === 'PLENTY' ? 'Banyak' : amenities?.plug_score === 'MODERATE' ? 'Sedang' : 'Terbatas'}
+                <div className="mt-2 text-2xl font-bold text-[#111111]">
+                  {amenities?.plug_score === 'PLENTY'
+                    ? 'Banyak'
+                    : amenities?.plug_score === 'MODERATE'
+                    ? 'Sedang'
+                    : 'Terbatas'}
                 </div>
                 <div className="mt-1 text-xs text-[#71717A]">
-                  {amenities?.plug_score === 'PLENTY' ? 'Colokan di tiap meja' : 'Di dinding tertentu'}
+                  {amenities?.plug_score === 'PLENTY'
+                    ? 'Colokan di tiap meja'
+                    : 'Di dinding tertentu'}
                 </div>
               </div>
 
-              <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3.5">
+              <div className="rounded-xl border border-[#111111]/8 bg-[#F9F9FB] p-4">
                 <div className="flex items-center justify-between text-[#71717A] text-xs">
                   <span>Tingkat Kebisingan</span>
-                  <Volume2 className="h-3.5 w-3.5 text-emerald-400" />
+                  <Volume2 className="h-3.5 w-3.5 text-emerald-600" />
                 </div>
-                <div className="mt-2 text-xl font-bold text-emerald-400">
-                  {amenities?.noise_level === 'QUIET' ? 'Tenang' : amenities?.noise_level === 'MODERATE' ? 'Sedang' : 'Ramai'}
+                <div className="mt-2 text-2xl font-bold text-emerald-700">
+                  {amenities?.noise_level === 'QUIET'
+                    ? 'Tenang'
+                    : amenities?.noise_level === 'MODERATE'
+                    ? 'Sedang'
+                    : 'Ramai'}
                 </div>
                 <div className="mt-1 text-xs text-[#71717A]">
-                  {amenities?.noise_level === 'QUIET' ? 'Cocok untuk panggilan kerja' : 'Suasana santai'}
+                  {amenities?.noise_level === 'QUIET'
+                    ? 'Kondusif untuk fokus nugas'
+                    : 'Suasana musik santai'}
                 </div>
               </div>
 
             </div>
           </div>
 
-          {/* Checklist */}
+          {/* Kelengkapan Ruangan */}
           <div>
-            <h3 className="text-xs font-semibold text-[#A1A1AA] uppercase tracking-wide mb-2.5">
+            <h3 className="text-xs font-mono font-semibold text-[#888888] uppercase tracking-wider mb-3">
               Kelengkapan Ruangan
             </h3>
             
-            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 text-xs">
+            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3 text-xs">
               <div
-                className={`flex items-center gap-2 rounded-lg border p-2.5 ${
+                className={`flex items-center gap-2 rounded-xl border p-3 ${
                   amenities?.air_conditioned
-                    ? 'border-white/10 bg-white/[0.02] text-[#EDEDED]'
-                    : 'border-white/[0.04] text-[#52525B]'
+                    ? 'border-[#111111]/15 bg-white text-[#111111] font-medium'
+                    : 'border-[#111111]/5 bg-[#F9F9FB] text-[#888888]'
                 }`}
               >
                 <span>❄️</span>
@@ -233,10 +267,10 @@ export default function CafeDetailModal({
               </div>
 
               <div
-                className={`flex items-center gap-2 rounded-lg border p-2.5 ${
+                className={`flex items-center gap-2 rounded-xl border p-3 ${
                   amenities?.has_outdoor
-                    ? 'border-white/10 bg-white/[0.02] text-[#EDEDED]'
-                    : 'border-white/[0.04] text-[#52525B]'
+                    ? 'border-[#111111]/15 bg-white text-[#111111] font-medium'
+                    : 'border-[#111111]/5 bg-[#F9F9FB] text-[#888888]'
                 }`}
               >
                 <span>🌿</span>
@@ -244,10 +278,10 @@ export default function CafeDetailModal({
               </div>
 
               <div
-                className={`flex items-center gap-2 rounded-lg border p-2.5 ${
+                className={`flex items-center gap-2 rounded-xl border p-3 ${
                   amenities?.has_prayer_room
-                    ? 'border-white/10 bg-white/[0.02] text-[#EDEDED]'
-                    : 'border-white/[0.04] text-[#52525B]'
+                    ? 'border-[#111111]/15 bg-white text-[#111111] font-medium'
+                    : 'border-[#111111]/5 bg-[#F9F9FB] text-[#888888]'
                 }`}
               >
                 <span>🕌</span>
@@ -256,42 +290,42 @@ export default function CafeDetailModal({
             </div>
           </div>
 
-          {/* Ulasan Komunitas */}
-          <div className="border-t border-white/[0.08] pt-4">
-            <div className="flex items-center justify-between mb-3">
-              <h3 className="text-xs font-semibold text-[#A1A1AA] uppercase tracking-wide">
-                Ulasan Pengunjung ({reviews.length})
+          {/* Ulasan Pengunjung */}
+          <div className="border-t border-[#111111]/8 pt-5">
+            <div className="flex items-center justify-between mb-3.5">
+              <h3 className="text-xs font-mono font-semibold text-[#888888] uppercase tracking-wider">
+                Ulasan Lapangan ({reviews.length})
               </h3>
-              <div className="flex items-center gap-1 text-xs text-[#D4D4D8]">
-                <Star className="h-3 w-3 fill-[#E59850] text-[#E59850]" />
-                <span className="font-mono">5.0 / 5.0</span>
+              <div className="flex items-center gap-1 text-xs text-[#111111]">
+                <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
+                <span className="font-mono font-bold">5.0 / 5.0</span>
               </div>
             </div>
 
             {reviews.length === 0 ? (
-              <div className="rounded-lg border border-white/[0.06] bg-white/[0.01] p-5 text-center text-xs text-[#71717A]">
+              <div className="rounded-xl border border-[#111111]/8 bg-[#F9F9FB] p-5 text-center text-xs text-[#71717A]">
                 Belum ada ulasan untuk kafe ini.
               </div>
             ) : (
-              <div className="space-y-2.5">
+              <div className="space-y-3">
                 {reviews.map((rev) => (
                   <div
                     key={rev.id}
-                    className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3.5"
+                    className="rounded-xl border border-[#111111]/8 bg-[#F9F9FB] p-4"
                   >
-                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.05] pb-2 text-xs">
+                    <div className="flex flex-wrap items-center justify-between gap-2 border-b border-[#111111]/8 pb-2.5 text-xs">
                       <div className="flex items-center gap-2">
-                        <span className="font-medium text-[#EDEDED]">Kontributor #{rev.user_id || rev.id}</span>
-                        <div className="flex text-[#E59850]">
+                        <span className="font-semibold text-[#111111]">Kontributor #{rev.user_id || rev.id}</span>
+                        <div className="flex text-amber-500">
                           {Array.from({ length: rev.rating || 5 }).map((_, i) => (
-                            <Star key={i} className="h-2.5 w-2.5 fill-[#E59850]" />
+                            <Star key={i} className="h-2.5 w-2.5 fill-amber-500" />
                           ))}
                         </div>
                       </div>
 
                       <div className="flex items-center gap-2 text-[11px] text-[#71717A]">
                         {rev.verified_wifi_speed && (
-                          <span className="rounded bg-blue-500/10 px-1.5 py-0.5 text-blue-400 font-mono">
+                          <span className="rounded-full bg-[#0070F3]/10 px-2 py-0.5 text-[#0070F3] font-mono font-medium">
                             {rev.verified_wifi_speed} Mbps
                           </span>
                         )}
@@ -301,11 +335,11 @@ export default function CafeDetailModal({
                       </div>
                     </div>
 
-                    <p className="mt-2.5 text-xs leading-relaxed text-[#D4D4D8]">
+                    <p className="mt-2.5 text-xs leading-relaxed text-[#424242]">
                       &ldquo;{rev.comment}&rdquo;
                     </p>
 
-                    <div className="mt-1.5 text-right text-[10px] text-[#52525B]">
+                    <div className="mt-2 text-right text-[10px] font-mono text-[#888888]">
                       {rev.created_at ? rev.created_at.slice(0, 10) : '2026-10-04'}
                     </div>
                   </div>

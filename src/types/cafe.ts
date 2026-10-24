@@ -93,3 +93,14 @@ export interface UpdateCafeInput {
   amenities?: Partial<CafeAmenities>;
 }
 
+
+export interface FilterState {
+  search: string;
+  crowdDensity: 'ALL' | CrowdDensity;
+  minWifiSpeed: number;
+  plugScore: 'ALL' | PlugScore;
+  noiseLevel: 'ALL' | NoiseLevel;
+  acOnly: boolean;
+  outdoorOnly: boolean;
+  prayerRoomOnly: boolean;
+}

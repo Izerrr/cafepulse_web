@@ -52,59 +52,63 @@ function EditCafeModalContent({ cafe, onClose }: { cafe: Cafe; onClose: () => vo
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6">
+      {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-[#09090B]/80 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
-      <div className="relative z-10 flex max-h-[90vh] w-full max-w-xl flex-col rounded-xl border border-white/10 bg-[#121215] shadow-2xl overflow-hidden">
+      {/* Modal Dialog */}
+      <div className="relative z-10 flex max-h-[90vh] w-full max-w-xl flex-col rounded-2xl border border-[#111111]/15 bg-white text-[#111111] shadow-2xl overflow-hidden">
         
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-white/[0.08] bg-[#0E0E11] px-5 py-3.5">
-          <span className="text-sm font-semibold text-[#EDEDED]">
-            Edit Data Kafe &middot; {cafe.name}
-          </span>
+        <div className="flex items-center justify-between border-b border-[#111111]/8 bg-[#FAFAFC] px-6 py-4">
+          <div className="flex items-center gap-2">
+            <span className="text-sm font-bold text-[#111111]">
+              Edit Data Fasilitas &middot; {cafe.name}
+            </span>
+          </div>
 
           <button
             onClick={onClose}
-            className="flex h-6 w-6 items-center justify-center rounded-lg border border-white/10 text-[#71717A] hover:text-white"
+            className="flex h-7 w-7 items-center justify-center rounded-full border border-[#111111]/15 text-[#71717A] hover:text-[#111111] hover:border-[#111111]/30 transition-colors"
           >
-            <X className="h-3.5 w-3.5" />
+            <X className="h-4 w-4" />
           </button>
         </div>
 
         {/* Form Body */}
-        <form onSubmit={handleSubmit} className="overflow-y-auto p-5 sm:p-6 space-y-4">
+        <form onSubmit={handleSubmit} className="overflow-y-auto p-6 space-y-4">
           {errorMessage && (
-            <div className="flex items-start gap-2 rounded-lg border border-red-500/20 bg-red-500/10 p-3 text-xs text-red-400">
-              <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
+            <div className="flex items-start gap-2 rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700">
+              <AlertCircle className="h-4 w-4 shrink-0 mt-0.5 text-rose-500" />
               <span>{errorMessage}</span>
             </div>
           )}
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-medium text-[#A1A1AA] mb-1">
+              <label className="block text-xs font-semibold text-[#333333] mb-1.5">
                 Jam Operasional
               </label>
               <input
                 type="text"
                 value={openingHours}
                 onChange={(e) => setOpeningHours(e.target.value)}
-                className="w-full rounded-lg border border-white/10 bg-[#18181B] px-3 py-2 text-xs text-[#EDEDED] outline-none focus:border-white/20"
+                className="w-full rounded-xl border border-[#111111]/12 bg-[#F9F9FB] px-3.5 py-2.5 text-xs text-[#111111] outline-none transition-all focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3]/30"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#A1A1AA] mb-1">
+              <label className="block text-xs font-semibold text-[#333333] mb-1.5">
                 Keramaian Saat Ini
               </label>
               <select
                 value={crowdDensity}
                 onChange={(e) => setCrowdDensity(e.target.value as CrowdDensity)}
-                className="w-full rounded-lg border border-white/10 bg-[#18181B] px-3 py-2 text-xs text-[#EDEDED] outline-none focus:border-white/20"
+                className="w-full rounded-xl border border-[#111111]/12 bg-[#F9F9FB] px-3.5 py-2.5 text-xs text-[#111111] outline-none transition-all focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3]/30"
               >
-                <option value="LOW">Sepi (Fokus)</option>
+                <option value="LOW">Sepi (Kondusif untuk fokus)</option>
                 <option value="MODERATE">Sedang (Santai)</option>
                 <option value="HIGH">Ramai</option>
               </select>
@@ -113,7 +117,7 @@ function EditCafeModalContent({ cafe, onClose }: { cafe: Cafe; onClose: () => vo
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-medium text-[#A1A1AA] mb-1">
+              <label className="block text-xs font-semibold text-[#333333] mb-1.5">
                 Kecepatan Wi-Fi (Mbps)
               </label>
               <input
@@ -127,12 +131,12 @@ function EditCafeModalContent({ cafe, onClose }: { cafe: Cafe; onClose: () => vo
                     wifi_speed_mbps: Number(e.target.value),
                   })
                 }
-                className="w-full rounded-lg border border-white/10 bg-[#18181B] px-3 py-2 text-xs text-[#EDEDED] outline-none focus:border-white/20"
+                className="w-full rounded-xl border border-[#111111]/12 bg-[#F9F9FB] px-3.5 py-2.5 text-xs text-[#111111] outline-none transition-all focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3]/30"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#A1A1AA] mb-1">
+              <label className="block text-xs font-semibold text-[#333333] mb-1.5">
                 Stabilitas Koneksi
               </label>
               <select
@@ -143,7 +147,7 @@ function EditCafeModalContent({ cafe, onClose }: { cafe: Cafe; onClose: () => vo
                     wifi_stability: e.target.value as WifiStability,
                   })
                 }
-                className="w-full rounded-lg border border-white/10 bg-[#18181B] px-3 py-2 text-xs text-[#EDEDED] outline-none focus:border-white/20"
+                className="w-full rounded-xl border border-[#111111]/12 bg-[#F9F9FB] px-3.5 py-2.5 text-xs text-[#111111] outline-none transition-all focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3]/30"
               >
                 <option value="EXCELLENT">Sangat Stabil</option>
                 <option value="GOOD">Stabil</option>
@@ -155,7 +159,7 @@ function EditCafeModalContent({ cafe, onClose }: { cafe: Cafe; onClose: () => vo
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-medium text-[#A1A1AA] mb-1">
+              <label className="block text-xs font-semibold text-[#333333] mb-1.5">
                 Colokan Listrik
               </label>
               <select
@@ -166,7 +170,7 @@ function EditCafeModalContent({ cafe, onClose }: { cafe: Cafe; onClose: () => vo
                     plug_score: e.target.value as PlugScore,
                   })
                 }
-                className="w-full rounded-lg border border-white/10 bg-[#18181B] px-3 py-2 text-xs text-[#EDEDED] outline-none focus:border-white/20"
+                className="w-full rounded-xl border border-[#111111]/12 bg-[#F9F9FB] px-3.5 py-2.5 text-xs text-[#111111] outline-none transition-all focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3]/30"
               >
                 <option value="PLENTY">Banyak (Tiap meja)</option>
                 <option value="MODERATE">Sedang (Meja tertentu)</option>
@@ -176,7 +180,7 @@ function EditCafeModalContent({ cafe, onClose }: { cafe: Cafe; onClose: () => vo
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-[#A1A1AA] mb-1">
+              <label className="block text-xs font-semibold text-[#333333] mb-1.5">
                 Kebisingan Suasana
               </label>
               <select
@@ -187,7 +191,7 @@ function EditCafeModalContent({ cafe, onClose }: { cafe: Cafe; onClose: () => vo
                     noise_level: e.target.value as NoiseLevel,
                   })
                 }
-                className="w-full rounded-lg border border-white/10 bg-[#18181B] px-3 py-2 text-xs text-[#EDEDED] outline-none focus:border-white/20"
+                className="w-full rounded-xl border border-[#111111]/12 bg-[#F9F9FB] px-3.5 py-2.5 text-xs text-[#111111] outline-none transition-all focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3]/30"
               >
                 <option value="QUIET">Tenang</option>
                 <option value="MODERATE">Sedang</option>
@@ -197,48 +201,48 @@ function EditCafeModalContent({ cafe, onClose }: { cafe: Cafe; onClose: () => vo
           </div>
 
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 text-xs pt-1">
-            <label className="flex items-center gap-2 rounded-lg border border-white/10 bg-[#18181B] p-2.5 cursor-pointer">
+            <label className="flex items-center gap-2 rounded-xl border border-[#111111]/10 bg-[#F9F9FB] p-3 cursor-pointer hover:bg-[#F2F2F5] transition-colors">
               <input
                 type="checkbox"
                 checked={amenities.air_conditioned}
                 onChange={(e) =>
                   setAmenities({ ...amenities, air_conditioned: e.target.checked })
                 }
-                className="rounded"
+                className="rounded text-[#0070F3] focus:ring-[#0070F3]"
               />
-              <span>Ruang AC</span>
+              <span className="font-medium text-[#111111]">Ruang AC</span>
             </label>
 
-            <label className="flex items-center gap-2 rounded-lg border border-white/10 bg-[#18181B] p-2.5 cursor-pointer">
+            <label className="flex items-center gap-2 rounded-xl border border-[#111111]/10 bg-[#F9F9FB] p-3 cursor-pointer hover:bg-[#F2F2F5] transition-colors">
               <input
                 type="checkbox"
                 checked={amenities.has_outdoor}
                 onChange={(e) =>
                   setAmenities({ ...amenities, has_outdoor: e.target.checked })
                 }
-                className="rounded"
+                className="rounded text-[#0070F3] focus:ring-[#0070F3]"
               />
-              <span>Area Terbuka</span>
+              <span className="font-medium text-[#111111]">Area Terbuka</span>
             </label>
 
-            <label className="flex items-center gap-2 rounded-lg border border-white/10 bg-[#18181B] p-2.5 cursor-pointer">
+            <label className="flex items-center gap-2 rounded-xl border border-[#111111]/10 bg-[#F9F9FB] p-3 cursor-pointer hover:bg-[#F2F2F5] transition-colors">
               <input
                 type="checkbox"
                 checked={amenities.has_prayer_room}
                 onChange={(e) =>
                   setAmenities({ ...amenities, has_prayer_room: e.target.checked })
                 }
-                className="rounded"
+                className="rounded text-[#0070F3] focus:ring-[#0070F3]"
               />
-              <span>Mushola</span>
+              <span className="font-medium text-[#111111]">Mushola</span>
             </label>
           </div>
 
-          <div className="border-t border-white/[0.08] pt-4">
+          <div className="border-t border-[#111111]/8 pt-5">
             <button
               type="submit"
               disabled={mutation.isPending}
-              className="flex w-full items-center justify-center gap-2 rounded-lg bg-[#EDEDED] py-2.5 text-xs font-medium text-[#09090B] transition-colors hover:bg-white disabled:opacity-50"
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-[#111111] py-3 text-xs font-semibold text-white transition-all hover:bg-[#0070F3] active:scale-98 shadow-md disabled:opacity-50"
             >
               {mutation.isPending ? (
                 <>
@@ -247,7 +251,7 @@ function EditCafeModalContent({ cafe, onClose }: { cafe: Cafe; onClose: () => vo
                 </>
               ) : (
                 <>
-                  <Save className="h-3.5 w-3.5" />
+                  <Save className="h-4 w-4" />
                   <span>Simpan Perubahan</span>
                 </>
               )}

@@ -3,12 +3,12 @@
 import React, { useState, useRef, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
-import { Cafe } from '@/types/cafe';
+import { Cafe, FilterState } from '@/types/cafe';
 import Navbar from '@/components/navbar/Navbar';
-import HeroSection from '@/components/hero/HeroSection';
+import OnlinesHero from '@/components/hero/OnlinesHero';
 import MarqueeTicker from '@/components/hero/MarqueeTicker';
 import MoodSwitcher, { MoodMode } from '@/components/filters/MoodSwitcher';
-import FilterBar, { FilterState } from '@/components/filters/FilterBar';
+import FilterBar from '@/components/filters/FilterBar';
 import CafeCard from '@/components/cafes/CafeCard';
 import CafeDetailModal from '@/components/cafes/CafeDetailModal';
 import AddCafeModal from '@/components/cafes/AddCafeModal';
@@ -81,6 +81,14 @@ export default function HomePage() {
     }
   };
 
+  // Toggle Focus Mode from Hero
+  const handleToggleFocusMode = (isFocus: boolean) => {
+    setFilters((prev: FilterState) => ({
+      ...prev,
+      crowdDensity: isFocus ? 'LOW' : 'ALL',
+    }));
+  };
+
   // Filter cafes including Bookmark mode
   const filteredCafes = useMemo(() => {
     return allCafes.filter((cafe) => {
@@ -113,9 +121,9 @@ export default function HomePage() {
   }, [allCafes, filters, currentMood, bookmarkedIds]);
 
   return (
-    <main className="min-h-screen bg-[#09090B] text-[#EDEDED] selection:bg-[#EDEDED] selection:text-[#09090B]">
+    <main className="min-h-screen bg-white text-[#111111]">
       
-      {/* Top Navbar */}
+      {/* Top Studio Navbar */}
       <Navbar
         onOpenAddModal={() => setIsAddModalOpen(true)}
         totalBookmarks={totalBookmarks}
@@ -125,13 +133,14 @@ export default function HomePage() {
         }
       />
 
-      {/* Hero Section (onlines.com.ar Draggable Canvas) */}
-      <HeroSection
+      {/* Onlines.com.ar Interactive Draggable Studio Hero */}
+      <OnlinesHero
         onScrollToExplore={scrollToExplore}
         totalCafes={allCafes.length || 2}
+        onToggleFocusMode={handleToggleFocusMode}
       />
 
-      {/* Marquee Ticker */}
+      {/* Running Marquee Ticker */}
       <MarqueeTicker />
 
       {/* Explore Section */}
@@ -160,24 +169,24 @@ export default function HomePage() {
           
           {/* Loading Skeleton */}
           {isLoading && (
-            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
               {[1, 2, 3].map((n) => (
                 <div
                   key={n}
-                  className="animate-pulse rounded-xl border border-white/[0.08] bg-[#121215] p-5 space-y-4"
+                  className="animate-pulse rounded-2xl border border-[#111111]/8 bg-[#F9F9FB] p-6 space-y-4"
                 >
-                  <div className="flex justify-between items-center">
-                    <div className="h-5 w-24 rounded bg-white/[0.05]" />
-                    <div className="h-4 w-16 rounded bg-white/[0.05]" />
+                  <div className="flex justify-between items-center pb-3 border-b border-[#111111]/8">
+                    <div className="h-5 w-24 rounded-full bg-[#111111]/10" />
+                    <div className="h-4 w-16 rounded bg-[#111111]/10" />
                   </div>
-                  <div className="h-6 w-3/4 rounded bg-white/[0.05]" />
-                  <div className="h-4 w-1/2 rounded bg-white/[0.05]" />
-                  <div className="grid grid-cols-3 gap-2 py-2">
-                    <div className="h-14 rounded bg-white/[0.03]" />
-                    <div className="h-14 rounded bg-white/[0.03]" />
-                    <div className="h-14 rounded bg-white/[0.03]" />
+                  <div className="h-6 w-3/4 rounded bg-[#111111]/10" />
+                  <div className="h-4 w-1/2 rounded bg-[#111111]/8" />
+                  <div className="grid grid-cols-3 gap-2 py-3 border-y border-[#111111]/8">
+                    <div className="h-16 rounded-xl bg-[#111111]/5" />
+                    <div className="h-16 rounded-xl bg-[#111111]/5" />
+                    <div className="h-16 rounded-xl bg-[#111111]/5" />
                   </div>
-                  <div className="h-9 rounded bg-white/[0.05]" />
+                  <div className="h-10 rounded-full bg-[#111111]/10" />
                 </div>
               ))}
             </div>
@@ -185,17 +194,17 @@ export default function HomePage() {
 
           {/* Error State */}
           {isError && (
-            <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-8 text-center text-xs">
-              <AlertCircle className="mx-auto h-7 w-7 text-red-400 mb-2.5" />
-              <h3 className="text-sm font-semibold text-[#EDEDED]">
+            <div className="rounded-2xl border border-red-200 bg-red-50/70 p-8 text-center text-xs">
+              <AlertCircle className="mx-auto h-8 w-8 text-red-500 mb-2.5" />
+              <h3 className="text-sm font-semibold text-red-900">
                 Gagal memuat data kafe
               </h3>
-              <p className="mt-1 text-[#A1A1AA]">
+              <p className="mt-1 text-red-700">
                 {(error as Error)?.message || 'Koneksi ke backend API terputus.'}
               </p>
               <button
                 onClick={() => refetch()}
-                className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-[#EDEDED] px-3.5 py-1.5 font-medium text-[#09090B] hover:bg-white"
+                className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white hover:bg-red-700 transition-colors"
               >
                 <RefreshCw className="h-3 w-3" />
                 <span>Coba Lagi</span>
@@ -207,38 +216,38 @@ export default function HomePage() {
           {!isLoading && !isError && (
             <>
               {filteredCafes.length === 0 ? (
-                <div className="rounded-xl border border-white/[0.08] bg-[#121215] p-12 text-center">
-                  <Coffee className="mx-auto h-9 w-9 text-[#52525B] mb-3" />
-                  <h3 className="text-base font-semibold text-[#EDEDED]">
+                <div className="rounded-2xl border border-[#111111]/8 bg-[#F9F9FB] p-12 text-center">
+                  <Coffee className="mx-auto h-10 w-10 text-[#888888] mb-3" />
+                  <h3 className="text-base font-bold text-[#111111]">
                     {currentMood === 'BOOKMARKS'
                       ? 'Belum ada kafe yang disimpan ke favorit'
                       : 'Tidak ada kafe yang cocok dengan filter'}
                   </h3>
-                  <p className="mt-1.5 text-xs text-[#71717A] max-w-md mx-auto">
+                  <p className="mt-1.5 text-xs text-[#666666] max-w-md mx-auto leading-relaxed">
                     {currentMood === 'BOOKMARKS'
                       ? 'Tekan ikon bookmark pada kartu kafe mana saja untuk menyimpannya ke daftar ini.'
                       : 'Coba turunkan batas kecepatan Wi-Fi atau reset filter untuk melihat semua kafe.'}
                   </p>
-                  <div className="mt-5 flex items-center justify-center gap-3">
+                  <div className="mt-6 flex items-center justify-center gap-3">
                     <button
                       onClick={() => {
                         setFilters(initialFilters);
                         setCurrentMood('ALL');
                       }}
-                      className="rounded-lg border border-white/10 bg-white/[0.02] px-3.5 py-1.5 text-xs font-medium text-[#EDEDED] hover:border-white/20"
+                      className="rounded-full border border-[#111111]/15 bg-white px-4 py-2 text-xs font-semibold text-[#111111] hover:border-[#111111]/30 transition-colors shadow-sm"
                     >
                       Tampilkan Semua Kafe
                     </button>
                     <button
                       onClick={() => setIsAddModalOpen(true)}
-                      className="rounded-lg bg-[#EDEDED] px-3.5 py-1.5 text-xs font-medium text-[#09090B] hover:bg-white"
+                      className="rounded-full bg-[#111111] px-4 py-2 text-xs font-semibold text-white hover:bg-[#0070F3] transition-colors shadow-sm"
                     >
                       + Tambah Kafe Baru
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
+                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                   {filteredCafes.map((cafe) => (
                     <CafeCard
                       key={cafe.id}
@@ -258,13 +267,14 @@ export default function HomePage() {
 
       </div>
 
-      {/* Floating Action Button */}
+      {/* Floating Action Button (Studio Pill) */}
       <button
         onClick={() => setIsAddModalOpen(true)}
-        className="fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-[#EDEDED] text-[#09090B] shadow-lg transition-transform hover:scale-105 hover:bg-white active:scale-95"
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full bg-[#111111] px-4 py-3 text-xs font-semibold text-white shadow-xl transition-transform hover:scale-105 hover:bg-[#0070F3] active:scale-95"
         title="Tambah Kafe Baru"
       >
-        <Plus className="h-5 w-5 stroke-[2.5]" />
+        <Plus className="h-4 w-4 stroke-[2.5]" />
+        <span className="hidden sm:inline">Tambah Kafe</span>
       </button>
 
       {/* Modals */}
@@ -287,10 +297,10 @@ export default function HomePage() {
         onClose={() => setEditingCafe(null)}
       />
 
-      {/* Dedicated Section: Open Data & Public API for Developers / Students */}
+      {/* Dedicated Section: Open Data & Public API for Developers / Students (Onlines Dark Mode Block) */}
       <DeveloperApiSection />
 
-      {/* Footer */}
+      {/* Studio Footer */}
       <Footer />
 
     </main>

@@ -2,22 +2,11 @@
 
 import React from 'react';
 import { Search, X, RotateCcw } from 'lucide-react';
-import { CrowdDensity, NoiseLevel, PlugScore } from '@/types/cafe';
-
-export interface FilterState {
-  search: string;
-  crowdDensity: 'ALL' | CrowdDensity;
-  minWifiSpeed: number;
-  plugScore: 'ALL' | PlugScore;
-  noiseLevel: 'ALL' | NoiseLevel;
-  acOnly: boolean;
-  outdoorOnly: boolean;
-  prayerRoomOnly: boolean;
-}
+import { FilterState } from '@/types/cafe';
 
 interface FilterBarProps {
   filters: FilterState;
-  onChange: (updater: (prev: FilterState) => FilterState) => void;
+  onChange: React.Dispatch<React.SetStateAction<FilterState>>;
   onReset: () => void;
   totalResults: number;
 }
@@ -39,27 +28,27 @@ export default function FilterBar({
     filters.prayerRoomOnly;
 
   return (
-    <div className="border-b border-white/[0.08] bg-[#0E0E11]/80 backdrop-blur-md p-4 sm:p-6">
+    <div className="border-b border-[#111111]/8 bg-white p-4 sm:p-6">
       <div className="mx-auto max-w-7xl">
         
         {/* Search bar & results count */}
         <div className="flex flex-col gap-3.5 md:flex-row md:items-center md:justify-between">
           
           <div className="relative flex-1 max-w-xl">
-            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#71717A]" />
+            <Search className="absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-[#888888]" />
             <input
               type="text"
               value={filters.search}
               onChange={(e) =>
-                onChange((prev) => ({ ...prev, search: e.target.value }))
+                onChange((prev: FilterState) => ({ ...prev, search: e.target.value }))
               }
-              placeholder="Cari nama kafe atau area (misal: Slamet Riyadi, Jebres)..."
-              className="w-full rounded-lg border border-white/10 bg-[#18181B] py-2 pl-9 pr-9 text-xs text-[#EDEDED] placeholder-[#71717A] outline-none transition-all focus:border-white/20 focus:ring-1 focus:ring-white/20"
+              placeholder="Cari nama kafe atau area (misal: Slamet Riyadi, Jebres, UNS)..."
+              className="w-full rounded-full border border-[#111111]/10 bg-[#F5F5F7] py-2.5 pl-10 pr-9 text-xs text-[#111111] placeholder-[#888888] outline-none transition-all focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3]/30"
             />
             {filters.search && (
               <button
-                onClick={() => onChange((prev) => ({ ...prev, search: '' }))}
-                className="absolute right-3 top-1/2 -translate-y-1/2 text-[#71717A] hover:text-[#EDEDED]"
+                onClick={() => onChange((prev: FilterState) => ({ ...prev, search: '' }))}
+                className="absolute right-3.5 top-1/2 -translate-y-1/2 text-[#888888] hover:text-[#111111]"
               >
                 <X className="h-3.5 w-3.5" />
               </button>
@@ -67,14 +56,14 @@ export default function FilterBar({
           </div>
 
           <div className="flex items-center justify-between gap-3 sm:justify-end">
-            <span className="text-xs font-mono text-[#A1A1AA]">
-              Menampilkan {totalResults} kafe
+            <span className="text-xs font-mono font-medium text-[#71717A]">
+              Menampilkan {totalResults} lokasi terverifikasi
             </span>
 
             {isFiltered && (
               <button
                 onClick={onReset}
-                className="flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.02] px-3 py-1.5 text-xs text-[#A1A1AA] transition-colors hover:border-white/20 hover:text-white"
+                className="flex items-center gap-1.5 rounded-full border border-[#111111]/10 bg-white px-3.5 py-1.5 text-xs font-medium text-[#424242] transition-colors hover:border-[#111111]/30 hover:text-[#111111]"
               >
                 <RotateCcw className="h-3 w-3" />
                 <span>Reset Filter</span>
@@ -85,9 +74,9 @@ export default function FilterBar({
         </div>
 
         {/* Filter Chips */}
-        <div className="mt-4 flex flex-wrap items-center gap-2 pt-3 border-t border-white/[0.06] text-xs">
+        <div className="mt-4 flex flex-wrap items-center gap-2 pt-3.5 border-t border-[#111111]/8 text-xs">
           
-          <span className="text-[#71717A] text-[11px] font-medium mr-1">
+          <span className="text-[#888888] text-[11px] font-mono mr-1">
             Keramaian:
           </span>
           {(['ALL', 'LOW', 'MODERATE'] as const).map((density) => {
@@ -96,25 +85,25 @@ export default function FilterBar({
               <button
                 key={density}
                 onClick={() =>
-                  onChange((prev) => ({ ...prev, crowdDensity: density }))
+                  onChange((prev: FilterState) => ({ ...prev, crowdDensity: density }))
                 }
-                className={`rounded-lg px-3 py-1 text-xs font-medium transition-colors ${
+                className={`rounded-full px-3.5 py-1 text-xs font-semibold transition-colors ${
                   isActive
-                    ? 'bg-[#EDEDED] text-[#09090B]'
-                    : 'border border-white/10 bg-white/[0.02] text-[#A1A1AA] hover:border-white/20'
+                    ? 'bg-[#111111] text-white shadow-sm'
+                    : 'border border-[#111111]/10 bg-[#F5F5F7] text-[#424242] hover:border-[#111111]/25'
                 }`}
               >
-                {density === 'LOW' && '🟢 Sepi'}
+                {density === 'LOW' && '🟢 Sepi (Fokus)'}
                 {density === 'MODERATE' && '🟡 Sedang'}
                 {density === 'ALL' && 'Semua'}
               </button>
             );
           })}
 
-          <div className="h-3.5 w-[1px] bg-white/10 mx-1 hidden sm:block" />
+          <div className="h-4 w-px bg-[#111111]/10 mx-1 hidden sm:block" />
 
           {/* Wi-Fi Speeds */}
-          <span className="text-[#71717A] text-[11px] font-medium mr-1">
+          <span className="text-[#888888] text-[11px] font-mono mr-1">
             Wi-Fi:
           </span>
           {[
@@ -127,12 +116,12 @@ export default function FilterBar({
               <button
                 key={item.val}
                 onClick={() =>
-                  onChange((prev) => ({ ...prev, minWifiSpeed: item.val }))
+                  onChange((prev: FilterState) => ({ ...prev, minWifiSpeed: item.val }))
                 }
-                className={`rounded-lg px-3 py-1 text-xs font-medium transition-colors ${
+                className={`rounded-full px-3.5 py-1 text-xs font-semibold transition-colors ${
                   isActive
-                    ? 'bg-blue-500 text-white font-medium'
-                    : 'border border-white/10 bg-white/[0.02] text-[#A1A1AA] hover:border-white/20'
+                    ? 'bg-[#0070F3] text-white font-semibold'
+                    : 'border border-[#111111]/10 bg-[#F5F5F7] text-[#424242] hover:border-[#111111]/25'
                 }`}
               >
                 {item.label}
@@ -140,20 +129,20 @@ export default function FilterBar({
             );
           })}
 
-          <div className="h-3.5 w-[1px] bg-white/10 mx-1 hidden sm:block" />
+          <div className="h-4 w-px bg-[#111111]/10 mx-1 hidden sm:block" />
 
           {/* Plug Score */}
           <button
             onClick={() =>
-              onChange((prev) => ({
+              onChange((prev: FilterState) => ({
                 ...prev,
                 plugScore: prev.plugScore === 'PLENTY' ? 'ALL' : 'PLENTY',
               }))
             }
-            className={`rounded-lg px-3 py-1 text-xs font-medium transition-colors ${
+            className={`rounded-full px-3.5 py-1 text-xs font-semibold transition-colors ${
               filters.plugScore === 'PLENTY'
-                ? 'bg-[#E59850] text-[#09090B] font-medium'
-                : 'border border-white/10 bg-white/[0.02] text-[#A1A1AA] hover:border-white/20'
+                ? 'bg-[#E08E45] text-white'
+                : 'border border-[#111111]/10 bg-[#F5F5F7] text-[#424242] hover:border-[#111111]/25'
             }`}
           >
             🔌 Banyak Colokan
@@ -162,15 +151,15 @@ export default function FilterBar({
           {/* Noise level */}
           <button
             onClick={() =>
-              onChange((prev) => ({
+              onChange((prev: FilterState) => ({
                 ...prev,
                 noiseLevel: prev.noiseLevel === 'QUIET' ? 'ALL' : 'QUIET',
               }))
             }
-            className={`rounded-lg px-3 py-1 text-xs font-medium transition-colors ${
+            className={`rounded-full px-3.5 py-1 text-xs font-semibold transition-colors ${
               filters.noiseLevel === 'QUIET'
-                ? 'bg-emerald-500 text-[#09090B] font-medium'
-                : 'border border-white/10 bg-white/[0.02] text-[#A1A1AA] hover:border-white/20'
+                ? 'bg-[#10B981] text-white'
+                : 'border border-[#111111]/10 bg-[#F5F5F7] text-[#424242] hover:border-[#111111]/25'
             }`}
           >
             🔇 Ruang Tenang
@@ -179,12 +168,12 @@ export default function FilterBar({
           {/* Facilities */}
           <button
             onClick={() =>
-              onChange((prev) => ({ ...prev, acOnly: !prev.acOnly }))
+              onChange((prev: FilterState) => ({ ...prev, acOnly: !prev.acOnly }))
             }
-            className={`rounded-lg px-3 py-1 text-xs font-medium transition-colors ${
+            className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
               filters.acOnly
-                ? 'border border-white/30 bg-white/[0.08] text-[#EDEDED]'
-                : 'border border-white/10 bg-white/[0.02] text-[#71717A] hover:border-white/20'
+                ? 'border border-[#0070F3] bg-[#0070F3]/10 text-[#0070F3] font-semibold'
+                : 'border border-[#111111]/10 bg-white text-[#71717A] hover:border-[#111111]/25'
             }`}
           >
             ❄️ AC
@@ -192,12 +181,12 @@ export default function FilterBar({
 
           <button
             onClick={() =>
-              onChange((prev) => ({ ...prev, prayerRoomOnly: !prev.prayerRoomOnly }))
+              onChange((prev: FilterState) => ({ ...prev, prayerRoomOnly: !prev.prayerRoomOnly }))
             }
-            className={`rounded-lg px-3 py-1 text-xs font-medium transition-colors ${
+            className={`rounded-full px-3 py-1 text-xs font-medium transition-colors ${
               filters.prayerRoomOnly
-                ? 'border border-white/30 bg-white/[0.08] text-[#EDEDED]'
-                : 'border border-white/10 bg-white/[0.02] text-[#71717A] hover:border-white/20'
+                ? 'border border-[#0070F3] bg-[#0070F3]/10 text-[#0070F3] font-semibold'
+                : 'border border-[#111111]/10 bg-white text-[#71717A] hover:border-[#111111]/25'
             }`}
           >
             🕌 Mushola

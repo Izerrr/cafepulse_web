@@ -4,24 +4,18 @@
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
 
-  --color-canvas-bg: #09090B;
-  --color-canvas-surface: rgba(18, 18, 22, 0.75);
-  --color-canvas-border: rgba(255, 255, 255, 0.08);
+  --color-canvas-bg: #FFFFFF;
+  --color-canvas-surface: #FAFAFC;
+  --color-canvas-border: rgba(18, 18, 19, 0.08);
 
-  --color-liquid-bg: #F2F2F7;
-  --color-liquid-bg-warm: #FAFAF8;
-  --color-liquid-surface: rgba(255, 255, 255, 0.72);
-  --color-liquid-border: rgba(0, 0, 0, 0.06);
-
-  --color-accent-amber: #E59850;
-  --color-accent-blue: #0077B6;
-  --color-accent-teal: #2D6A5B;
-  --color-accent-emerald: #34C759;
+  --color-accent-blue: #0070F3;
+  --color-accent-amber: #E08E45;
+  --color-accent-emerald: #10B981;
 }
 
 :root {
-  --background: #09090B;
-  --foreground: #EDEDED;
+  --background: #FFFFFF;
+  --foreground: #111111;
 }
 
 body {
@@ -34,65 +28,141 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Custom smooth dark scrollbar */
+/* Custom Figma / Onlines Cursor */
+@media (hover: hover) and (pointer: fine) {
+  html,
+  body {
+    cursor: url("/onlines/cursor-onlines.svg") 2 1, auto;
+  }
+  a[href],
+  button:not([disabled]),
+  [role="button"]:not([aria-disabled="true"]),
+  input[type="submit"]:not([disabled]),
+  input[type="button"]:not([disabled]),
+  select:not([disabled]),
+  summary {
+    cursor: pointer !important;
+  }
+  input[type="text"],
+  input[type="email"],
+  input[type="search"],
+  textarea {
+    cursor: text !important;
+  }
+}
+
+/* Custom smooth subtle scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #09090B;
+  background: #FAFAFC;
 }
 ::-webkit-scrollbar-thumb {
-  background: #27272A;
+  background: #D4D4D8;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #3F3F46;
+  background: #A1A1AA;
 }
 
-/* Liquid Glass from FATISDA26-TaskPanel */
-.liquid-glass {
-  background: rgba(18, 18, 22, 0.75);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.08);
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25), 0 1px 2px rgba(0, 0, 0, 0.15);
-}
-
-.shadow-glass {
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3), 0 1px 2px rgba(0, 0, 0, 0.1);
-}
-
-.shadow-float {
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
-}
-
-/* onlines.com.ar coordinate canvas grid */
-.canvas-grid {
-  background-image: 
-    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  background-size: 36px 36px;
-}
-
-/* onlines.com.ar Canvas Selection Box & Handles */
-.canvas-selection-box {
-  position: relative;
-  border: 1px dashed rgba(255, 255, 255, 0.22);
-}
-
-.canvas-handle {
+/* Dotted Architectural Coordinate Grid (onlines.com.ar .grilla-celdas) */
+.grilla-celdas {
+  --grilla-celda-size: 55px;
+  --grilla-color-linea: rgba(18, 18, 19, 0.06);
   position: absolute;
-  width: 7px;
-  height: 7px;
-  background: #09090B;
-  border: 1px solid rgba(255, 255, 255, 0.5);
-  z-index: 10;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: auto;
+  z-index: 0;
+  background-image:
+    linear-gradient(to right, var(--grilla-color-linea) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grilla-color-linea) 1px, transparent 1px);
+  background-size: var(--grilla-celda-ancho, 55px) var(--grilla-celda-alto, 55px);
 }
-.canvas-handle-tl { top: -4px; left: -4px; }
-.canvas-handle-tr { top: -4px; right: -4px; }
-.canvas-handle-bl { bottom: -4px; left: -4px; }
-.canvas-handle-br { bottom: -4px; right: -4px; }
+
+.grilla-celdas__lit {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--grilla-celda-ancho, 55px);
+  height: var(--grilla-celda-alto, 55px);
+  background-color: transparent;
+  pointer-events: none;
+  z-index: 1;
+}
+
+.grilla-celdas__lit.is-lit {
+  background-color: rgba(0, 112, 243, 0.08);
+}
+
+/* Figma Selection Box & Handles */
+.home-hero__seleccion {
+  position: absolute;
+  border: 1px dashed rgba(18, 18, 19, 0.28);
+  pointer-events: none;
+}
+
+.home-hero__handle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #FFFFFF;
+  border: 1px solid rgba(18, 18, 19, 0.4);
+  z-index: 2;
+}
+
+.home-hero__handle--tl { top: -4px; left: -4px; }
+.home-hero__handle--tc { top: -4px; left: 50%; margin-left: -4px; }
+.home-hero__handle--tr { top: -4px; right: -4px; }
+.home-hero__handle--bl { bottom: -4px; left: -4px; }
+.home-hero__handle--bc { bottom: -4px; left: 50%; margin-left: -4px; }
+.home-hero__handle--br { bottom: -4px; right: -4px; }
+
+/* Display Title */
+.onlines-display-title {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: clamp(3.5rem, 11vw, 9.5rem);
+  line-height: 0.9;
+  letter-spacing: -0.04em;
+  color: #111111;
+  text-align: center;
+  white-space: nowrap;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+/* Onlines Mode Switch Pill */
+.onlines-switch-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 14px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 9999px;
+  border: 1px solid rgba(18, 18, 19, 0.1);
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Figma Comment Bubble */
+.comentario-figma__burbuja {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  width: 270px;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  border-radius: 18px 18px 18px 2px;
+  border: 1px solid rgba(18, 18, 19, 0.08);
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+}
 
 /* Subtle Marquee Ticker */
 @keyframes marquee {

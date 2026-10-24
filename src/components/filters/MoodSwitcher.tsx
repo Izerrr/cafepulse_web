@@ -44,9 +44,9 @@ export default function MoodSwitcher({
   ];
 
   return (
-    <div className="border-b border-white/[0.08] bg-[#0C0C0E] py-3.5 px-4 sm:px-6 lg:px-8">
+    <div className="border-b border-[#111111]/8 bg-white py-4 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl flex flex-wrap items-center gap-2">
-        <span className="text-[11px] font-mono text-[#71717A] uppercase mr-2 hidden sm:inline">
+        <span className="text-[11px] font-mono text-[#888888] uppercase mr-2 hidden sm:inline">
           Filter Cepat:
         </span>
 
@@ -57,13 +57,13 @@ export default function MoodSwitcher({
             <button
               key={m.id}
               onClick={() => onSelectMood(m.id)}
-              className={`flex items-center gap-2 rounded-lg px-3 py-1.5 text-xs font-medium transition-all ${
+              className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold transition-all ${
                 isActive
-                  ? 'bg-[#EDEDED] text-[#09090B] shadow-sm'
-                  : 'border border-white/10 bg-white/[0.02] text-[#A1A1AA] hover:border-white/20 hover:text-white'
+                  ? 'bg-[#111111] text-white shadow-sm'
+                  : 'border border-[#111111]/10 bg-[#F5F5F7] text-[#424242] hover:border-[#111111]/25 hover:text-[#111111]'
               }`}
             >
-              <Icon className={`h-3.5 w-3.5 ${isActive ? 'text-[#09090B]' : 'text-[#71717A]'}`} />
+              <Icon className={`h-3.5 w-3.5 ${isActive ? 'text-white' : 'text-[#71717A]'}`} />
               <span>{m.label}</span>
             </button>
           );
@@ -72,4 +72,3 @@ export default function MoodSwitcher({
     </div>
   );
 }
-
