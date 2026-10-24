@@ -44,9 +44,9 @@ export default function MoodSwitcher({
   ];
 
   return (
-    <div className="border-b border-[#111111]/8 bg-white py-4 px-4 sm:px-6 lg:px-8">
+    <div className="border-b border-canvas-border bg-canvas-bg py-4 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl flex flex-wrap items-center gap-2">
-        <span className="text-[11px] font-mono text-[#888888] uppercase mr-2 hidden sm:inline">
+        <span className="text-[11px] font-mono text-roast-400 uppercase tracking-wider mr-2 hidden sm:inline">
           Filter Cepat:
         </span>
 
@@ -59,11 +59,11 @@ export default function MoodSwitcher({
               onClick={() => onSelectMood(m.id)}
               className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold transition-all ${
                 isActive
-                  ? 'bg-[#111111] text-white shadow-sm'
-                  : 'border border-[#111111]/10 bg-[#F5F5F7] text-[#424242] hover:border-[#111111]/25 hover:text-[#111111]'
+                  ? 'bg-roast-900 text-white shadow-xs'
+                  : 'border border-canvas-border bg-white text-roast-700 hover:border-canvas-border-hover hover:bg-canvas-surface hover:text-roast-900'
               }`}
             >
-              <Icon className={`h-3.5 w-3.5 ${isActive ? 'text-white' : 'text-[#71717A]'}`} />
+              <Icon className={`h-3.5 w-3.5 ${isActive ? 'text-crema-400' : 'text-roast-400'}`} />
               <span>{m.label}</span>
             </button>
           );

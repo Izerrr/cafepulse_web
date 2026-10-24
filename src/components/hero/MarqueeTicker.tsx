@@ -16,19 +16,19 @@ export default function MarqueeTicker() {
   ];
 
   return (
-    <div className="relative w-full overflow-hidden border-b border-[#111111]/8 bg-[#FAFAFC] py-3 text-xs text-[#666666]">
+    <div className="relative w-full overflow-hidden border-b border-canvas-border bg-canvas-surface py-3 text-xs text-roast-600">
       {/* Side fades */}
-      <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-20 bg-gradient-to-r from-[#FAFAFC] to-transparent" />
-      <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-20 bg-gradient-to-l from-[#FAFAFC] to-transparent" />
+      <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-20 bg-linear-to-r from-canvas-surface to-transparent" />
+      <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-20 bg-linear-to-l from-canvas-surface to-transparent" />
 
       <div className="animate-marquee flex items-center gap-8 whitespace-nowrap">
         {[...tickerItems, ...tickerItems, ...tickerItems].map((item, idx) => {
           const Icon = item.icon;
           return (
             <div key={idx} className="flex items-center gap-2">
-              <Icon className="h-3.5 w-3.5 text-[#0070F3]" />
-              <span className="font-medium tracking-tight text-[#111111]">{item.label}</span>
-              <span className="text-[#BBBBBB] ml-2">/</span>
+              <Icon className="h-3.5 w-3.5 text-crema-500" />
+              <span className="font-medium tracking-tight text-roast-900">{item.label}</span>
+              <span className="text-roast-300 ml-2">/</span>
             </div>
           );
         })}

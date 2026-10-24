@@ -4,18 +4,46 @@
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --font-mono: 'JetBrains Mono', 'SF Mono', monospace;
 
-  --color-canvas-bg: #FFFFFF;
-  --color-canvas-surface: #FAFAFC;
-  --color-canvas-border: rgba(18, 18, 19, 0.08);
+  /* Warm Cafe & Oatmilk Palette (onlines.com.ar × CafePulse) */
+  --color-canvas-bg: #FBF9F5;
+  --color-canvas-card: #FFFFFF;
+  --color-canvas-surface: #F5EFEB;
+  --color-canvas-surface-warm: #EFE8E1;
+  --color-canvas-border: rgba(45, 30, 20, 0.08);
+  --color-canvas-border-hover: rgba(45, 30, 20, 0.2);
 
-  --color-accent-blue: #0070F3;
-  --color-accent-amber: #E08E45;
+  /* Deep Roast Espresso Typography */
+  --color-roast-950: #140F0D;
+  --color-roast-900: #1E1714;
+  --color-roast-850: #251D18;
+  --color-roast-800: #2C221D;
+  --color-roast-700: #3D3029;
+  --color-roast-600: #52423A;
+  --color-roast-500: #68554B;
+  --color-roast-400: #7E6A5E;
+  --color-roast-300: #A8958A;
+  --color-roast-200: #D4C7BF;
+  --color-roast-100: #EDE5DF;
+
+  /* Warm Crema & Caramel Accents */
+  --color-crema-600: #B24F26;
+  --color-crema-500: #C86237;
+  --color-crema-400: #D97706;
+  --color-crema-300: #E08E45;
+  --color-crema-200: #F3B07A;
+  --color-crema-100: #FDE8D7;
+  --color-crema-50: #FFF6EE;
+
+  /* Aliases for clean semantic use */
+  --color-accent-caramel: #C86237;
+  --color-accent-amber: #D97706;
+  --color-accent-blue: #0284C7;
   --color-accent-emerald: #10B981;
 }
 
 :root {
-  --background: #FFFFFF;
-  --foreground: #111111;
+  --background: #FBF9F5;
+  --foreground: #1E1714;
 }
 
 body {
@@ -46,31 +74,32 @@ body {
   input[type="text"],
   input[type="email"],
   input[type="search"],
+  input[type="number"],
   textarea {
     cursor: text !important;
   }
 }
 
-/* Custom smooth subtle scrollbar */
+/* Warm subtle scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #FAFAFC;
+  background: #F5EFEB;
 }
 ::-webkit-scrollbar-thumb {
-  background: #D4D4D8;
+  background: #D4C7BF;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #A1A1AA;
+  background: #A8958A;
 }
 
-/* Dotted Architectural Coordinate Grid (onlines.com.ar .grilla-celdas) */
+/* Dotted Architectural Coordinate Grid with Warm Coffee Tint */
 .grilla-celdas {
   --grilla-celda-size: 55px;
-  --grilla-color-linea: rgba(18, 18, 19, 0.06);
+  --grilla-color-linea: rgba(45, 30, 20, 0.07);
   position: absolute;
   inset: 0;
   width: 100%;
@@ -94,14 +123,15 @@ body {
   z-index: 1;
 }
 
+/* Warm golden caramel glow on hover trail */
 .grilla-celdas__lit.is-lit {
-  background-color: rgba(0, 112, 243, 0.08);
+  background-color: rgba(217, 119, 6, 0.12);
 }
 
-/* Figma Selection Box & Handles */
+/* Figma Selection Box & Handles in Warm Roasted Terracotta */
 .home-hero__seleccion {
   position: absolute;
-  border: 1px dashed rgba(18, 18, 19, 0.28);
+  border: 1px dashed rgba(200, 98, 55, 0.4);
   pointer-events: none;
 }
 
@@ -110,7 +140,7 @@ body {
   width: 8px;
   height: 8px;
   background: #FFFFFF;
-  border: 1px solid rgba(18, 18, 19, 0.4);
+  border: 1px solid rgba(200, 98, 55, 0.6);
   z-index: 2;
 }
 
@@ -128,7 +158,7 @@ body {
   font-size: clamp(3.5rem, 11vw, 9.5rem);
   line-height: 0.9;
   letter-spacing: -0.04em;
-  color: #111111;
+  color: #1E1714;
   text-align: center;
   white-space: nowrap;
   user-select: none;
@@ -145,8 +175,8 @@ body {
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-radius: 9999px;
-  border: 1px solid rgba(18, 18, 19, 0.1);
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+  border: 1px solid rgba(45, 30, 20, 0.12);
+  box-shadow: 0 2px 12px rgba(45, 30, 20, 0.05);
 }
 
 /* Figma Comment Bubble */
@@ -156,12 +186,12 @@ body {
   gap: 10px;
   padding: 10px 14px;
   width: 270px;
-  background: rgba(255, 255, 255, 0.92);
+  background: rgba(255, 255, 255, 0.94);
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   border-radius: 18px 18px 18px 2px;
-  border: 1px solid rgba(18, 18, 19, 0.08);
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  border: 1px solid rgba(45, 30, 20, 0.1);
+  box-shadow: 0 4px 16px rgba(45, 30, 20, 0.07);
 }
 
 /* Subtle Marquee Ticker */

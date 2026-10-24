@@ -121,7 +121,7 @@ export default function HomePage() {
   }, [allCafes, filters, currentMood, bookmarkedIds]);
 
   return (
-    <main className="min-h-screen bg-white text-[#111111]">
+    <main className="min-h-screen bg-canvas-bg text-roast-900">
       
       {/* Top Studio Navbar */}
       <Navbar
@@ -173,20 +173,20 @@ export default function HomePage() {
               {[1, 2, 3].map((n) => (
                 <div
                   key={n}
-                  className="animate-pulse rounded-2xl border border-[#111111]/8 bg-[#F9F9FB] p-6 space-y-4"
+                  className="animate-pulse rounded-2xl border border-canvas-border bg-white p-6 space-y-4"
                 >
-                  <div className="flex justify-between items-center pb-3 border-b border-[#111111]/8">
-                    <div className="h-5 w-24 rounded-full bg-[#111111]/10" />
-                    <div className="h-4 w-16 rounded bg-[#111111]/10" />
+                  <div className="flex justify-between items-center pb-3 border-b border-canvas-border">
+                    <div className="h-5 w-24 rounded-full bg-roast-100" />
+                    <div className="h-4 w-16 rounded bg-roast-100" />
                   </div>
-                  <div className="h-6 w-3/4 rounded bg-[#111111]/10" />
-                  <div className="h-4 w-1/2 rounded bg-[#111111]/8" />
-                  <div className="grid grid-cols-3 gap-2 py-3 border-y border-[#111111]/8">
-                    <div className="h-16 rounded-xl bg-[#111111]/5" />
-                    <div className="h-16 rounded-xl bg-[#111111]/5" />
-                    <div className="h-16 rounded-xl bg-[#111111]/5" />
+                  <div className="h-6 w-3/4 rounded bg-roast-100" />
+                  <div className="h-4 w-1/2 rounded bg-roast-100" />
+                  <div className="grid grid-cols-3 gap-2 py-3 border-y border-canvas-border">
+                    <div className="h-16 rounded-xl bg-canvas-surface" />
+                    <div className="h-16 rounded-xl bg-canvas-surface" />
+                    <div className="h-16 rounded-xl bg-canvas-surface" />
                   </div>
-                  <div className="h-10 rounded-full bg-[#111111]/10" />
+                  <div className="h-10 rounded-full bg-roast-100" />
                 </div>
               ))}
             </div>
@@ -194,17 +194,17 @@ export default function HomePage() {
 
           {/* Error State */}
           {isError && (
-            <div className="rounded-2xl border border-red-200 bg-red-50/70 p-8 text-center text-xs">
-              <AlertCircle className="mx-auto h-8 w-8 text-red-500 mb-2.5" />
-              <h3 className="text-sm font-semibold text-red-900">
+            <div className="rounded-2xl border border-rose-200 bg-rose-50/70 p-8 text-center text-xs">
+              <AlertCircle className="mx-auto h-8 w-8 text-rose-500 mb-2.5" />
+              <h3 className="text-sm font-semibold text-rose-900">
                 Gagal memuat data kafe
               </h3>
-              <p className="mt-1 text-red-700">
+              <p className="mt-1 text-rose-700">
                 {(error as Error)?.message || 'Koneksi ke backend API terputus.'}
               </p>
               <button
                 onClick={() => refetch()}
-                className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-red-600 px-4 py-2 text-xs font-semibold text-white hover:bg-red-700 transition-colors"
+                className="mt-4 inline-flex items-center gap-1.5 rounded-full bg-rose-600 px-4 py-2 text-xs font-semibold text-white hover:bg-rose-700 transition-colors"
               >
                 <RefreshCw className="h-3 w-3" />
                 <span>Coba Lagi</span>
@@ -216,14 +216,14 @@ export default function HomePage() {
           {!isLoading && !isError && (
             <>
               {filteredCafes.length === 0 ? (
-                <div className="rounded-2xl border border-[#111111]/8 bg-[#F9F9FB] p-12 text-center">
-                  <Coffee className="mx-auto h-10 w-10 text-[#888888] mb-3" />
-                  <h3 className="text-base font-bold text-[#111111]">
+                <div className="rounded-2xl border border-canvas-border bg-white p-12 text-center shadow-xs">
+                  <Coffee className="mx-auto h-10 w-10 text-roast-300 mb-3" />
+                  <h3 className="text-base font-bold text-roast-900">
                     {currentMood === 'BOOKMARKS'
                       ? 'Belum ada kafe yang disimpan ke favorit'
                       : 'Tidak ada kafe yang cocok dengan filter'}
                   </h3>
-                  <p className="mt-1.5 text-xs text-[#666666] max-w-md mx-auto leading-relaxed">
+                  <p className="mt-1.5 text-xs text-roast-600 max-w-md mx-auto leading-relaxed">
                     {currentMood === 'BOOKMARKS'
                       ? 'Tekan ikon bookmark pada kartu kafe mana saja untuk menyimpannya ke daftar ini.'
                       : 'Coba turunkan batas kecepatan Wi-Fi atau reset filter untuk melihat semua kafe.'}
@@ -234,13 +234,13 @@ export default function HomePage() {
                         setFilters(initialFilters);
                         setCurrentMood('ALL');
                       }}
-                      className="rounded-full border border-[#111111]/15 bg-white px-4 py-2 text-xs font-semibold text-[#111111] hover:border-[#111111]/30 transition-colors shadow-sm"
+                      className="rounded-full border border-canvas-border bg-white px-4 py-2 text-xs font-semibold text-roast-900 hover:border-canvas-border-hover transition-colors shadow-xs"
                     >
                       Tampilkan Semua Kafe
                     </button>
                     <button
                       onClick={() => setIsAddModalOpen(true)}
-                      className="rounded-full bg-[#111111] px-4 py-2 text-xs font-semibold text-white hover:bg-[#0070F3] transition-colors shadow-sm"
+                      className="rounded-full bg-roast-900 px-4 py-2 text-xs font-semibold text-white hover:bg-crema-500 transition-colors shadow-xs"
                     >
                       + Tambah Kafe Baru
                     </button>
@@ -267,10 +267,10 @@ export default function HomePage() {
 
       </div>
 
-      {/* Floating Action Button (Studio Pill) */}
+      {/* Floating Action Button (Studio Pill in Deep Espresso) */}
       <button
         onClick={() => setIsAddModalOpen(true)}
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full bg-[#111111] px-4 py-3 text-xs font-semibold text-white shadow-xl transition-transform hover:scale-105 hover:bg-[#0070F3] active:scale-95"
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full bg-roast-900 px-4 py-3 text-xs font-semibold text-white shadow-xl transition-transform hover:scale-105 hover:bg-crema-500 active:scale-95"
         title="Tambah Kafe Baru"
       >
         <Plus className="h-4 w-4 stroke-[2.5]" />
@@ -297,7 +297,7 @@ export default function HomePage() {
         onClose={() => setEditingCafe(null)}
       />
 
-      {/* Dedicated Section: Open Data & Public API for Developers / Students (Onlines Dark Mode Block) */}
+      {/* Dedicated Section: Open Data & Public API for Developers / Students (Dark Roast Block) */}
       <DeveloperApiSection />
 
       {/* Studio Footer */}

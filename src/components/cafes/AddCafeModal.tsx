@@ -70,25 +70,25 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-roast-950/50 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
       {/* Modal Dialog */}
-      <div className="relative z-10 flex max-h-[90vh] w-full max-w-xl flex-col rounded-2xl border border-[#111111]/15 bg-white text-[#111111] shadow-2xl overflow-hidden">
+      <div className="relative z-10 flex max-h-[90vh] w-full max-w-xl flex-col rounded-2xl border border-canvas-border bg-white text-roast-900 shadow-2xl overflow-hidden">
         
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-[#111111]/8 bg-[#FAFAFC] px-6 py-4">
+        <div className="flex items-center justify-between border-b border-canvas-border bg-canvas-surface px-6 py-4">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-bold text-[#111111]">
+            <span className="text-sm font-bold text-roast-900">
               Tambah Kafe ke Direktori
             </span>
-            <span className="text-xs font-mono text-[#888888]">/ Surakarta</span>
+            <span className="text-xs font-mono text-roast-400">/ Surakarta</span>
           </div>
 
           <button
             onClick={onClose}
-            className="flex h-7 w-7 items-center justify-center rounded-full border border-[#111111]/15 text-[#71717A] hover:text-[#111111] hover:border-[#111111]/30 transition-colors"
+            className="flex h-7 w-7 items-center justify-center rounded-full border border-canvas-border text-roast-400 hover:text-roast-900 hover:border-canvas-border-hover transition-colors"
           >
             <X className="h-4 w-4" />
           </button>
@@ -104,7 +104,7 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
           )}
 
           <div>
-            <label className="block text-xs font-semibold text-[#333333] mb-1.5">
+            <label className="block text-xs font-semibold text-roast-850 mb-1.5">
               Nama Kafe *
             </label>
             <input
@@ -113,12 +113,12 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
               value={formData.name}
               onChange={(e) => setFormData({ ...formData, name: e.target.value })}
               placeholder="Contoh: Tanaku Kopi & Coworking"
-              className="w-full rounded-xl border border-[#111111]/12 bg-[#F9F9FB] px-3.5 py-2.5 text-xs text-[#111111] placeholder-[#888888] outline-none transition-all focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3]/30"
+              className="w-full rounded-xl border border-canvas-border bg-canvas-surface px-3.5 py-2.5 text-xs text-roast-900 placeholder-roast-400 outline-none transition-all focus:border-crema-500 focus:ring-2 focus:ring-crema-500/15"
             />
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-[#333333] mb-1.5">
+            <label className="block text-xs font-semibold text-roast-850 mb-1.5">
               Alamat Lengkap *
             </label>
             <input
@@ -127,13 +127,13 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
               value={formData.address}
               onChange={(e) => setFormData({ ...formData, address: e.target.value })}
               placeholder="Contoh: Jl. Adi Sucipto No. 45, Manahan, Surakarta"
-              className="w-full rounded-xl border border-[#111111]/12 bg-[#F9F9FB] px-3.5 py-2.5 text-xs text-[#111111] placeholder-[#888888] outline-none transition-all focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3]/30"
+              className="w-full rounded-xl border border-canvas-border bg-canvas-surface px-3.5 py-2.5 text-xs text-roast-900 placeholder-roast-400 outline-none transition-all focus:border-crema-500 focus:ring-2 focus:ring-crema-500/15"
             />
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-semibold text-[#333333] mb-1.5">
+              <label className="block text-xs font-semibold text-roast-850 mb-1.5">
                 Jam Operasional
               </label>
               <input
@@ -141,12 +141,12 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
                 value={formData.opening_hours}
                 onChange={(e) => setFormData({ ...formData, opening_hours: e.target.value })}
                 placeholder="08:00 - 23:00"
-                className="w-full rounded-xl border border-[#111111]/12 bg-[#F9F9FB] px-3.5 py-2.5 text-xs text-[#111111] outline-none transition-all focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3]/30"
+                className="w-full rounded-xl border border-canvas-border bg-canvas-surface px-3.5 py-2.5 text-xs text-roast-900 outline-none transition-all focus:border-crema-500 focus:ring-2 focus:ring-crema-500/15"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#333333] mb-1.5">
+              <label className="block text-xs font-semibold text-roast-850 mb-1.5">
                 Rata-rata Keramaian
               </label>
               <select
@@ -157,7 +157,7 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
                     crowd_density: e.target.value as CrowdDensity,
                   })
                 }
-                className="w-full rounded-xl border border-[#111111]/12 bg-[#F9F9FB] px-3.5 py-2.5 text-xs text-[#111111] outline-none transition-all focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3]/30"
+                className="w-full rounded-xl border border-canvas-border bg-canvas-surface px-3.5 py-2.5 text-xs text-roast-900 outline-none transition-all focus:border-crema-500 focus:ring-2 focus:ring-crema-500/15"
               >
                 <option value="LOW">Sepi (Kondusif untuk fokus)</option>
                 <option value="MODERATE">Sedang (Santai)</option>
@@ -166,9 +166,9 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 border-t border-[#111111]/8 pt-3">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 border-t border-canvas-border pt-3">
             <div>
-              <label className="block text-xs font-semibold text-[#333333] mb-1.5">
+              <label className="block text-xs font-semibold text-roast-850 mb-1.5">
                 Kecepatan Wi-Fi (Mbps)
               </label>
               <input
@@ -185,12 +185,12 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
                     },
                   })
                 }
-                className="w-full rounded-xl border border-[#111111]/12 bg-[#F9F9FB] px-3.5 py-2.5 text-xs text-[#111111] outline-none transition-all focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3]/30"
+                className="w-full rounded-xl border border-canvas-border bg-canvas-surface px-3.5 py-2.5 text-xs text-roast-900 outline-none transition-all focus:border-crema-500 focus:ring-2 focus:ring-crema-500/15"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#333333] mb-1.5">
+              <label className="block text-xs font-semibold text-roast-850 mb-1.5">
                 Stabilitas Koneksi
               </label>
               <select
@@ -204,7 +204,7 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
                     },
                   })
                 }
-                className="w-full rounded-xl border border-[#111111]/12 bg-[#F9F9FB] px-3.5 py-2.5 text-xs text-[#111111] outline-none transition-all focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3]/30"
+                className="w-full rounded-xl border border-canvas-border bg-canvas-surface px-3.5 py-2.5 text-xs text-roast-900 outline-none transition-all focus:border-crema-500 focus:ring-2 focus:ring-crema-500/15"
               >
                 <option value="EXCELLENT">Sangat Stabil (Lancar rapat video)</option>
                 <option value="GOOD">Stabil</option>
@@ -216,7 +216,7 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-semibold text-[#333333] mb-1.5">
+              <label className="block text-xs font-semibold text-roast-850 mb-1.5">
                 Colokan Listrik
               </label>
               <select
@@ -230,7 +230,7 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
                     },
                   })
                 }
-                className="w-full rounded-xl border border-[#111111]/12 bg-[#F9F9FB] px-3.5 py-2.5 text-xs text-[#111111] outline-none transition-all focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3]/30"
+                className="w-full rounded-xl border border-canvas-border bg-canvas-surface px-3.5 py-2.5 text-xs text-roast-900 outline-none transition-all focus:border-crema-500 focus:ring-2 focus:ring-crema-500/15"
               >
                 <option value="PLENTY">Banyak (Tersedia di tiap meja)</option>
                 <option value="MODERATE">Sedang (Di area tertentu)</option>
@@ -240,7 +240,7 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#333333] mb-1.5">
+              <label className="block text-xs font-semibold text-roast-850 mb-1.5">
                 Kebisingan Suasana
               </label>
               <select
@@ -254,7 +254,7 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
                     },
                   })
                 }
-                className="w-full rounded-xl border border-[#111111]/12 bg-[#F9F9FB] px-3.5 py-2.5 text-xs text-[#111111] outline-none transition-all focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3]/30"
+                className="w-full rounded-xl border border-canvas-border bg-canvas-surface px-3.5 py-2.5 text-xs text-roast-900 outline-none transition-all focus:border-crema-500 focus:ring-2 focus:ring-crema-500/15"
               >
                 <option value="QUIET">Tenang (Fokus kerja &amp; skripsi)</option>
                 <option value="MODERATE">Sedang (Musik santai)</option>
@@ -264,11 +264,11 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
           </div>
 
           <div className="pt-2">
-            <label className="block text-xs font-semibold text-[#333333] mb-2">
+            <label className="block text-xs font-semibold text-roast-850 mb-2">
               Kelengkapan Fasilitas
             </label>
             <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 text-xs">
-              <label className="flex items-center gap-2 rounded-xl border border-[#111111]/10 bg-[#F9F9FB] p-3 cursor-pointer hover:bg-[#F2F2F5] transition-colors">
+              <label className="flex items-center gap-2 rounded-xl border border-canvas-border bg-canvas-surface p-3 cursor-pointer hover:bg-canvas-surface-warm transition-colors">
                 <input
                   type="checkbox"
                   checked={formData.amenities.air_conditioned}
@@ -281,12 +281,12 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
                       },
                     })
                   }
-                  className="rounded text-[#0070F3] focus:ring-[#0070F3]"
+                  className="rounded text-crema-500 focus:ring-crema-500"
                 />
-                <span className="font-medium text-[#111111]">Ruang AC</span>
+                <span className="font-medium text-roast-900">Ruang AC</span>
               </label>
 
-              <label className="flex items-center gap-2 rounded-xl border border-[#111111]/10 bg-[#F9F9FB] p-3 cursor-pointer hover:bg-[#F2F2F5] transition-colors">
+              <label className="flex items-center gap-2 rounded-xl border border-canvas-border bg-canvas-surface p-3 cursor-pointer hover:bg-canvas-surface-warm transition-colors">
                 <input
                   type="checkbox"
                   checked={formData.amenities.has_outdoor}
@@ -299,12 +299,12 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
                       },
                     })
                   }
-                  className="rounded text-[#0070F3] focus:ring-[#0070F3]"
+                  className="rounded text-crema-500 focus:ring-crema-500"
                 />
-                <span className="font-medium text-[#111111]">Area Terbuka</span>
+                <span className="font-medium text-roast-900">Area Terbuka</span>
               </label>
 
-              <label className="flex items-center gap-2 rounded-xl border border-[#111111]/10 bg-[#F9F9FB] p-3 cursor-pointer hover:bg-[#F2F2F5] transition-colors">
+              <label className="flex items-center gap-2 rounded-xl border border-canvas-border bg-canvas-surface p-3 cursor-pointer hover:bg-canvas-surface-warm transition-colors">
                 <input
                   type="checkbox"
                   checked={formData.amenities.has_prayer_room}
@@ -317,18 +317,18 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
                       },
                     })
                   }
-                  className="rounded text-[#0070F3] focus:ring-[#0070F3]"
+                  className="rounded text-crema-500 focus:ring-crema-500"
                 />
-                <span className="font-medium text-[#111111]">Mushola</span>
+                <span className="font-medium text-roast-900">Mushola</span>
               </label>
             </div>
           </div>
 
-          <div className="border-t border-[#111111]/8 pt-5">
+          <div className="border-t border-canvas-border pt-5">
             <button
               type="submit"
               disabled={mutation.isPending}
-              className="flex w-full items-center justify-center gap-2 rounded-full bg-[#111111] py-3 text-xs font-semibold text-white transition-all hover:bg-[#0070F3] active:scale-98 shadow-md disabled:opacity-50"
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-roast-900 py-3 text-xs font-semibold text-white transition-all hover:bg-crema-500 active:scale-98 shadow-md disabled:opacity-50"
             >
               {mutation.isPending ? (
                 <>

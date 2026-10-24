@@ -56,7 +56,7 @@ export default function TypingCodeBlock() {
   }, []);
 
   return (
-    <div className="relative w-[230px] h-[170px] select-none rounded-xl overflow-hidden shadow-xl border border-[#111111]/10 bg-[#161618]">
+    <div className="relative w-[230px] h-[170px] select-none rounded-xl overflow-hidden shadow-xl border border-canvas-border bg-[#1A1310]">
       {/* Code background frame */}
       <div className="absolute inset-0 z-0 opacity-80 pointer-events-none">
         <Image
@@ -68,9 +68,9 @@ export default function TypingCodeBlock() {
       </div>
 
       {/* Code Text with blinking cursor */}
-      <div className="relative z-10 p-3 pt-7 font-mono text-[9px] leading-relaxed text-[#D2D2D2] whitespace-pre-wrap overflow-hidden h-full">
+      <div className="relative z-10 p-3 pt-7 font-mono text-[9px] leading-relaxed text-[#EDE5DF] whitespace-pre-wrap overflow-hidden h-full">
         {displayText}
-        <span className="inline-block w-[1.5px] h-[11px] bg-accent-amber ml-0.5 align-middle animate-pulse" />
+        <span className="inline-block w-[1.5px] h-[11px] bg-crema-500 ml-0.5 align-middle animate-pulse" />
       </div>
     </div>
   );

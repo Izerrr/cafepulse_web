@@ -9,7 +9,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="border-t border-[#111111]/8 bg-[#FAFAFC] text-[#71717A] text-xs">
+    <footer className="border-t border-canvas-border bg-canvas-surface text-roast-500 text-xs">
       
       <div className="mx-auto max-w-7xl px-4 py-14 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-12">
@@ -17,27 +17,27 @@ export default function Footer() {
           {/* Brand info */}
           <div className="space-y-3.5 md:col-span-6">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-[#111111]/10 bg-white text-[#0070F3] shadow-sm">
+              <div className="flex h-7 w-7 items-center justify-center rounded-lg border border-canvas-border bg-white text-crema-500 shadow-xs">
                 <Coffee className="h-3.5 w-3.5" />
               </div>
-              <span className="text-base font-bold tracking-tight text-[#111111]">
-                cafepulse<span className="text-[#0070F3]">.</span>
+              <span className="text-base font-bold tracking-tight text-roast-900">
+                cafepulse<span className="text-crema-500">.</span>
               </span>
             </div>
 
-            <p className="text-xs leading-relaxed text-[#555555] max-w-md">
+            <p className="text-xs leading-relaxed text-roast-600 max-w-md">
               Direktori kurasi kafe ramah kerja di Surakarta. Dibangun untuk memudahkan pekerja remote,
               mahasiswa, dan tim mencari ruang kerja dengan koneksi stabil, colokan memadai, dan suasana kondusif.
             </p>
 
             <div className="flex flex-wrap items-center gap-2 pt-1 font-mono text-[11px]">
-              <span className="rounded-full border border-[#111111]/10 bg-white px-3 py-0.5 text-[#555555]">
+              <span className="rounded-full border border-canvas-border bg-white px-3 py-0.5 text-roast-700">
                 Surakarta Chapter
               </span>
-              <span className="rounded-full border border-[#111111]/10 bg-white px-3 py-0.5 text-[#555555]">
+              <span className="rounded-full border border-canvas-border bg-white px-3 py-0.5 text-roast-700">
                 PostgreSQL (Supabase)
               </span>
-              <span className="rounded-full border border-[#111111]/10 bg-white px-3 py-0.5 text-[#555555]">
+              <span className="rounded-full border border-canvas-border bg-white px-3 py-0.5 text-roast-700">
                 Next.js 16
               </span>
             </div>
@@ -45,31 +45,31 @@ export default function Footer() {
 
           {/* Telemetri & Integrasi API */}
           <div className="space-y-2 md:col-span-4">
-            <div className="font-semibold text-[#111111]">
+            <div className="font-semibold text-roast-900">
               Infrastruktur &amp; Integrasi
             </div>
             
             <ul className="space-y-2 text-xs">
-              <li className="flex items-center justify-between border-b border-[#111111]/6 pb-2">
-                <span className="text-[#71717A]">REST API</span>
+              <li className="flex items-center justify-between border-b border-canvas-border pb-2">
+                <span className="text-roast-400">REST API</span>
                 <a
                   href="https://api.cafepulse.izerworks.my.id/db-check"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-[#111111] hover:text-[#0070F3] flex items-center gap-1 font-mono text-[11px] font-medium"
+                  className="text-roast-900 hover:text-crema-500 flex items-center gap-1 font-mono text-[11px] font-medium"
                 >
                   api.cafepulse.izerworks.my.id
                   <ArrowUpRight className="h-3 w-3" />
                 </a>
               </li>
-              <li className="flex items-center justify-between border-b border-[#111111]/6 pb-2">
-                <span className="text-[#71717A]">Domain Frontend</span>
-                <span className="text-[#111111] font-mono text-[11px] font-medium">
+              <li className="flex items-center justify-between border-b border-canvas-border pb-2">
+                <span className="text-roast-400">Domain Frontend</span>
+                <span className="text-roast-900 font-mono text-[11px] font-medium">
                   cafepulse.izerworks.my.id
                 </span>
               </li>
-              <li className="flex items-center justify-between border-b border-[#111111]/6 pb-2">
-                <span className="text-[#71717A]">Status Layanan</span>
+              <li className="flex items-center justify-between border-b border-canvas-border pb-2">
+                <span className="text-roast-400">Status Layanan</span>
                 <span className="flex items-center gap-1.5 text-emerald-600 font-medium">
                   <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
                   Operasional Normal
@@ -82,13 +82,13 @@ export default function Footer() {
           <div className="flex flex-col justify-between md:col-span-2 md:items-end">
             <button
               onClick={scrollToTop}
-              className="flex items-center gap-1.5 rounded-full border border-[#111111]/10 bg-white px-4 py-2 text-xs font-semibold text-[#111111] transition-all hover:border-[#111111]/30 hover:bg-[#F5F5F7] shadow-sm active:scale-95"
+              className="flex items-center gap-1.5 rounded-full border border-canvas-border bg-white px-4 py-2 text-xs font-semibold text-roast-900 transition-all hover:border-canvas-border-hover hover:bg-canvas-bg shadow-xs active:scale-95"
             >
               <span>Ke Atas</span>
               <ArrowUpRight className="h-3.5 w-3.5 -rotate-45" />
             </button>
 
-            <span className="text-[11px] text-[#888888] mt-6 md:mt-0 font-mono">
+            <span className="text-[11px] text-roast-400 mt-6 md:mt-0 font-mono">
               V1.0 · 2026
             </span>
           </div>
@@ -97,8 +97,8 @@ export default function Footer() {
       </div>
 
       {/* Sub-footer */}
-      <div className="border-t border-[#111111]/8 bg-white py-4">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 text-[11px] font-mono text-[#888888]">
+      <div className="border-t border-canvas-border bg-canvas-bg py-4">
+        <div className="mx-auto flex max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8 text-[11px] font-mono text-roast-400">
           <div>
             &copy; 2026 cafepulse. Direktori ruang kerja dan kafe ramah laptop.
           </div>

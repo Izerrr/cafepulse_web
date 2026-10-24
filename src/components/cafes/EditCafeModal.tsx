@@ -54,24 +54,24 @@ function EditCafeModalContent({ cafe, onClose }: { cafe: Cafe; onClose: () => vo
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6">
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/40 backdrop-blur-sm transition-opacity"
+        className="fixed inset-0 bg-roast-950/50 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
       {/* Modal Dialog */}
-      <div className="relative z-10 flex max-h-[90vh] w-full max-w-xl flex-col rounded-2xl border border-[#111111]/15 bg-white text-[#111111] shadow-2xl overflow-hidden">
+      <div className="relative z-10 flex max-h-[90vh] w-full max-w-xl flex-col rounded-2xl border border-canvas-border bg-white text-roast-900 shadow-2xl overflow-hidden">
         
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-[#111111]/8 bg-[#FAFAFC] px-6 py-4">
+        <div className="flex items-center justify-between border-b border-canvas-border bg-canvas-surface px-6 py-4">
           <div className="flex items-center gap-2">
-            <span className="text-sm font-bold text-[#111111]">
+            <span className="text-sm font-bold text-roast-900">
               Edit Data Fasilitas &middot; {cafe.name}
             </span>
           </div>
 
           <button
             onClick={onClose}
-            className="flex h-7 w-7 items-center justify-center rounded-full border border-[#111111]/15 text-[#71717A] hover:text-[#111111] hover:border-[#111111]/30 transition-colors"
+            className="flex h-7 w-7 items-center justify-center rounded-full border border-canvas-border text-roast-400 hover:text-roast-900 hover:border-canvas-border-hover transition-colors"
           >
             <X className="h-4 w-4" />
           </button>
@@ -88,25 +88,25 @@ function EditCafeModalContent({ cafe, onClose }: { cafe: Cafe; onClose: () => vo
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-semibold text-[#333333] mb-1.5">
+              <label className="block text-xs font-semibold text-roast-850 mb-1.5">
                 Jam Operasional
               </label>
               <input
                 type="text"
                 value={openingHours}
                 onChange={(e) => setOpeningHours(e.target.value)}
-                className="w-full rounded-xl border border-[#111111]/12 bg-[#F9F9FB] px-3.5 py-2.5 text-xs text-[#111111] outline-none transition-all focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3]/30"
+                className="w-full rounded-xl border border-canvas-border bg-canvas-surface px-3.5 py-2.5 text-xs text-roast-900 outline-none transition-all focus:border-crema-500 focus:ring-2 focus:ring-crema-500/15"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#333333] mb-1.5">
+              <label className="block text-xs font-semibold text-roast-850 mb-1.5">
                 Keramaian Saat Ini
               </label>
               <select
                 value={crowdDensity}
                 onChange={(e) => setCrowdDensity(e.target.value as CrowdDensity)}
-                className="w-full rounded-xl border border-[#111111]/12 bg-[#F9F9FB] px-3.5 py-2.5 text-xs text-[#111111] outline-none transition-all focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3]/30"
+                className="w-full rounded-xl border border-canvas-border bg-canvas-surface px-3.5 py-2.5 text-xs text-roast-900 outline-none transition-all focus:border-crema-500 focus:ring-2 focus:ring-crema-500/15"
               >
                 <option value="LOW">Sepi (Kondusif untuk fokus)</option>
                 <option value="MODERATE">Sedang (Santai)</option>
@@ -117,7 +117,7 @@ function EditCafeModalContent({ cafe, onClose }: { cafe: Cafe; onClose: () => vo
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-semibold text-[#333333] mb-1.5">
+              <label className="block text-xs font-semibold text-roast-850 mb-1.5">
                 Kecepatan Wi-Fi (Mbps)
               </label>
               <input
@@ -131,12 +131,12 @@ function EditCafeModalContent({ cafe, onClose }: { cafe: Cafe; onClose: () => vo
                     wifi_speed_mbps: Number(e.target.value),
                   })
                 }
-                className="w-full rounded-xl border border-[#111111]/12 bg-[#F9F9FB] px-3.5 py-2.5 text-xs text-[#111111] outline-none transition-all focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3]/30"
+                className="w-full rounded-xl border border-canvas-border bg-canvas-surface px-3.5 py-2.5 text-xs text-roast-900 outline-none transition-all focus:border-crema-500 focus:ring-2 focus:ring-crema-500/15"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#333333] mb-1.5">
+              <label className="block text-xs font-semibold text-roast-850 mb-1.5">
                 Stabilitas Koneksi
               </label>
               <select
@@ -147,7 +147,7 @@ function EditCafeModalContent({ cafe, onClose }: { cafe: Cafe; onClose: () => vo
                     wifi_stability: e.target.value as WifiStability,
                   })
                 }
-                className="w-full rounded-xl border border-[#111111]/12 bg-[#F9F9FB] px-3.5 py-2.5 text-xs text-[#111111] outline-none transition-all focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3]/30"
+                className="w-full rounded-xl border border-canvas-border bg-canvas-surface px-3.5 py-2.5 text-xs text-roast-900 outline-none transition-all focus:border-crema-500 focus:ring-2 focus:ring-crema-500/15"
               >
                 <option value="EXCELLENT">Sangat Stabil</option>
                 <option value="GOOD">Stabil</option>
@@ -159,7 +159,7 @@ function EditCafeModalContent({ cafe, onClose }: { cafe: Cafe; onClose: () => vo
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
             <div>
-              <label className="block text-xs font-semibold text-[#333333] mb-1.5">
+              <label className="block text-xs font-semibold text-roast-850 mb-1.5">
                 Colokan Listrik
               </label>
               <select
@@ -170,7 +170,7 @@ function EditCafeModalContent({ cafe, onClose }: { cafe: Cafe; onClose: () => vo
                     plug_score: e.target.value as PlugScore,
                   })
                 }
-                className="w-full rounded-xl border border-[#111111]/12 bg-[#F9F9FB] px-3.5 py-2.5 text-xs text-[#111111] outline-none transition-all focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3]/30"
+                className="w-full rounded-xl border border-canvas-border bg-canvas-surface px-3.5 py-2.5 text-xs text-roast-900 outline-none transition-all focus:border-crema-500 focus:ring-2 focus:ring-crema-500/15"
               >
                 <option value="PLENTY">Banyak (Tiap meja)</option>
                 <option value="MODERATE">Sedang (Meja tertentu)</option>
@@ -180,7 +180,7 @@ function EditCafeModalContent({ cafe, onClose }: { cafe: Cafe; onClose: () => vo
             </div>
 
             <div>
-              <label className="block text-xs font-semibold text-[#333333] mb-1.5">
+              <label className="block text-xs font-semibold text-roast-850 mb-1.5">
                 Kebisingan Suasana
               </label>
               <select
@@ -191,7 +191,7 @@ function EditCafeModalContent({ cafe, onClose }: { cafe: Cafe; onClose: () => vo
                     noise_level: e.target.value as NoiseLevel,
                   })
                 }
-                className="w-full rounded-xl border border-[#111111]/12 bg-[#F9F9FB] px-3.5 py-2.5 text-xs text-[#111111] outline-none transition-all focus:border-[#0070F3] focus:ring-1 focus:ring-[#0070F3]/30"
+                className="w-full rounded-xl border border-canvas-border bg-canvas-surface px-3.5 py-2.5 text-xs text-roast-900 outline-none transition-all focus:border-crema-500 focus:ring-2 focus:ring-crema-500/15"
               >
                 <option value="QUIET">Tenang</option>
                 <option value="MODERATE">Sedang</option>
@@ -201,48 +201,48 @@ function EditCafeModalContent({ cafe, onClose }: { cafe: Cafe; onClose: () => vo
           </div>
 
           <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 text-xs pt-1">
-            <label className="flex items-center gap-2 rounded-xl border border-[#111111]/10 bg-[#F9F9FB] p-3 cursor-pointer hover:bg-[#F2F2F5] transition-colors">
+            <label className="flex items-center gap-2 rounded-xl border border-canvas-border bg-canvas-surface p-3 cursor-pointer hover:bg-canvas-surface-warm transition-colors">
               <input
                 type="checkbox"
                 checked={amenities.air_conditioned}
                 onChange={(e) =>
                   setAmenities({ ...amenities, air_conditioned: e.target.checked })
                 }
-                className="rounded text-[#0070F3] focus:ring-[#0070F3]"
+                className="rounded text-crema-500 focus:ring-crema-500"
               />
-              <span className="font-medium text-[#111111]">Ruang AC</span>
+              <span className="font-medium text-roast-900">Ruang AC</span>
             </label>
 
-            <label className="flex items-center gap-2 rounded-xl border border-[#111111]/10 bg-[#F9F9FB] p-3 cursor-pointer hover:bg-[#F2F2F5] transition-colors">
+            <label className="flex items-center gap-2 rounded-xl border border-canvas-border bg-canvas-surface p-3 cursor-pointer hover:bg-canvas-surface-warm transition-colors">
               <input
                 type="checkbox"
                 checked={amenities.has_outdoor}
                 onChange={(e) =>
                   setAmenities({ ...amenities, has_outdoor: e.target.checked })
                 }
-                className="rounded text-[#0070F3] focus:ring-[#0070F3]"
+                className="rounded text-crema-500 focus:ring-crema-500"
               />
-              <span className="font-medium text-[#111111]">Area Terbuka</span>
+              <span className="font-medium text-roast-900">Area Terbuka</span>
             </label>
 
-            <label className="flex items-center gap-2 rounded-xl border border-[#111111]/10 bg-[#F9F9FB] p-3 cursor-pointer hover:bg-[#F2F2F5] transition-colors">
+            <label className="flex items-center gap-2 rounded-xl border border-canvas-border bg-canvas-surface p-3 cursor-pointer hover:bg-canvas-surface-warm transition-colors">
               <input
                 type="checkbox"
                 checked={amenities.has_prayer_room}
                 onChange={(e) =>
                   setAmenities({ ...amenities, has_prayer_room: e.target.checked })
                 }
-                className="rounded text-[#0070F3] focus:ring-[#0070F3]"
+                className="rounded text-crema-500 focus:ring-crema-500"
               />
-              <span className="font-medium text-[#111111]">Mushola</span>
+              <span className="font-medium text-roast-900">Mushola</span>
             </label>
           </div>
 
-          <div className="border-t border-[#111111]/8 pt-5">
+          <div className="border-t border-canvas-border pt-5">
             <button
               type="submit"
               disabled={mutation.isPending}
-              className="flex w-full items-center justify-center gap-2 rounded-full bg-[#111111] py-3 text-xs font-semibold text-white transition-all hover:bg-[#0070F3] active:scale-98 shadow-md disabled:opacity-50"
+              className="flex w-full items-center justify-center gap-2 rounded-full bg-roast-900 py-3 text-xs font-semibold text-white transition-all hover:bg-crema-500 active:scale-98 shadow-md disabled:opacity-50"
             >
               {mutation.isPending ? (
                 <>

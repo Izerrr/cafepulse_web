@@ -35,17 +35,17 @@ for cafe in data.get('data', []):
   };
 
   return (
-    <section id="developer-api" className="bg-[#010101] py-20 lg:py-24 text-white">
+    <section id="developer-api" className="bg-[#140F0D] py-20 lg:py-24 text-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
-        {/* Onlines dark card wrapper */}
-        <div className="rounded-[24px] border border-white/10 bg-[#111111] p-8 sm:p-12 lg:p-16 shadow-2xl relative overflow-hidden">
+        {/* Onlines dark roast card wrapper */}
+        <div className="rounded-[24px] border border-white/8 bg-[#1E1714] p-8 sm:p-12 lg:p-16 shadow-2xl relative overflow-hidden">
           
-          {/* Subtle grid pattern background */}
+          {/* Subtle warm dot pattern background */}
           <div
-            className="absolute inset-0 pointer-events-none opacity-20"
+            className="absolute inset-0 pointer-events-none opacity-15"
             style={{
-              backgroundImage: 'radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px)',
+              backgroundImage: 'radial-gradient(rgba(224, 142, 69, 0.4) 1px, transparent 1px)',
               backgroundSize: '24px 24px',
             }}
           />
@@ -54,16 +54,16 @@ for cafe in data.get('data', []):
             
             {/* Left Column: Context & Documentation */}
             <div className="lg:col-span-5 space-y-4">
-              <div className="inline-flex items-center gap-2 rounded-full border border-white/15 bg-white/5 px-3.5 py-1 text-xs text-[#D4D4D8]">
-                <Code2 className="h-3.5 w-3.5 text-[#0070F3]" />
+              <div className="inline-flex items-center gap-2 rounded-full border border-crema-500/30 bg-crema-500/10 px-3.5 py-1 text-xs text-crema-300">
+                <Code2 className="h-3.5 w-3.5 text-crema-400" />
                 <span className="font-mono">REST API Publik</span>
               </div>
 
               <h2 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-white leading-tight">
-                Gunakan data CafePulse untuk proyekmu<span className="text-[#0070F3]">.</span>
+                Gunakan data CafePulse untuk proyekmu<span className="text-crema-400">.</span>
               </h2>
 
-              <p className="text-sm leading-relaxed text-[#A1A1AA]">
+              <p className="text-sm leading-relaxed text-[#C5B8B1]">
                 Sedang membuat tugas akhir, aplikasi mobile, bot Telegram, atau visualisasi peta sebaran kafe di Surakarta?
                 Data direktori CafePulse terbuka untuk umum dan dapat diakses gratis via REST API dengan CORS aktif.
               </p>
@@ -73,37 +73,37 @@ for cafe in data.get('data', []):
                   href={`${baseUrl}/db-check`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white hover:bg-white/10 transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-white/8 bg-white/4 px-4 py-2 text-xs font-semibold text-white hover:bg-white/8 transition-colors"
                 >
-                  <Terminal className="h-3.5 w-3.5 text-[#0070F3]" />
+                  <Terminal className="h-3.5 w-3.5 text-crema-400" />
                   <span>Cek Telemetri /db-check</span>
-                  <ExternalLink className="h-3 w-3 text-[#71717A]" />
+                  <ExternalLink className="h-3 w-3 text-[#A8958A]" />
                 </a>
 
                 <a
                   href={`${baseUrl}/api/cafes`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 rounded-full border border-white/15 bg-white/5 px-4 py-2 text-xs font-semibold text-white hover:bg-white/10 transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-full border border-white/8 bg-white/4 px-4 py-2 text-xs font-semibold text-white hover:bg-white/8 transition-colors"
                 >
-                  <span className="font-mono text-[#0070F3]">GET</span>
+                  <span className="font-mono text-crema-400">GET</span>
                   <span>/api/cafes</span>
-                  <ExternalLink className="h-3 w-3 text-[#71717A]" />
+                  <ExternalLink className="h-3 w-3 text-[#A8958A]" />
                 </a>
               </div>
             </div>
 
             {/* Right Column: Interactive Code Console */}
             <div className="lg:col-span-7">
-              <div className="rounded-2xl border border-white/10 bg-[#070709] overflow-hidden shadow-2xl">
+              <div className="rounded-2xl border border-white/8 bg-[#120D0B] overflow-hidden shadow-2xl">
                 
                 {/* Top Terminal Bar */}
-                <div className="flex items-center justify-between border-b border-white/10 bg-[#16161A] px-4 py-3">
+                <div className="flex items-center justify-between border-b border-white/8 bg-[#1A1310] px-4 py-3">
                   <div className="flex items-center gap-2">
-                    <span className="h-3 w-3 rounded-full bg-[#FF5F56]" />
-                    <span className="h-3 w-3 rounded-full bg-[#FFBD2E]" />
-                    <span className="h-3 w-3 rounded-full bg-[#27C93F]" />
-                    <span className="ml-2 font-mono text-xs text-[#888888] hidden sm:inline">
+                    <span className="h-3 w-3 rounded-full bg-[#E06C75]" />
+                    <span className="h-3 w-3 rounded-full bg-[#E5C07B]" />
+                    <span className="h-3 w-3 rounded-full bg-[#98C379]" />
+                    <span className="ml-2 font-mono text-xs text-[#8A7970] hidden sm:inline">
                       api.cafepulse.izerworks.my.id
                     </span>
                   </div>
@@ -116,8 +116,8 @@ for cafe in data.get('data', []):
                         onClick={() => setActiveTab(tab)}
                         className={`rounded-md px-2.5 py-1 font-mono text-xs transition-colors ${
                           activeTab === tab
-                            ? 'bg-[#0070F3] text-white font-medium shadow-sm'
-                            : 'text-[#888888] hover:text-white'
+                            ? 'bg-crema-500 text-white font-medium shadow-xs'
+                            : 'text-[#9E8E84] hover:text-white'
                         }`}
                       >
                         {tab === 'curl' ? 'cURL' : tab === 'js' ? 'JS (fetch)' : 'Python'}
@@ -126,7 +126,7 @@ for cafe in data.get('data', []):
 
                     <button
                       onClick={handleCopy}
-                      className="ml-2 flex items-center gap-1 rounded-md border border-white/15 bg-white/5 px-2.5 py-1 text-xs text-[#D4D4D8] hover:text-white transition-colors"
+                      className="ml-2 flex items-center gap-1 rounded-md border border-white/8 bg-white/4 px-2.5 py-1 text-xs text-[#C5B8B1] hover:text-white transition-colors"
                       title="Salin kode"
                     >
                       {copied ? (
@@ -146,7 +146,7 @@ for cafe in data.get('data', []):
 
                 {/* Code Body */}
                 <div className="p-4 sm:p-5 overflow-x-auto">
-                  <pre className="font-mono text-xs sm:text-[13px] text-[#EDEDED] leading-relaxed">
+                  <pre className="font-mono text-xs sm:text-[13px] text-[#F0EBE8] leading-relaxed">
                     <code>{codeSnippets[activeTab]}</code>
                   </pre>
                 </div>
