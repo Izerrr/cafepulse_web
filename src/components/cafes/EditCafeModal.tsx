@@ -11,61 +11,35 @@ interface EditCafeModalProps {
   onClose: () => void;
 }
 
-export default function EditCafeModal({ cafe, onClose }: EditCafeModalProps) {
+function EditCafeModalContent({ cafe, onClose }: { cafe: Cafe; onClose: () => void }) {
   const queryClient = useQueryClient();
 
-  const [openingHours, setOpeningHours] = useState('');
-  const [crowdDensity, setCrowdDensity] = useState<CrowdDensity>('LOW');
+  const [openingHours, setOpeningHours] = useState(cafe.opening_hours || '08:00 - 23:00');
+  const [crowdDensity, setCrowdDensity] = useState<CrowdDensity>(cafe.crowd_density || 'LOW');
   const [amenities, setAmenities] = useState({
-    wifi_speed_mbps: 85,
-    wifi_stability: 'EXCELLENT' as WifiStability,
-    plug_score: 'PLENTY' as PlugScore,
-    noise_level: 'QUIET' as NoiseLevel,
-    air_conditioned: true,
-    has_outdoor: true,
-    has_prayer_room: true,
+    wifi_speed_mbps: cafe.amenities?.wifi_speed_mbps || 50,
+    wifi_stability: (cafe.amenities?.wifi_stability || 'GOOD') as WifiStability,
+    plug_score: (cafe.amenities?.plug_score || 'MODERATE') as PlugScore,
+    noise_level: (cafe.amenities?.noise_level || 'QUIET') as NoiseLevel,
+    air_conditioned: !!cafe.amenities?.air_conditioned,
+    has_outdoor: !!cafe.amenities?.has_outdoor,
+    has_prayer_room: !!cafe.amenities?.has_prayer_room,
   });
 
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  useEffect(() => {
-    if (cafe) {
-      document.body.style.overflow = 'hidden';
-      setOpeningHours(cafe.opening_hours || '08:00 - 23:00');
-      setCrowdDensity(cafe.crowd_density || 'LOW');
-      if (cafe.amenities) {
-        setAmenities({
-          wifi_speed_mbps: cafe.amenities.wifi_speed_mbps || 50,
-          wifi_stability: cafe.amenities.wifi_stability || 'GOOD',
-          plug_score: cafe.amenities.plug_score || 'MODERATE',
-          noise_level: cafe.amenities.noise_level || 'QUIET',
-          air_conditioned: !!cafe.amenities.air_conditioned,
-          has_outdoor: !!cafe.amenities.has_outdoor,
-          has_prayer_room: !!cafe.amenities.has_prayer_room,
-        });
-      }
-    } else {
-      document.body.style.overflow = 'unset';
-    }
-    return () => {
-      document.body.style.overflow = 'unset';
-    };
-  }, [cafe]);
-
   const mutation = useMutation({
-    mutationFn: (payload: UpdateCafeInput) =>
-      api.updateCafe(cafe!.id, payload),
+    mutationFn: (payload: UpdateCafeInput) => api.updateCafe(cafe.id, payload),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cafes'] });
-      queryClient.invalidateQueries({ queryKey: ['cafe-detail', cafe?.id] });
+      queryClient.invalidateQueries({ queryKey: ['cafe-detail', cafe.id] });
       onClose();
     },
-    onError: (err: any) => {
-      setErrorMessage(err?.message || 'Gagal memperbarui data kafe.');
+    onError: (err: unknown) => {
+      const msg = err instanceof Error ? err.message : 'Gagal memperbarui data kafe.';
+      setErrorMessage(msg);
     },
   });
-
-  if (!cafe) return null;
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -284,4 +258,17 @@ export default function EditCafeModal({ cafe, onClose }: EditCafeModalProps) {
       </div>
     </div>
   );
+}
+
+export default function EditCafeModal({ cafe, onClose }: EditCafeModalProps) {
+  useEffect(() => {
+    document.body.style.overflow = cafe ? 'hidden' : 'unset';
+    return () => {
+      document.body.style.overflow = 'unset';
+    };
+  }, [cafe]);
+
+  if (!cafe) return null;
+
+  return <EditCafeModalContent key={cafe.id} cafe={cafe} onClose={onClose} />;
 }

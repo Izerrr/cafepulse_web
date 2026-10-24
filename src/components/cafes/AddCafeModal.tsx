@@ -35,12 +35,7 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = 'hidden';
-      setErrorMessage(null);
-    } else {
-      document.body.style.overflow = 'unset';
-    }
+    document.body.style.overflow = isOpen ? 'hidden' : 'unset';
     return () => {
       document.body.style.overflow = 'unset';
     };
@@ -51,10 +46,12 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['cafes'] });
       queryClient.invalidateQueries({ queryKey: ['system-status'] });
+      setErrorMessage(null);
       onClose();
     },
-    onError: (err: any) => {
-      setErrorMessage(err?.message || 'Gagal menambahkan data kafe. Silakan coba lagi.');
+    onError: (err: unknown) => {
+      const msg = err instanceof Error ? err.message : 'Gagal menambahkan data kafe. Silakan coba lagi.';
+      setErrorMessage(msg);
     },
   });
 

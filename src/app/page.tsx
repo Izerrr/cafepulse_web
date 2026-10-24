@@ -53,7 +53,7 @@ export default function HomePage() {
       }),
   });
 
-  const allCafes = cafeResponse?.data || [];
+  const allCafes = useMemo(() => cafeResponse?.data || [], [cafeResponse?.data]);
 
   const filteredCafes = useMemo(() => {
     return allCafes.filter((cafe) => {
