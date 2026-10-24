@@ -7,12 +7,15 @@ import { Cafe } from '@/types/cafe';
 import Navbar from '@/components/navbar/Navbar';
 import HeroSection from '@/components/hero/HeroSection';
 import MarqueeTicker from '@/components/hero/MarqueeTicker';
+import MoodSwitcher, { MoodMode } from '@/components/filters/MoodSwitcher';
 import FilterBar, { FilterState } from '@/components/filters/FilterBar';
 import CafeCard from '@/components/cafes/CafeCard';
 import CafeDetailModal from '@/components/cafes/CafeDetailModal';
 import AddCafeModal from '@/components/cafes/AddCafeModal';
 import EditCafeModal from '@/components/cafes/EditCafeModal';
+import DeveloperApiSection from '@/components/developer/DeveloperApiSection';
 import Footer from '@/components/footer/Footer';
+import { useBookmarks } from '@/hooks/useBookmarks';
 import { Plus, Coffee, RefreshCw, AlertCircle } from 'lucide-react';
 
 const initialFilters: FilterState = {
@@ -28,9 +31,12 @@ const initialFilters: FilterState = {
 
 export default function HomePage() {
   const [filters, setFilters] = useState<FilterState>(initialFilters);
+  const [currentMood, setCurrentMood] = useState<MoodMode>('ALL');
   const [selectedCafe, setSelectedCafe] = useState<Cafe | null>(null);
   const [editingCafe, setEditingCafe] = useState<Cafe | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+
+  const { isBookmarked, toggleBookmark, totalBookmarks, bookmarkedIds } = useBookmarks();
 
   const exploreRef = useRef<HTMLDivElement>(null);
 
@@ -55,8 +61,34 @@ export default function HomePage() {
 
   const allCafes = useMemo(() => cafeResponse?.data || [], [cafeResponse?.data]);
 
+  // Handle Mood Selection
+  const handleSelectMood = (mood: MoodMode) => {
+    setCurrentMood(mood);
+    if (mood === 'ALL') {
+      setFilters(initialFilters);
+    } else if (mood === 'DEEP_WORK') {
+      setFilters({
+        ...initialFilters,
+        minWifiSpeed: 50,
+        plugScore: 'PLENTY',
+        noiseLevel: 'QUIET',
+      });
+    } else if (mood === 'MEETING') {
+      setFilters({
+        ...initialFilters,
+        acOnly: true,
+      });
+    }
+  };
+
+  // Filter cafes including Bookmark mode
   const filteredCafes = useMemo(() => {
     return allCafes.filter((cafe) => {
+      // If bookmarks mode active
+      if (currentMood === 'BOOKMARKS' && !bookmarkedIds.includes(cafe.id)) {
+        return false;
+      }
+
       const amenities = cafe.amenities;
       if (!amenities) return true;
 
@@ -78,31 +110,48 @@ export default function HomePage() {
 
       return true;
     });
-  }, [allCafes, filters]);
+  }, [allCafes, filters, currentMood, bookmarkedIds]);
 
   return (
     <main className="min-h-screen bg-[#09090B] text-[#EDEDED] selection:bg-[#EDEDED] selection:text-[#09090B]">
       
       {/* Top Navbar */}
-      <Navbar onOpenAddModal={() => setIsAddModalOpen(true)} />
+      <Navbar
+        onOpenAddModal={() => setIsAddModalOpen(true)}
+        totalBookmarks={totalBookmarks}
+        isBookmarkActive={currentMood === 'BOOKMARKS'}
+        onFilterBookmarks={() =>
+          handleSelectMood(currentMood === 'BOOKMARKS' ? 'ALL' : 'BOOKMARKS')
+        }
+      />
 
-      {/* Hero Section (Onlines.com.ar canvas style) */}
+      {/* Hero Section (onlines.com.ar Draggable Canvas) */}
       <HeroSection
         onScrollToExplore={scrollToExplore}
         totalCafes={allCafes.length || 2}
       />
 
-      {/* Running Marquee Ticker */}
+      {/* Marquee Ticker */}
       <MarqueeTicker />
 
-      {/* Explore Cafes Section */}
+      {/* Explore Section */}
       <div ref={exploreRef} className="scroll-mt-14">
         
+        {/* Quick Mood Switcher */}
+        <MoodSwitcher
+          currentMood={currentMood}
+          onSelectMood={handleSelectMood}
+          totalBookmarks={totalBookmarks}
+        />
+
         {/* Filter Bar */}
         <FilterBar
           filters={filters}
           onChange={setFilters}
-          onReset={() => setFilters(initialFilters)}
+          onReset={() => {
+            setFilters(initialFilters);
+            setCurrentMood('ALL');
+          }}
           totalResults={filteredCafes.length}
         />
 
@@ -161,17 +210,24 @@ export default function HomePage() {
                 <div className="rounded-xl border border-white/[0.08] bg-[#121215] p-12 text-center">
                   <Coffee className="mx-auto h-9 w-9 text-[#52525B] mb-3" />
                   <h3 className="text-base font-semibold text-[#EDEDED]">
-                    Tidak ada kafe yang cocok dengan filter
+                    {currentMood === 'BOOKMARKS'
+                      ? 'Belum ada kafe yang disimpan ke favorit'
+                      : 'Tidak ada kafe yang cocok dengan filter'}
                   </h3>
                   <p className="mt-1.5 text-xs text-[#71717A] max-w-md mx-auto">
-                    Coba turunkan batas kecepatan Wi-Fi atau reset filter pencarian untuk melihat semua kafe.
+                    {currentMood === 'BOOKMARKS'
+                      ? 'Tekan ikon bookmark pada kartu kafe mana saja untuk menyimpannya ke daftar ini.'
+                      : 'Coba turunkan batas kecepatan Wi-Fi atau reset filter untuk melihat semua kafe.'}
                   </p>
                   <div className="mt-5 flex items-center justify-center gap-3">
                     <button
-                      onClick={() => setFilters(initialFilters)}
+                      onClick={() => {
+                        setFilters(initialFilters);
+                        setCurrentMood('ALL');
+                      }}
                       className="rounded-lg border border-white/10 bg-white/[0.02] px-3.5 py-1.5 text-xs font-medium text-[#EDEDED] hover:border-white/20"
                     >
-                      Reset Filter
+                      Tampilkan Semua Kafe
                     </button>
                     <button
                       onClick={() => setIsAddModalOpen(true)}
@@ -189,6 +245,8 @@ export default function HomePage() {
                       cafe={cafe}
                       onExplore={(c) => setSelectedCafe(c)}
                       onEdit={(c) => setEditingCafe(c)}
+                      isBookmarked={isBookmarked(cafe.id)}
+                      onToggleBookmark={toggleBookmark}
                     />
                   ))}
                 </div>
@@ -204,7 +262,7 @@ export default function HomePage() {
       <button
         onClick={() => setIsAddModalOpen(true)}
         className="fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-[#EDEDED] text-[#09090B] shadow-lg transition-transform hover:scale-105 hover:bg-white active:scale-95"
-        title="Tambah Kafe"
+        title="Tambah Kafe Baru"
       >
         <Plus className="h-5 w-5 stroke-[2.5]" />
       </button>
@@ -228,6 +286,9 @@ export default function HomePage() {
         cafe={editingCafe}
         onClose={() => setEditingCafe(null)}
       />
+
+      {/* Dedicated Section: Open Data & Public API for Developers / Students */}
+      <DeveloperApiSection />
 
       {/* Footer */}
       <Footer />

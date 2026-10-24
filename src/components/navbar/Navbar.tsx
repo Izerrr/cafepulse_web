@@ -1,28 +1,32 @@
 'use client';
 
 import React from 'react';
-import { useQuery } from '@tanstack/react-query';
-import { api } from '@/lib/api';
-import { Coffee, Plus } from 'lucide-react';
+import { Coffee, Plus, Bookmark, Code2 } from 'lucide-react';
 
 interface NavbarProps {
   onOpenAddModal: () => void;
+  totalBookmarks?: number;
+  onFilterBookmarks?: () => void;
+  isBookmarkActive?: boolean;
 }
 
-export default function Navbar({ onOpenAddModal }: NavbarProps) {
-  const { data: statusData, isLoading, isError } = useQuery({
-    queryKey: ['system-status'],
-    queryFn: () => api.getSystemStatus(),
-    refetchInterval: 30000,
-  });
-
-  const isConnected = !isLoading && !isError && statusData?.status === 'success';
+export default function Navbar({
+  onOpenAddModal,
+  totalBookmarks = 0,
+  onFilterBookmarks,
+  isBookmarkActive = false,
+}: NavbarProps) {
+  const scrollToApi = (e: React.MouseEvent) => {
+    e.preventDefault();
+    const el = document.getElementById('developer-api');
+    el?.scrollIntoView({ behavior: 'smooth' });
+  };
 
   return (
     <header className="sticky top-0 z-40 w-full border-b border-white/[0.08] bg-[#09090B]/90 backdrop-blur-md">
-      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3.5 sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-7xl items-center justify-between px-4 py-3 sm:px-6 lg:px-8">
         
-        {/* Brand / Logo */}
+        {/* Brand */}
         <div className="flex items-center gap-3">
           <div className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/10 bg-white/[0.04] text-[#E59850]">
             <Coffee className="h-4 w-4" />
@@ -37,32 +41,39 @@ export default function Navbar({ onOpenAddModal }: NavbarProps) {
           </div>
         </div>
 
-        {/* Right Controls */}
-        <div className="flex items-center gap-3">
+        {/* Center / Right controls */}
+        <div className="flex items-center gap-2 sm:gap-3">
           
-          {/* Supabase status indicator */}
-          <div className="flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.02] px-3 py-1 text-xs text-[#A1A1AA]">
-            <span className="relative flex h-2 w-2">
-              <span
-                className={`absolute inline-flex h-full w-full rounded-full opacity-75 ${
-                  isConnected ? 'animate-ping bg-emerald-400' : 'bg-amber-400'
-                }`}
-              />
-              <span
-                className={`relative inline-flex h-2 w-2 rounded-full ${
-                  isConnected ? 'bg-emerald-500' : 'bg-amber-500'
-                }`}
-              />
-            </span>
-            <span className="hidden xs:inline">
-              {isLoading ? 'Menghubungkan...' : isConnected ? 'Terkoneksi ke Database' : 'Offline'}
-            </span>
-            {isConnected && statusData?.stats?.active_cafes !== undefined && (
-              <span className="text-[#71717A] font-mono text-[11px]">
-                ({statusData.stats.active_cafes} kafe)
-              </span>
-            )}
-          </div>
+          {/* Bookmark Quick Filter Pill */}
+          {onFilterBookmarks && (
+            <button
+              onClick={onFilterBookmarks}
+              className={`flex items-center gap-1.5 rounded-lg border px-3 py-1.5 text-xs transition-colors ${
+                isBookmarkActive
+                  ? 'border-amber-500/50 bg-amber-500/10 text-[#E59850] font-medium'
+                  : 'border-white/10 bg-white/[0.02] text-[#A1A1AA] hover:border-white/20 hover:text-white'
+              }`}
+              title="Lihat kafe yang kamu bookmark"
+            >
+              <Bookmark className={`h-3.5 w-3.5 ${isBookmarkActive ? 'fill-[#E59850]' : ''}`} />
+              <span className="hidden xs:inline">Favorit</span>
+              {totalBookmarks > 0 && (
+                <span className="rounded-full bg-white/10 px-1.5 py-0.2 text-[10px] font-mono">
+                  {totalBookmarks}
+                </span>
+              )}
+            </button>
+          )}
+
+          {/* Link to Open Data API */}
+          <a
+            href="#developer-api"
+            onClick={scrollToApi}
+            className="hidden md:flex items-center gap-1.5 rounded-lg border border-white/10 bg-white/[0.02] px-3 py-1.5 text-xs text-[#A1A1AA] transition-colors hover:border-white/20 hover:text-white"
+          >
+            <Code2 className="h-3.5 w-3.5 text-[#71717A]" />
+            <span>API Terbuka</span>
+          </a>
 
           {/* Add Cafe Button */}
           <button

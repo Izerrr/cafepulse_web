@@ -11,22 +11,30 @@ import {
   ArrowRight,
   Edit2,
   Star,
+  Bookmark,
 } from 'lucide-react';
 
 interface CafeCardProps {
   cafe: Cafe;
   onExplore: (cafe: Cafe) => void;
   onEdit: (cafe: Cafe) => void;
+  isBookmarked?: boolean;
+  onToggleBookmark?: (id: number) => void;
 }
 
-export default function CafeCard({ cafe, onExplore, onEdit }: CafeCardProps) {
+export default function CafeCard({
+  cafe,
+  onExplore,
+  onEdit,
+  isBookmarked = false,
+  onToggleBookmark,
+}: CafeCardProps) {
   const { amenities } = cafe;
   const wifiSpeed = amenities?.wifi_speed_mbps || 0;
   const wifiStability = amenities?.wifi_stability || 'FAIR';
   const plugScore = amenities?.plug_score || 'LIMITED';
   const noiseLevel = amenities?.noise_level || 'MODERATE';
 
-  // Crowd config
   const getCrowdLabel = (crowd: string) => {
     switch (crowd) {
       case 'LOW':
@@ -54,7 +62,7 @@ export default function CafeCard({ cafe, onExplore, onEdit }: CafeCardProps) {
   const crowd = getCrowdLabel(cafe.crowd_density);
 
   return (
-    <div className="group relative flex flex-col justify-between rounded-xl border border-white/[0.08] bg-[#121215] p-5 transition-all duration-200 hover:border-white/20 hover:bg-[#151519]">
+    <div className="group relative flex flex-col justify-between rounded-xl border border-white/[0.08] bg-[#121215]/80 p-5 shadow-glass backdrop-blur-xl transition-all duration-200 hover:border-white/20 hover:bg-[#151519]">
       
       {/* Top Header */}
       <div>
@@ -66,10 +74,27 @@ export default function CafeCard({ cafe, onExplore, onEdit }: CafeCardProps) {
             <span>{crowd.text}</span>
           </div>
 
-          {/* Jam buka */}
-          <div className="flex items-center gap-1.5 text-xs text-[#71717A]">
-            <Clock className="h-3.5 w-3.5" />
-            <span>{cafe.opening_hours || '08:00 - 22:00'}</span>
+          <div className="flex items-center gap-2">
+            {/* Jam buka */}
+            <div className="flex items-center gap-1.5 text-xs text-[#71717A]">
+              <Clock className="h-3.5 w-3.5" />
+              <span>{cafe.opening_hours || '08:00 - 22:00'}</span>
+            </div>
+
+            {/* Bookmark button */}
+            {onToggleBookmark && (
+              <button
+                onClick={() => onToggleBookmark(cafe.id)}
+                className={`flex h-7 w-7 items-center justify-center rounded-lg border transition-colors ${
+                  isBookmarked
+                    ? 'border-amber-500/40 bg-amber-500/10 text-[#E59850]'
+                    : 'border-white/10 bg-white/[0.02] text-[#71717A] hover:border-white/20 hover:text-white'
+                }`}
+                title={isBookmarked ? 'Hapus dari favorit' : 'Simpan ke favorit'}
+              >
+                <Bookmark className={`h-3.5 w-3.5 ${isBookmarked ? 'fill-[#E59850]' : ''}`} />
+              </button>
+            )}
           </div>
 
         </div>
