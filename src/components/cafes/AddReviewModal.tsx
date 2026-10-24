@@ -227,3 +227,4 @@ export const AddReviewModal: React.FC<AddReviewModalProps> = ({ cafe, onClose })
     </div>
   );
 };
+
