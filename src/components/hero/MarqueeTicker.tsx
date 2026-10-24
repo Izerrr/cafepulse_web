@@ -5,21 +5,21 @@ import { Zap, Plug, Coffee, Volume2, ShieldCheck, MapPin, Laptop, Activity } fro
 
 export default function MarqueeTicker() {
   const tickerItems = [
-    { icon: Zap, label: 'Verified 100+ Mbps Wi-Fi' },
-    { icon: Plug, label: 'Dedicated Desk Sockets' },
-    { icon: Coffee, label: 'Specialty Coffee & Brews' },
-    { icon: Volume2, label: 'Acoustics & Quiet Zones' },
-    { icon: ShieldCheck, label: 'Audited Workspaces' },
-    { icon: MapPin, label: 'Surakarta & Solo Raya' },
-    { icon: Laptop, label: 'Remote-Ready Standard' },
-    { icon: Activity, label: 'Realtime Crowd Pulse' },
+    { icon: Zap, label: 'Uji Kecepatan Wi-Fi 50+ Mbps' },
+    { icon: Plug, label: 'Colokan Tersedia di Meja' },
+    { icon: Coffee, label: 'Kopi & Menu Pendamping' },
+    { icon: Volume2, label: 'Area Tenang untuk Bekerja' },
+    { icon: ShieldCheck, label: 'Data Terverifikasi Lapangan' },
+    { icon: MapPin, label: 'Kawasan Surakarta & Sekitarnya' },
+    { icon: Laptop, label: 'Ramah Laptop & Kerja Remote' },
+    { icon: Activity, label: 'Pantauan Keramaian Kafe' },
   ];
 
   return (
-    <div className="relative w-full overflow-hidden border-y border-white/[0.06] bg-[#0E0C0B]/60 py-2.5 text-xs text-[#D5CCC2] backdrop-blur-md">
-      {/* Side Fade Gradients */}
-      <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-16 bg-gradient-to-r from-[#0B0908] to-transparent" />
-      <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-16 bg-gradient-to-l from-[#0B0908] to-transparent" />
+    <div className="relative w-full overflow-hidden border-b border-white/[0.08] bg-[#09090B] py-2.5 text-xs text-[#A1A1AA]">
+      {/* Side fades */}
+      <div className="pointer-events-none absolute left-0 top-0 z-10 h-full w-16 bg-gradient-to-r from-[#09090B] to-transparent" />
+      <div className="pointer-events-none absolute right-0 top-0 z-10 h-full w-16 bg-gradient-to-l from-[#09090B] to-transparent" />
 
       <div className="animate-marquee flex items-center gap-8 whitespace-nowrap">
         {[...tickerItems, ...tickerItems, ...tickerItems].map((item, idx) => {
@@ -27,8 +27,8 @@ export default function MarqueeTicker() {
           return (
             <div key={idx} className="flex items-center gap-2">
               <Icon className="h-3.5 w-3.5 text-[#E59850]" />
-              <span className="font-medium tracking-tight">{item.label}</span>
-              <span className="text-white/20 ml-2">✦</span>
+              <span className="font-medium tracking-tight text-[#D4D4D8]">{item.label}</span>
+              <span className="text-[#3F3F46] ml-2">/</span>
             </div>
           );
         })}

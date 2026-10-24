@@ -81,12 +81,12 @@ export default function HomePage() {
   }, [allCafes, filters]);
 
   return (
-    <main className="min-h-screen bg-[#0B0908] text-[#F9F6F0] selection:bg-[#E59850] selection:text-[#0B0908]">
+    <main className="min-h-screen bg-[#09090B] text-[#EDEDED] selection:bg-[#EDEDED] selection:text-[#09090B]">
       
       {/* Top Navbar */}
       <Navbar onOpenAddModal={() => setIsAddModalOpen(true)} />
 
-      {/* Hero Section */}
+      {/* Hero Section (Onlines.com.ar canvas style) */}
       <HeroSection
         onScrollToExplore={scrollToExplore}
         totalCafes={allCafes.length || 2}
@@ -95,10 +95,10 @@ export default function HomePage() {
       {/* Running Marquee Ticker */}
       <MarqueeTicker />
 
-      {/* Explore Workspaces Section */}
+      {/* Explore Cafes Section */}
       <div ref={exploreRef} className="scroll-mt-14">
         
-        {/* Interactive Filter Bar */}
+        {/* Filter Bar */}
         <FilterBar
           filters={filters}
           onChange={setFilters}
@@ -111,24 +111,24 @@ export default function HomePage() {
           
           {/* Loading Skeleton */}
           {isLoading && (
-            <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+            <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
               {[1, 2, 3].map((n) => (
                 <div
                   key={n}
-                  className="animate-pulse rounded-2xl border border-white/[0.06] bg-[#14110F] p-6 space-y-4"
+                  className="animate-pulse rounded-xl border border-white/[0.08] bg-[#121215] p-5 space-y-4"
                 >
                   <div className="flex justify-between items-center">
-                    <div className="h-5 w-28 rounded-full bg-white/[0.05]" />
-                    <div className="h-4 w-16 rounded-full bg-white/[0.05]" />
+                    <div className="h-5 w-24 rounded bg-white/[0.05]" />
+                    <div className="h-4 w-16 rounded bg-white/[0.05]" />
                   </div>
-                  <div className="h-6 w-3/4 rounded-lg bg-white/[0.05]" />
-                  <div className="h-4 w-1/2 rounded-lg bg-white/[0.05]" />
-                  <div className="grid grid-cols-3 gap-2.5 py-3">
-                    <div className="h-16 rounded-xl bg-white/[0.03]" />
-                    <div className="h-16 rounded-xl bg-white/[0.03]" />
-                    <div className="h-16 rounded-xl bg-white/[0.03]" />
+                  <div className="h-6 w-3/4 rounded bg-white/[0.05]" />
+                  <div className="h-4 w-1/2 rounded bg-white/[0.05]" />
+                  <div className="grid grid-cols-3 gap-2 py-2">
+                    <div className="h-14 rounded bg-white/[0.03]" />
+                    <div className="h-14 rounded bg-white/[0.03]" />
+                    <div className="h-14 rounded bg-white/[0.03]" />
                   </div>
-                  <div className="h-10 rounded-xl bg-white/[0.05]" />
+                  <div className="h-9 rounded bg-white/[0.05]" />
                 </div>
               ))}
             </div>
@@ -136,20 +136,20 @@ export default function HomePage() {
 
           {/* Error State */}
           {isError && (
-            <div className="rounded-2xl border border-red-500/20 bg-red-500/10 p-8 text-center">
-              <AlertCircle className="mx-auto h-8 w-8 text-red-400 mb-3" />
-              <h3 className="text-base font-semibold text-[#F9F6F0]">
-                Unable to load workspaces
+            <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-8 text-center text-xs">
+              <AlertCircle className="mx-auto h-7 w-7 text-red-400 mb-2.5" />
+              <h3 className="text-sm font-semibold text-[#EDEDED]">
+                Gagal memuat data kafe
               </h3>
-              <p className="mt-1 text-xs text-[#A3988E]">
-                {(error as Error)?.message || 'Communication error with CafePulse API.'}
+              <p className="mt-1 text-[#A1A1AA]">
+                {(error as Error)?.message || 'Koneksi ke backend API terputus.'}
               </p>
               <button
                 onClick={() => refetch()}
-                className="mt-4 inline-flex items-center gap-2 rounded-full bg-[#E59850] px-4 py-2 text-xs font-semibold text-[#0B0908] hover:bg-[#F0A560]"
+                className="mt-4 inline-flex items-center gap-1.5 rounded-lg bg-[#EDEDED] px-3.5 py-1.5 font-medium text-[#09090B] hover:bg-white"
               >
-                <RefreshCw className="h-3.5 w-3.5" />
-                <span>Retry</span>
+                <RefreshCw className="h-3 w-3" />
+                <span>Coba Lagi</span>
               </button>
             </div>
           )}
@@ -158,31 +158,31 @@ export default function HomePage() {
           {!isLoading && !isError && (
             <>
               {filteredCafes.length === 0 ? (
-                <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-12 text-center">
-                  <Coffee className="mx-auto h-10 w-10 text-[#6B6158] mb-3" />
-                  <h3 className="text-lg font-semibold text-[#F9F6F0]">
-                    No spaces match the selected filters
+                <div className="rounded-xl border border-white/[0.08] bg-[#121215] p-12 text-center">
+                  <Coffee className="mx-auto h-9 w-9 text-[#52525B] mb-3" />
+                  <h3 className="text-base font-semibold text-[#EDEDED]">
+                    Tidak ada kafe yang cocok dengan filter
                   </h3>
-                  <p className="mt-1.5 text-xs text-[#A3988E] max-w-md mx-auto">
-                    Try adjusting the Wi-Fi speed threshold or clearing filters to see all available spaces.
+                  <p className="mt-1.5 text-xs text-[#71717A] max-w-md mx-auto">
+                    Coba turunkan batas kecepatan Wi-Fi atau reset filter pencarian untuk melihat semua kafe.
                   </p>
-                  <div className="mt-6 flex items-center justify-center gap-3">
+                  <div className="mt-5 flex items-center justify-center gap-3">
                     <button
                       onClick={() => setFilters(initialFilters)}
-                      className="rounded-full border border-white/[0.08] bg-white/[0.02] px-4 py-2 text-xs font-semibold text-[#F9F6F0] hover:border-amber-500/40"
+                      className="rounded-lg border border-white/10 bg-white/[0.02] px-3.5 py-1.5 text-xs font-medium text-[#EDEDED] hover:border-white/20"
                     >
-                      Reset Filters
+                      Reset Filter
                     </button>
                     <button
                       onClick={() => setIsAddModalOpen(true)}
-                      className="rounded-full bg-[#E59850] px-4 py-2 text-xs font-semibold text-[#0B0908] hover:bg-[#F0A560]"
+                      className="rounded-lg bg-[#EDEDED] px-3.5 py-1.5 text-xs font-medium text-[#09090B] hover:bg-white"
                     >
-                      + Add New Cafe
+                      + Tambah Kafe Baru
                     </button>
                   </div>
                 </div>
               ) : (
-                <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3">
+                <div className="grid grid-cols-1 gap-5 md:grid-cols-2 lg:grid-cols-3">
                   {filteredCafes.map((cafe) => (
                     <CafeCard
                       key={cafe.id}
@@ -203,10 +203,10 @@ export default function HomePage() {
       {/* Floating Action Button */}
       <button
         onClick={() => setIsAddModalOpen(true)}
-        className="fixed bottom-6 right-6 z-40 flex h-13 w-13 items-center justify-center rounded-full bg-[#E59850] text-[#0B0908] shadow-2xl transition-all hover:scale-105 hover:bg-[#F0A560] hover:shadow-[0_0_30px_-5px_rgba(229,152,80,0.5)] active:scale-95"
-        title="Submit Workspace"
+        className="fixed bottom-6 right-6 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-[#EDEDED] text-[#09090B] shadow-lg transition-transform hover:scale-105 hover:bg-white active:scale-95"
+        title="Tambah Kafe"
       >
-        <Plus className="h-6 w-6 stroke-[2.5]" />
+        <Plus className="h-5 w-5 stroke-[2.5]" />
       </button>
 
       {/* Modals */}

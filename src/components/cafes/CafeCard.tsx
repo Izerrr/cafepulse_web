@@ -8,7 +8,7 @@ import {
   Volume2,
   Clock,
   MapPin,
-  ArrowUpRight,
+  ArrowRight,
   Edit2,
   Star,
 } from 'lucide-react';
@@ -26,171 +26,159 @@ export default function CafeCard({ cafe, onExplore, onEdit }: CafeCardProps) {
   const plugScore = amenities?.plug_score || 'LIMITED';
   const noiseLevel = amenities?.noise_level || 'MODERATE';
 
-  // Crowd density indicator styling
-  const getCrowdConfig = (crowd: string) => {
+  // Crowd config
+  const getCrowdLabel = (crowd: string) => {
     switch (crowd) {
       case 'LOW':
         return {
-          bg: 'bg-emerald-500/[0.08] border-emerald-500/20 text-emerald-400',
+          badge: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
           dot: 'bg-emerald-400',
-          label: 'Low Crowd · Ideal for Focus',
+          text: 'Sepi · Cocok untuk fokus',
         };
       case 'MODERATE':
         return {
-          bg: 'bg-amber-500/[0.08] border-amber-500/20 text-amber-400',
+          badge: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
           dot: 'bg-amber-400',
-          label: 'Moderate Crowd',
+          text: 'Keramaian sedang',
         };
       case 'HIGH':
       default:
         return {
-          bg: 'bg-rose-500/[0.08] border-rose-500/20 text-rose-400',
+          badge: 'bg-rose-500/10 text-rose-400 border-rose-500/20',
           dot: 'bg-rose-400',
-          label: 'High Density · Social',
+          text: 'Ramai · Area sosial',
         };
     }
   };
 
-  const crowdConfig = getCrowdConfig(cafe.crowd_density);
+  const crowd = getCrowdLabel(cafe.crowd_density);
 
   return (
-    <div className="group relative flex flex-col justify-between rounded-2xl border border-white/[0.07] bg-gradient-to-b from-[#161311] to-[#100E0C] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-amber-500/30 hover:shadow-2xl hover:shadow-black/50">
+    <div className="group relative flex flex-col justify-between rounded-xl border border-white/[0.08] bg-[#121215] p-5 transition-all duration-200 hover:border-white/20 hover:bg-[#151519]">
       
-      {/* Top Meta Bar */}
+      {/* Top Header */}
       <div>
-        <div className="flex items-center justify-between gap-2 border-b border-white/[0.05] pb-3.5">
+        <div className="flex items-center justify-between gap-2 border-b border-white/[0.06] pb-3">
           
-          {/* Live Crowd Pulse Badge */}
-          <div
-            className={`flex items-center gap-2 rounded-full border px-3 py-1 text-xs font-medium ${crowdConfig.bg}`}
-          >
-            <span className="relative flex h-2 w-2">
-              <span
-                className={`absolute inline-flex h-full w-full animate-ping rounded-full opacity-75 ${crowdConfig.dot}`}
-              />
-              <span
-                className={`relative inline-flex h-2 w-2 rounded-full ${crowdConfig.dot}`}
-              />
-            </span>
-            <span>{crowdConfig.label}</span>
+          {/* Status keramaian */}
+          <div className={`flex items-center gap-1.5 rounded-md border px-2.5 py-0.5 text-[11px] font-medium ${crowd.badge}`}>
+            <span className={`h-1.5 w-1.5 rounded-full ${crowd.dot}`} />
+            <span>{crowd.text}</span>
           </div>
 
-          {/* Opening Hours */}
-          <div className="flex items-center gap-1.5 text-xs text-[#A3988E]">
-            <Clock className="h-3.5 w-3.5 text-[#E59850]" />
+          {/* Jam buka */}
+          <div className="flex items-center gap-1.5 text-xs text-[#71717A]">
+            <Clock className="h-3.5 w-3.5" />
             <span>{cafe.opening_hours || '08:00 - 22:00'}</span>
           </div>
 
         </div>
 
-        {/* Cafe Name & Location */}
+        {/* Nama kafe & alamat */}
         <div className="mt-4">
           <div className="flex items-start justify-between gap-2">
-            <h2 className="text-xl font-bold tracking-tight text-[#F9F6F0] group-hover:text-[#E59850] transition-colors">
+            <h2 className="text-lg font-semibold tracking-tight text-[#EDEDED] group-hover:text-white transition-colors">
               {cafe.name}
             </h2>
-            <div className="flex items-center gap-1 rounded-full border border-amber-500/20 bg-amber-500/[0.08] px-2.5 py-0.5 text-xs font-semibold text-[#E59850]">
+            <div className="flex items-center gap-1 rounded border border-white/10 bg-white/[0.04] px-2 py-0.5 text-xs text-[#D4D4D8]">
               <Star className="h-3 w-3 fill-[#E59850] text-[#E59850]" />
-              <span>5.0</span>
+              <span className="font-mono">5.0</span>
             </div>
           </div>
 
-          <div className="mt-2 flex items-center gap-1.5 text-xs text-[#A3988E]">
-            <MapPin className="h-3.5 w-3.5 shrink-0 text-[#C86237]" />
+          <div className="mt-1.5 flex items-center gap-1.5 text-xs text-[#A1A1AA]">
+            <MapPin className="h-3.5 w-3.5 shrink-0 text-[#71717A]" />
             <span className="truncate">{cafe.address}</span>
           </div>
         </div>
 
-        {/* 3 Metric Gauge Boxes */}
-        <div className="mt-5 grid grid-cols-3 gap-2.5 border-y border-white/[0.06] py-3.5">
+        {/* Spesifikasi teknis (Wi-Fi, Colokan, Kebisingan) */}
+        <div className="mt-4 grid grid-cols-3 gap-2 border-y border-white/[0.06] py-3 text-xs">
           
-          {/* Wi-Fi Speed */}
-          <div className="rounded-xl border border-white/[0.05] bg-[#0E0C0B]/60 p-2.5 text-center">
-            <div className="flex items-center justify-center gap-1 text-[11px] text-[#A3988E]">
+          {/* Wi-Fi */}
+          <div className="rounded-lg border border-white/[0.05] bg-white/[0.02] p-2.5 text-center">
+            <div className="flex items-center justify-center gap-1 text-[11px] text-[#71717A]">
               <Wifi className="h-3 w-3 text-blue-400" />
               <span>Wi-Fi</span>
             </div>
-            <div className="mt-1 text-xl font-bold tracking-tight text-[#F9F6F0]">
-              {wifiSpeed}
-              <span className="ml-0.5 text-[10px] font-normal text-blue-400">Mbps</span>
+            <div className="mt-1 text-base font-bold text-[#EDEDED] font-mono">
+              {wifiSpeed} <span className="text-[10px] font-normal text-[#71717A]">Mbps</span>
             </div>
-            <div className="mt-0.5 text-[10px] font-medium text-blue-400">
-              ⚡ {wifiStability}
+            <div className="text-[10px] text-blue-400">
+              {wifiStability === 'EXCELLENT' ? 'Sangat Stabil' : wifiStability === 'GOOD' ? 'Stabil' : 'Cukup'}
             </div>
           </div>
 
-          {/* Sockets */}
-          <div className="rounded-xl border border-white/[0.05] bg-[#0E0C0B]/60 p-2.5 text-center">
-            <div className="flex items-center justify-center gap-1 text-[11px] text-[#A3988E]">
+          {/* Colokan */}
+          <div className="rounded-lg border border-white/[0.05] bg-white/[0.02] p-2.5 text-center">
+            <div className="flex items-center justify-center gap-1 text-[11px] text-[#71717A]">
               <Plug className="h-3 w-3 text-[#E59850]" />
-              <span>Sockets</span>
+              <span>Colokan</span>
             </div>
-            <div className="mt-1 text-base font-bold text-[#E59850]">
-              {plugScore}
+            <div className="mt-1 text-base font-bold text-[#EDEDED]">
+              {plugScore === 'PLENTY' ? 'Banyak' : plugScore === 'MODERATE' ? 'Sedang' : 'Terbatas'}
             </div>
-            <div className="mt-0.5 text-[10px] text-[#A3988E]">
-              {plugScore === 'PLENTY' ? 'At each desk' : 'Select areas'}
+            <div className="text-[10px] text-[#71717A]">
+              {plugScore === 'PLENTY' ? 'Hampir tiap meja' : 'Titik tertentu'}
             </div>
           </div>
 
-          {/* Acoustics */}
-          <div className="rounded-xl border border-white/[0.05] bg-[#0E0C0B]/60 p-2.5 text-center">
-            <div className="flex items-center justify-center gap-1 text-[11px] text-[#A3988E]">
+          {/* Suasana */}
+          <div className="rounded-lg border border-white/[0.05] bg-white/[0.02] p-2.5 text-center">
+            <div className="flex items-center justify-center gap-1 text-[11px] text-[#71717A]">
               <Volume2 className="h-3 w-3 text-emerald-400" />
-              <span>Noise</span>
+              <span>Suasana</span>
             </div>
-            <div className="mt-1 text-base font-bold text-emerald-400">
-              {noiseLevel}
+            <div className="mt-1 text-base font-bold text-[#EDEDED]">
+              {noiseLevel === 'QUIET' ? 'Tenang' : noiseLevel === 'MODERATE' ? 'Sedang' : 'Ramai'}
             </div>
-            <div className="mt-0.5 text-[10px] text-[#A3988E]">
-              {noiseLevel === 'QUIET' ? 'Deep focus' : 'Cafe music'}
+            <div className="text-[10px] text-[#71717A]">
+              {noiseLevel === 'QUIET' ? 'Bagus buat meeting' : 'Musik kafe'}
             </div>
           </div>
 
         </div>
 
-        {/* Amenities Micro-Badges */}
-        <div className="mt-4 flex flex-wrap items-center gap-1.5 text-xs">
+        {/* Fasilitas */}
+        <div className="mt-3.5 flex flex-wrap items-center gap-1.5 text-xs text-[#A1A1AA]">
           {amenities?.air_conditioned && (
-            <span className="rounded-full border border-white/[0.06] bg-white/[0.02] px-2.5 py-0.5 text-[#D5CCC2]">
-              ❄️ AC
+            <span className="rounded border border-white/[0.06] bg-white/[0.02] px-2 py-0.5 text-[11px]">
+              Ruang AC
             </span>
           )}
           {amenities?.has_outdoor && (
-            <span className="rounded-full border border-white/[0.06] bg-white/[0.02] px-2.5 py-0.5 text-[#D5CCC2]">
-              🌿 Outdoor
+            <span className="rounded border border-white/[0.06] bg-white/[0.02] px-2 py-0.5 text-[11px]">
+              Area Terbuka
             </span>
           )}
           {amenities?.has_prayer_room && (
-            <span className="rounded-full border border-white/[0.06] bg-white/[0.02] px-2.5 py-0.5 text-[#D5CCC2]">
-              🕌 Mushola
+            <span className="rounded border border-white/[0.06] bg-white/[0.02] px-2 py-0.5 text-[11px]">
+              Mushola
             </span>
           )}
-          <span className="rounded-full border border-white/[0.06] bg-white/[0.02] px-2.5 py-0.5 text-[#A3988E]">
-            💬 {cafe.total_reviews} {cafe.total_reviews === 1 ? 'review' : 'reviews'}
+          <span className="text-[#71717A] text-[11px] ml-auto">
+            {cafe.total_reviews} ulasan
           </span>
         </div>
       </div>
 
       {/* Action Footer */}
-      <div className="mt-6 flex items-center gap-2 border-t border-white/[0.06] pt-4">
+      <div className="mt-5 flex items-center gap-2 border-t border-white/[0.06] pt-3.5">
         
-        {/* Explore Button */}
         <button
           onClick={() => onExplore(cafe)}
-          className="group/btn flex flex-1 items-center justify-center gap-2 rounded-xl bg-[#E59850] py-2.5 text-xs font-semibold text-[#0B0908] transition-all hover:bg-[#F0A560] active:scale-[0.98]"
+          className="flex flex-1 items-center justify-center gap-2 rounded-lg bg-white/[0.06] py-2 text-xs font-medium text-[#EDEDED] transition-colors hover:bg-white/10 hover:text-white"
         >
-          <span>Explore Details</span>
-          <ArrowUpRight className="h-4 w-4 transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
+          <span>Lihat Detail Kafe</span>
+          <ArrowRight className="h-3.5 w-3.5" />
         </button>
 
-        {/* Edit Button */}
         <button
           onClick={() => onEdit(cafe)}
-          title="Edit space specs"
-          className="flex h-9 w-9 items-center justify-center rounded-xl border border-white/[0.08] bg-white/[0.02] text-[#A3988E] transition-colors hover:border-amber-500/40 hover:text-[#E59850]"
+          title="Edit data fasilitas"
+          className="flex h-8 w-8 items-center justify-center rounded-lg border border-white/[0.08] text-[#71717A] transition-colors hover:border-white/20 hover:text-white"
         >
-          <Edit2 className="h-4 w-4" />
+          <Edit2 className="h-3.5 w-3.5" />
         </button>
 
       </div>

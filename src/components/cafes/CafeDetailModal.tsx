@@ -58,12 +58,12 @@ export default function CafeDetailModal({
     if (navigator.share) {
       navigator.share({
         title: currentCafe.name,
-        text: `Work at ${currentCafe.name} - Verified ${amenities?.wifi_speed_mbps || 0} Mbps Wi-Fi and ${amenities?.plug_score} sockets.`,
+        text: `Cek ${currentCafe.name} di CafePulse - Wi-Fi ${amenities?.wifi_speed_mbps || 0} Mbps, colokan ${amenities?.plug_score}.`,
         url: window.location.href,
       }).catch(() => {});
     } else {
       navigator.clipboard.writeText(window.location.href);
-      alert('Link copied to clipboard!');
+      alert('Tautan berhasil disalin ke clipboard.');
     }
   };
 
@@ -71,22 +71,18 @@ export default function CafeDetailModal({
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-6">
-      {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-[#0B0908]/80 backdrop-blur-md transition-opacity"
+        className="fixed inset-0 bg-[#09090B]/80 backdrop-blur-sm transition-opacity"
         onClick={onClose}
       />
 
-      {/* Modal Container */}
-      <div className="relative z-10 flex max-h-[90vh] w-full max-w-3xl flex-col rounded-3xl border border-white/[0.09] bg-[#14110F] shadow-2xl overflow-hidden">
+      <div className="relative z-10 flex max-h-[90vh] w-full max-w-2xl flex-col rounded-xl border border-white/10 bg-[#121215] shadow-2xl overflow-hidden">
         
         {/* Top Control Bar */}
-        <div className="flex items-center justify-between border-b border-white/[0.06] bg-[#0E0C0B] px-6 py-4">
-          <div className="flex items-center gap-2 text-xs text-[#A3988E]">
-            <span className="rounded-full border border-amber-500/20 bg-amber-500/10 px-2.5 py-0.5 text-xs font-semibold text-[#E59850]">
-              Space #{currentCafe.id}
-            </span>
-            <span className="hidden sm:inline">Workspace Audit Sheet</span>
+        <div className="flex items-center justify-between border-b border-white/[0.08] bg-[#0E0E11] px-5 py-3.5">
+          <div className="flex items-center gap-2 text-xs text-[#71717A]">
+            <span className="font-mono text-[#D4D4D8]">Kafe #{currentCafe.id}</span>
+            <span>/ Lembar Verifikasi</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -95,231 +91,222 @@ export default function CafeDetailModal({
                 onClose();
                 onEdit(currentCafe);
               }}
-              className="flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-xs text-[#F9F6F0] transition-colors hover:border-amber-500/40 hover:text-[#E59850]"
+              className="flex items-center gap-1.5 rounded-lg border border-white/10 px-2.5 py-1 text-xs text-[#EDEDED] transition-colors hover:border-white/20"
             >
-              <Edit2 className="h-3.5 w-3.5" />
+              <Edit2 className="h-3 w-3" />
               <span>Edit</span>
             </button>
 
             <button
               onClick={handleShare}
-              className="flex items-center gap-1.5 rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1 text-xs text-[#F9F6F0] transition-colors hover:border-amber-500/40 hover:text-[#E59850]"
+              className="flex items-center gap-1.5 rounded-lg border border-white/10 px-2.5 py-1 text-xs text-[#EDEDED] transition-colors hover:border-white/20"
             >
-              <Share2 className="h-3.5 w-3.5" />
-              <span className="hidden sm:inline">Share</span>
+              <Share2 className="h-3 w-3" />
+              <span>Bagikan</span>
             </button>
 
             <button
               onClick={onClose}
-              className="flex h-7 w-7 items-center justify-center rounded-full border border-white/[0.08] bg-white/[0.03] text-[#A3988E] transition-colors hover:border-red-500/40 hover:text-red-400"
+              className="flex h-6 w-6 items-center justify-center rounded-lg border border-white/10 text-[#71717A] transition-colors hover:text-white"
             >
-              <X className="h-4 w-4" />
+              <X className="h-3.5 w-3.5" />
             </button>
           </div>
         </div>
 
-        {/* Scrollable Content */}
-        <div className="overflow-y-auto p-6 sm:p-8 space-y-6">
+        {/* Content */}
+        <div className="overflow-y-auto p-5 sm:p-6 space-y-5">
           
           {/* Header Card */}
-          <div className="rounded-2xl border border-white/[0.07] bg-gradient-to-b from-white/[0.03] to-transparent p-6">
-            <div className="flex flex-wrap items-center justify-between gap-3">
+          <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-5">
+            <div className="flex flex-wrap items-center justify-between gap-2">
               <div>
-                <span className="text-xs font-medium text-[#E59850]">
-                  Surakarta Workspace Directory
+                <span className="text-xs text-[#71717A]">
+                  Katalog Kafe Surakarta
                 </span>
-                <h1 className="mt-1 text-2xl sm:text-3xl font-bold tracking-tight text-[#F9F6F0]">
+                <h1 className="mt-1 text-xl sm:text-2xl font-bold tracking-tight text-[#EDEDED]">
                   {currentCafe.name}
                 </h1>
               </div>
 
-              {/* Crowd Density Badge */}
-              <div className="rounded-full border border-emerald-500/20 bg-emerald-500/10 px-3.5 py-1 text-xs font-medium text-emerald-400">
-                {currentCafe.crowd_density === 'LOW' && '🟢 Low Density · Focus Ready'}
-                {currentCafe.crowd_density === 'MODERATE' && '🟡 Moderate Density'}
-                {currentCafe.crowd_density === 'HIGH' && '🔴 High Density'}
+              <div className="rounded-md border border-white/10 bg-white/[0.04] px-2.5 py-1 text-xs text-[#D4D4D8]">
+                {currentCafe.crowd_density === 'LOW' && '🟢 Sepi (Fokus)'}
+                {currentCafe.crowd_density === 'MODERATE' && '🟡 Keramaian Sedang'}
+                {currentCafe.crowd_density === 'HIGH' && '🔴 Ramai'}
               </div>
             </div>
 
-            {/* Address & Hours */}
-            <div className="mt-4 grid grid-cols-1 gap-2 border-t border-white/[0.06] pt-4 text-xs text-[#D5CCC2] sm:grid-cols-2">
+            <div className="mt-3.5 grid grid-cols-1 gap-2 border-t border-white/[0.06] pt-3 text-xs text-[#A1A1AA] sm:grid-cols-2">
               <div className="flex items-center gap-2">
-                <MapPin className="h-4 w-4 shrink-0 text-[#C86237]" />
+                <MapPin className="h-3.5 w-3.5 shrink-0 text-[#71717A]" />
                 <span>{currentCafe.address}</span>
               </div>
               <div className="flex items-center gap-2 sm:justify-end">
-                <Clock className="h-4 w-4 shrink-0 text-[#E59850]" />
-                <span>Hours: {currentCafe.opening_hours || '08:00 - 22:00'}</span>
+                <Clock className="h-3.5 w-3.5 shrink-0 text-[#71717A]" />
+                <span>Jam Buka: {currentCafe.opening_hours || '08:00 - 22:00'}</span>
               </div>
             </div>
 
-            {/* Map Link */}
-            <div className="mt-4 flex items-center justify-between border-t border-white/[0.06] pt-3">
-              <span className="text-xs text-[#A3988E]">
-                Coordinates: {currentCafe.latitude?.toFixed(4)}, {currentCafe.longitude?.toFixed(4)}
+            <div className="mt-3 flex items-center justify-between border-t border-white/[0.06] pt-3 text-xs">
+              <span className="text-[#71717A] font-mono">
+                GPS: {currentCafe.latitude?.toFixed(4)}, {currentCafe.longitude?.toFixed(4)}
               </span>
               <a
                 href={mapsUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="flex items-center gap-1.5 text-xs font-semibold text-[#E59850] hover:underline"
+                className="flex items-center gap-1.5 font-medium text-[#EDEDED] hover:underline"
               >
-                <span>Open in Google Maps</span>
-                <ExternalLink className="h-3.5 w-3.5" />
+                <span>Buka di Google Maps</span>
+                <ExternalLink className="h-3 w-3" />
               </a>
             </div>
           </div>
 
-          {/* Metric Telemetry Cards */}
+          {/* Technical Specs Grid */}
           <div>
-            <h3 className="text-sm font-semibold text-[#F9F6F0] mb-3">
-              Hardware &amp; Ambient Telemetry
+            <h3 className="text-xs font-semibold text-[#A1A1AA] uppercase tracking-wide mb-2.5">
+              Spesifikasi Fasilitas Kerja
             </h3>
             
-            <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3">
               
-              {/* Wi-Fi */}
-              <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4">
-                <div className="flex items-center justify-between text-[#A3988E]">
-                  <span className="text-xs">Wi-Fi Throughput</span>
-                  <Wifi className="h-4 w-4 text-blue-400" />
+              <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3.5">
+                <div className="flex items-center justify-between text-[#71717A] text-xs">
+                  <span>Kecepatan Unduh</span>
+                  <Wifi className="h-3.5 w-3.5 text-blue-400" />
                 </div>
-                <div className="mt-2 text-2xl font-bold tracking-tight text-[#F9F6F0]">
+                <div className="mt-2 text-2xl font-bold font-mono text-[#EDEDED]">
                   {amenities?.wifi_speed_mbps || 0}
-                  <span className="ml-1 text-xs font-normal text-blue-400">Mbps</span>
+                  <span className="ml-1 text-xs font-normal text-[#71717A]">Mbps</span>
                 </div>
-                <div className="mt-1 text-xs text-[#A3988E]">
-                  Stability: <span className="font-semibold text-blue-400">{amenities?.wifi_stability || 'FAIR'}</span>
-                </div>
-              </div>
-
-              {/* Sockets */}
-              <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4">
-                <div className="flex items-center justify-between text-[#A3988E]">
-                  <span className="text-xs">Power Sockets</span>
-                  <Plug className="h-4 w-4 text-[#E59850]" />
-                </div>
-                <div className="mt-2 text-2xl font-bold tracking-tight text-[#E59850]">
-                  {amenities?.plug_score || 'MODERATE'}
-                </div>
-                <div className="mt-1 text-xs text-[#A3988E]">
-                  {amenities?.plug_score === 'PLENTY' ? 'Sockets at every desk' : 'Select work tables'}
+                <div className="mt-1 text-xs text-[#71717A]">
+                  Stabilitas: <span className="text-blue-400 font-medium">{amenities?.wifi_stability || 'FAIR'}</span>
                 </div>
               </div>
 
-              {/* Noise */}
-              <div className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4">
-                <div className="flex items-center justify-between text-[#A3988E]">
-                  <span className="text-xs">Acoustic Profile</span>
-                  <Volume2 className="h-4 w-4 text-emerald-400" />
+              <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3.5">
+                <div className="flex items-center justify-between text-[#71717A] text-xs">
+                  <span>Ketersediaan Daya</span>
+                  <Plug className="h-3.5 w-3.5 text-[#E59850]" />
                 </div>
-                <div className="mt-2 text-2xl font-bold tracking-tight text-emerald-400">
-                  {amenities?.noise_level || 'QUIET'}
+                <div className="mt-2 text-xl font-bold text-[#EDEDED]">
+                  {amenities?.plug_score === 'PLENTY' ? 'Banyak' : amenities?.plug_score === 'MODERATE' ? 'Sedang' : 'Terbatas'}
                 </div>
-                <div className="mt-1 text-xs text-[#A3988E]">
-                  {amenities?.noise_level === 'QUIET' ? 'Ideal for video calls' : 'Ambient cafe chatter'}
+                <div className="mt-1 text-xs text-[#71717A]">
+                  {amenities?.plug_score === 'PLENTY' ? 'Colokan di tiap meja' : 'Di dinding tertentu'}
+                </div>
+              </div>
+
+              <div className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3.5">
+                <div className="flex items-center justify-between text-[#71717A] text-xs">
+                  <span>Tingkat Kebisingan</span>
+                  <Volume2 className="h-3.5 w-3.5 text-emerald-400" />
+                </div>
+                <div className="mt-2 text-xl font-bold text-emerald-400">
+                  {amenities?.noise_level === 'QUIET' ? 'Tenang' : amenities?.noise_level === 'MODERATE' ? 'Sedang' : 'Ramai'}
+                </div>
+                <div className="mt-1 text-xs text-[#71717A]">
+                  {amenities?.noise_level === 'QUIET' ? 'Cocok untuk panggilan kerja' : 'Suasana santai'}
                 </div>
               </div>
 
             </div>
           </div>
 
-          {/* Facilities Checklist */}
+          {/* Checklist */}
           <div>
-            <h3 className="text-sm font-semibold text-[#F9F6F0] mb-3">
-              Facility Checklist
+            <h3 className="text-xs font-semibold text-[#A1A1AA] uppercase tracking-wide mb-2.5">
+              Kelengkapan Ruangan
             </h3>
             
-            <div className="grid grid-cols-1 gap-2.5 sm:grid-cols-3 text-xs">
+            <div className="grid grid-cols-1 gap-2 sm:grid-cols-3 text-xs">
               <div
-                className={`flex items-center gap-2.5 rounded-xl border p-3 ${
+                className={`flex items-center gap-2 rounded-lg border p-2.5 ${
                   amenities?.air_conditioned
-                    ? 'border-white/[0.08] bg-white/[0.02] text-[#F9F6F0]'
-                    : 'border-white/[0.04] bg-transparent text-[#6B6158]'
+                    ? 'border-white/10 bg-white/[0.02] text-[#EDEDED]'
+                    : 'border-white/[0.04] text-[#52525B]'
                 }`}
               >
                 <span>❄️</span>
-                <span>Air Conditioned Area</span>
+                <span>Ruangan Ber-AC</span>
               </div>
 
               <div
-                className={`flex items-center gap-2.5 rounded-xl border p-3 ${
+                className={`flex items-center gap-2 rounded-lg border p-2.5 ${
                   amenities?.has_outdoor
-                    ? 'border-white/[0.08] bg-white/[0.02] text-[#F9F6F0]'
-                    : 'border-white/[0.04] bg-transparent text-[#6B6158]'
+                    ? 'border-white/10 bg-white/[0.02] text-[#EDEDED]'
+                    : 'border-white/[0.04] text-[#52525B]'
                 }`}
               >
                 <span>🌿</span>
-                <span>Outdoor Workspace</span>
+                <span>Area Terbuka / Merokok</span>
               </div>
 
               <div
-                className={`flex items-center gap-2.5 rounded-xl border p-3 ${
+                className={`flex items-center gap-2 rounded-lg border p-2.5 ${
                   amenities?.has_prayer_room
-                    ? 'border-white/[0.08] bg-white/[0.02] text-[#F9F6F0]'
-                    : 'border-white/[0.04] bg-transparent text-[#6B6158]'
+                    ? 'border-white/10 bg-white/[0.02] text-[#EDEDED]'
+                    : 'border-white/[0.04] text-[#52525B]'
                 }`}
               >
                 <span>🕌</span>
-                <span>Mushola / Prayer Room</span>
+                <span>Mushola Tersedia</span>
               </div>
             </div>
           </div>
 
-          {/* Community Reviews Section */}
-          <div className="border-t border-white/[0.06] pt-5">
-            <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-semibold text-[#F9F6F0]">
-                Community Reviews ({reviews.length})
+          {/* Ulasan Komunitas */}
+          <div className="border-t border-white/[0.08] pt-4">
+            <div className="flex items-center justify-between mb-3">
+              <h3 className="text-xs font-semibold text-[#A1A1AA] uppercase tracking-wide">
+                Ulasan Pengunjung ({reviews.length})
               </h3>
-              <div className="flex items-center gap-1 text-xs text-[#E59850]">
-                <Star className="h-3.5 w-3.5 fill-[#E59850]" />
-                <span className="font-semibold">5.0 / 5.0</span>
+              <div className="flex items-center gap-1 text-xs text-[#D4D4D8]">
+                <Star className="h-3 w-3 fill-[#E59850] text-[#E59850]" />
+                <span className="font-mono">5.0 / 5.0</span>
               </div>
             </div>
 
             {reviews.length === 0 ? (
-              <div className="rounded-2xl border border-white/[0.06] bg-white/[0.01] p-6 text-center text-xs text-[#A3988E]">
-                <p>No community reviews recorded yet.</p>
-                <p className="mt-1 text-[#6B6158]">Be the first remote worker to submit an audit review.</p>
+              <div className="rounded-lg border border-white/[0.06] bg-white/[0.01] p-5 text-center text-xs text-[#71717A]">
+                Belum ada ulasan untuk kafe ini.
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="space-y-2.5">
                 {reviews.map((rev) => (
                   <div
                     key={rev.id}
-                    className="rounded-2xl border border-white/[0.07] bg-white/[0.02] p-4 transition-colors hover:border-amber-500/30"
+                    className="rounded-lg border border-white/[0.06] bg-white/[0.02] p-3.5"
                   >
                     <div className="flex flex-wrap items-center justify-between gap-2 border-b border-white/[0.05] pb-2 text-xs">
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-[#F9F6F0]">Contributor #{rev.user_id || rev.id}</span>
+                        <span className="font-medium text-[#EDEDED]">Kontributor #{rev.user_id || rev.id}</span>
                         <div className="flex text-[#E59850]">
                           {Array.from({ length: rev.rating || 5 }).map((_, i) => (
-                            <Star key={i} className="h-3 w-3 fill-[#E59850]" />
+                            <Star key={i} className="h-2.5 w-2.5 fill-[#E59850]" />
                           ))}
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2 text-[11px] text-[#A3988E]">
+                      <div className="flex items-center gap-2 text-[11px] text-[#71717A]">
                         {rev.verified_wifi_speed && (
-                          <span className="rounded-full bg-blue-500/10 px-2 py-0.5 text-blue-400">
-                            ⚡ {rev.verified_wifi_speed} Mbps
+                          <span className="rounded bg-blue-500/10 px-1.5 py-0.5 text-blue-400 font-mono">
+                            {rev.verified_wifi_speed} Mbps
                           </span>
                         )}
                         {rev.verified_crowd && (
-                          <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-emerald-400">
-                            Crowd: {rev.verified_crowd}
-                          </span>
+                          <span>Keramaian: {rev.verified_crowd}</span>
                         )}
                       </div>
                     </div>
 
-                    <p className="mt-3 text-sm leading-relaxed text-[#D5CCC2]">
+                    <p className="mt-2.5 text-xs leading-relaxed text-[#D4D4D8]">
                       &ldquo;{rev.comment}&rdquo;
                     </p>
 
-                    <div className="mt-2 text-right text-[11px] text-[#6B6158]">
-                      Audited: {rev.created_at ? rev.created_at.slice(0, 10) : '2026-10-04'}
+                    <div className="mt-1.5 text-right text-[10px] text-[#52525B]">
+                      {rev.created_at ? rev.created_at.slice(0, 10) : '2026-10-04'}
                     </div>
                   </div>
                 ))}
