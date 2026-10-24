@@ -2,9 +2,16 @@
 
 import React, { useState, useEffect } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '@/lib/api';
-import { CreateCafeInput, CrowdDensity, NoiseLevel, PlugScore, WifiStability } from '@/types/cafe';
-import { X, Plus, AlertCircle, Loader2 } from 'lucide-react';
+import { api, CURATED_SOLO_PLACES } from '@/lib/api';
+import {
+  CreateCafeInput,
+  CrowdDensity,
+  MapsPlaceCandidate,
+  NoiseLevel,
+  PlugScore,
+  WifiStability,
+} from '@/types/cafe';
+import { X, Plus, AlertCircle, Loader2, Search, MapPin, Sparkles, Check } from 'lucide-react';
 
 interface AddCafeModalProps {
   isOpen: boolean;
@@ -14,13 +21,20 @@ interface AddCafeModalProps {
 export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
   const queryClient = useQueryClient();
 
+  const [mapsQuery, setMapsQuery] = useState('');
+  const [mapsResults, setMapsResults] = useState<MapsPlaceCandidate[]>(
+    CURATED_SOLO_PLACES.slice(0, 4)
+  );
+  const [isSearchingMaps, setIsSearchingMaps] = useState(false);
+  const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
+
   const [formData, setFormData] = useState<CreateCafeInput>({
     name: '',
     address: '',
     opening_hours: '08:00 - 23:00',
     crowd_density: 'LOW',
-    latitude: -7.5650,
-    longitude: 110.8280,
+    latitude: -7.565,
+    longitude: 110.828,
     amenities: {
       wifi_speed_mbps: 85,
       wifi_stability: 'EXCELLENT',
@@ -41,6 +55,38 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
     };
   }, [isOpen]);
 
+  useEffect(() => {
+    let active = true;
+    const timer = setTimeout(async () => {
+      setIsSearchingMaps(true);
+      try {
+        const res = await api.searchSoloPlacesFromMaps(mapsQuery);
+        if (active) {
+          setMapsResults(res.slice(0, 5));
+        }
+      } finally {
+        if (active) setIsSearchingMaps(false);
+      }
+    }, 300);
+
+    return () => {
+      active = false;
+      clearTimeout(timer);
+    };
+  }, [mapsQuery]);
+
+  const handleSelectPlace = (place: MapsPlaceCandidate) => {
+    setSelectedPlaceId(place.id);
+    setFormData((prev) => ({
+      ...prev,
+      name: place.name,
+      address: place.address,
+      latitude: place.latitude,
+      longitude: place.longitude,
+      opening_hours: place.opening_hours || prev.opening_hours,
+    }));
+  };
+
   const mutation = useMutation({
     mutationFn: (newCafe: CreateCafeInput) => api.createCafe(newCafe),
     onSuccess: () => {
@@ -50,7 +96,8 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
       onClose();
     },
     onError: (err: unknown) => {
-      const msg = err instanceof Error ? err.message : 'Gagal menambahkan data kafe. Silakan coba lagi.';
+      const msg =
+        err instanceof Error ? err.message : 'Gagal menambahkan data kafe. Silakan coba lagi.';
       setErrorMessage(msg);
     },
   });
@@ -76,18 +123,18 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
 
       {/* Modal Dialog */}
       <div className="relative z-10 flex max-h-[90vh] w-full max-w-xl flex-col rounded-2xl border border-canvas-border bg-white text-roast-900 shadow-2xl overflow-hidden">
-        
         {/* Header */}
         <div className="flex items-center justify-between border-b border-canvas-border bg-canvas-surface px-6 py-4">
           <div className="flex items-center gap-2">
             <span className="text-sm font-bold text-roast-900">
-              Tambah Kafe ke Direktori
+              Tambah & Sinkronkan Kafe Baru
             </span>
             <span className="text-xs font-mono text-roast-400">/ Surakarta</span>
           </div>
 
           <button
             onClick={onClose}
+            aria-label="Tutup modal"
             className="flex h-7 w-7 items-center justify-center rounded-full border border-canvas-border text-roast-400 hover:text-roast-900 hover:border-canvas-border-hover transition-colors"
           >
             <X className="h-4 w-4" />
@@ -96,6 +143,67 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
 
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="overflow-y-auto p-6 space-y-4">
+          {/* Maps Auto-Import Section */}
+          <div className="rounded-2xl border border-crema-500/30 bg-canvas-surface p-4 space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-crema-600 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-crema-500" /> Cari & Tarik Otomatis dari Peta Solo
+              </span>
+              <span className="font-mono text-[10px] text-roast-500">Auto-Sync Koordinat</span>
+            </div>
+
+            <div className="relative">
+              <Search className="w-3.5 h-3.5 text-roast-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
+              <input
+                type="text"
+                value={mapsQuery}
+                onChange={(e) => setMapsQuery(e.target.value)}
+                placeholder="Ketik nama kafe di Solo (misal: Natahati, Cold 'n Brew, Bento)..."
+                className="w-full rounded-xl border border-canvas-border bg-white pl-9 pr-8 py-2 text-xs text-roast-900 placeholder-roast-400 outline-none focus:border-crema-500"
+              />
+              {isSearchingMaps && (
+                <Loader2 className="w-3.5 h-3.5 text-crema-500 animate-spin absolute right-3 top-1/2 -translate-y-1/2" />
+              )}
+            </div>
+
+            {mapsResults.length > 0 && (
+              <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">
+                {mapsResults.map((place) => {
+                  const isSelected = selectedPlaceId === place.id;
+                  return (
+                    <button
+                      key={place.id}
+                      type="button"
+                      onClick={() => handleSelectPlace(place)}
+                      className={`w-full text-left p-2.5 rounded-xl border transition-all flex items-center justify-between gap-2 ${
+                        isSelected
+                          ? 'bg-crema-500/10 border-crema-500 text-roast-900'
+                          : 'bg-white border-canvas-border hover:border-crema-500/50 text-roast-800'
+                      }`}
+                    >
+                      <div className="min-w-0">
+                        <div className="text-xs font-bold truncate flex items-center gap-1.5">
+                          <MapPin className="w-3 h-3 text-crema-500 shrink-0" />
+                          <span>{place.name}</span>
+                        </div>
+                        <p className="text-[10px] text-roast-500 truncate pl-4">{place.address}</p>
+                      </div>
+                      <span className="shrink-0 px-2.5 py-1 rounded-full bg-canvas-surface border border-canvas-border font-mono text-[10px] font-bold text-crema-600 flex items-center gap-1">
+                        {isSelected ? (
+                          <>
+                            <Check className="w-3 h-3" /> Terisi
+                          </>
+                        ) : (
+                          'Pakai Data'
+                        )}
+                      </span>
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
           {errorMessage && (
             <div className="flex items-start gap-2 rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700">
               <AlertCircle className="h-4 w-4 shrink-0 mt-0.5 text-rose-500" />
@@ -129,6 +237,33 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
               placeholder="Contoh: Jl. Adi Sucipto No. 45, Manahan, Surakarta"
               className="w-full rounded-xl border border-canvas-border bg-canvas-surface px-3.5 py-2.5 text-xs text-roast-900 placeholder-roast-400 outline-none transition-all focus:border-crema-500 focus:ring-2 focus:ring-crema-500/15"
             />
+          </div>
+
+          <div className="grid grid-cols-2 gap-3">
+            <div>
+              <label className="block text-[11px] font-mono text-roast-500 mb-1">
+                Latitude (Peta)
+              </label>
+              <input
+                type="number"
+                step="any"
+                value={formData.latitude}
+                onChange={(e) => setFormData({ ...formData, latitude: Number(e.target.value) })}
+                className="w-full rounded-xl border border-canvas-border bg-canvas-surface px-3 py-2 text-xs font-mono text-roast-800 outline-none focus:border-crema-500"
+              />
+            </div>
+            <div>
+              <label className="block text-[11px] font-mono text-roast-500 mb-1">
+                Longitude (Peta)
+              </label>
+              <input
+                type="number"
+                step="any"
+                value={formData.longitude}
+                onChange={(e) => setFormData({ ...formData, longitude: Number(e.target.value) })}
+                className="w-full rounded-xl border border-canvas-border bg-canvas-surface px-3 py-2 text-xs font-mono text-roast-800 outline-none focus:border-crema-500"
+              />
+            </div>
           </div>
 
           <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
@@ -333,18 +468,17 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
               {mutation.isPending ? (
                 <>
                   <Loader2 className="h-3.5 w-3.5 animate-spin" />
-                  <span>Menyimpan ke direktori...</span>
+                  <span>Menyinkronkan ke API CafePulse...</span>
                 </>
               ) : (
                 <>
                   <Plus className="h-4 w-4" />
-                  <span>Simpan Kafe Baru</span>
+                  <span>Simpan &amp; Sinkronkan ke Direktori</span>
                 </>
               )}
             </button>
           </div>
         </form>
-
       </div>
     </div>
   );

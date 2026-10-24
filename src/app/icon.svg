@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
+  <rect width="64" height="64" rx="16" fill="#1E1714"/>
+  <!-- Pulse Steam Wave -->
+  <path d="M22 18L25 13L29 21L33 11L37 19L40 15" stroke="#E08E45" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+  <!-- Coffee Cup Body -->
+  <path d="M16 26H42V38C42 45.1797 36.1797 51 29 51C21.8203 51 16 45.1797 16 38V26Z" fill="#C86237"/>
+  <!-- Cup Rim Highlight -->
+  <path d="M16 26H42V29H16V26Z" fill="#F3B07A"/>
+  <!-- Cup Handle -->
+  <path d="M42 29H46C49.3137 29 52 31.6863 52 35C52 38.3137 49.3137 41 46 41H42" stroke="#C86237" stroke-width="4" stroke-linecap="round"/>
+  <!-- Saucer Line -->
+  <path d="M14 55H44" stroke="#F5EFEB" stroke-width="3" stroke-linecap="round" opacity="0.8"/>
+</svg>

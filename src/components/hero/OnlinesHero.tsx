@@ -3,20 +3,25 @@
 import React, { useRef, useState } from 'react';
 import Image from 'next/image';
 import { motion } from 'framer-motion';
-import { ArrowDown, Coffee, Sparkles, Heart, Compass, BookOpen } from 'lucide-react';
+import { ArrowDown, Coffee, Sparkles, Heart, Compass, BookOpen, Map } from 'lucide-react';
+import { Cafe } from '@/types/cafe';
 import GrillaCeldas from './GrillaCeldas';
 import AnimatedCursors from './AnimatedCursors';
 import TypingCodeBlock from './TypingCodeBlock';
 
 interface OnlinesHeroProps {
   onScrollToExplore: () => void;
+  onOpenMapView?: () => void;
   totalCafes?: number;
+  cafes?: Cafe[];
   onToggleFocusMode?: (isFocus: boolean) => void;
 }
 
 export default function OnlinesHero({
   onScrollToExplore,
+  onOpenMapView,
   totalCafes = 2,
+  cafes = [],
   onToggleFocusMode,
 }: OnlinesHeroProps) {
   const heroRef = useRef<HTMLDivElement>(null);
@@ -33,11 +38,20 @@ export default function OnlinesHero({
       ref={heroRef}
       className="relative w-full overflow-hidden bg-canvas-bg border-b border-canvas-border select-none min-h-[750px] lg:min-h-[860px] flex flex-col justify-between"
     >
+      {/* 0. Subtle Surakarta Map Blueprint Overlay (Cartographic Radar Background) */}
+      <div
+        className="pointer-events-none absolute inset-0 z-0 opacity-12 bg-center bg-cover bg-no-repeat"
+        style={{
+          backgroundImage: 'url("/onlines/solo-map-bg.svg")',
+        }}
+        aria-hidden="true"
+      />
+
       {/* 1. Dotted Coordinate Grid with warm golden amber hover trail */}
       <GrillaCeldas cellSize={55} highlightCount={14} />
 
-      {/* 2. Collaborative Figma Cursors (Penikmat Kopi, Teman Ngobrol, Mahasiswa, etc.) */}
-      <AnimatedCursors />
+      {/* 2. Collaborative Cursors Cycling Through Surakarta Cafes */}
+      <AnimatedCursors cafes={cafes} />
 
       {/* 3. Center Canvas & Floating Welcoming Artifacts */}
       <div className="relative mx-auto w-full max-w-7xl flex-1 px-4 sm:px-6 lg:px-8 flex flex-col justify-center items-center py-12 lg:py-16">
@@ -100,7 +114,7 @@ export default function OnlinesHero({
           <TypingCodeBlock />
         </motion.div>
 
-        {/* Figma Comment Bubble 1 (Top Right: Review Mahasiswa) */}
+        {/* Figma Comment Bubble 1 (Top Right: Review Dian Pramesti with Authentic Avatar) */}
         <motion.div
           drag
           dragConstraints={heroRef}
@@ -117,10 +131,10 @@ export default function OnlinesHero({
           }}
           className="hidden sm:flex absolute top-12 right-6 lg:right-24 z-10 comentario-figma__burbuja"
         >
-          <div className="relative w-7 h-7 shrink-0 rounded-full overflow-hidden border border-roast-900/10">
+          <div className="relative w-8 h-8 shrink-0 rounded-full overflow-hidden border border-crema-300 shadow-xs">
             <Image
-              src="/onlines/onlines-avatar.svg"
-              alt="Avatar"
+              src="/onlines/avatar-dian.svg"
+              alt="Dian Pramesti"
               fill
               className="object-cover"
             />
@@ -136,7 +150,7 @@ export default function OnlinesHero({
           </div>
         </motion.div>
 
-        {/* Figma Comment Bubble 2 (Bottom Left: Review Penikmat Kopi) */}
+        {/* Figma Comment Bubble 2 (Bottom Left: Review Reza Pratama with Authentic Avatar) */}
         <motion.div
           drag
           dragConstraints={heroRef}
@@ -153,10 +167,10 @@ export default function OnlinesHero({
           }}
           className="hidden md:flex absolute bottom-24 left-8 lg:left-20 z-10 comentario-figma__burbuja"
         >
-          <div className="relative w-7 h-7 shrink-0 rounded-full overflow-hidden border border-roast-900/10">
+          <div className="relative w-8 h-8 shrink-0 rounded-full overflow-hidden border border-crema-300 shadow-xs">
             <Image
-              src="/onlines/onlines-avatar.svg"
-              alt="Avatar"
+              src="/onlines/avatar-reza.svg"
+              alt="Reza Pratama"
               fill
               className="object-cover"
             />
@@ -191,7 +205,7 @@ export default function OnlinesHero({
           >
             <div className="flex items-center gap-2">
               <span className="text-xs font-semibold text-roast-900">
-                {isFocusMode ? '🌾 Suasana: Tenang & Teduh' : '☕ Suasana: Semua Pilihan Kafe'}
+                {isFocusMode ? '🌾 Suasana: Tenang & Teduh' : '☕ Radar Peta: Semua Pilihan Kafe'}
               </span>
             </div>
             <div
@@ -277,24 +291,26 @@ export default function OnlinesHero({
               className="inline-flex items-center gap-2 rounded-full bg-roast-900 px-6 py-2.5 text-xs font-semibold text-white shadow-sm transition-all hover:bg-crema-500 active:scale-95"
             >
               <Compass className="h-3.5 w-3.5 text-crema-300" />
-              <span>Jelajahi Sudut Kafe Solo</span>
+              <span>Jelajahi Daftar Kafe</span>
               <ArrowDown className="h-3.5 w-3.5" />
             </button>
 
-            <button
-              onClick={toggleFocus}
-              className="inline-flex items-center gap-2 rounded-full border border-canvas-border bg-white px-4 py-2.5 text-xs font-semibold text-roast-900 transition-all hover:border-canvas-border-hover hover:bg-canvas-surface active:scale-95"
-            >
-              <Coffee className="h-3.5 w-3.5 text-crema-500" />
-              <span>{isFocusMode ? 'Tampilkan Semua Kafe' : 'Cari yang Tenang'}</span>
-            </button>
+            {onOpenMapView && (
+              <button
+                onClick={onOpenMapView}
+                className="inline-flex items-center gap-2 rounded-full border border-crema-500/40 bg-crema-50 px-5 py-2.5 text-xs font-semibold text-crema-600 transition-all hover:bg-crema-100 active:scale-95"
+              >
+                <Map className="h-3.5 w-3.5 text-crema-500" />
+                <span>Buka Peta Interaktif Solo</span>
+              </button>
+            )}
           </div>
 
           <div className="mt-4 flex items-center justify-center gap-2 text-[11px] font-mono text-roast-400">
             <Sparkles className="h-3 w-3 text-crema-500" />
-            <span>Pilihan kafe terverifikasi langsung oleh komunitas Surakarta</span>
+            <span>Radar Peta Kafe Surakarta</span>
             <span>&middot;</span>
-            <span>{totalCafes} lokasi siap dikunjungi</span>
+            <span>{totalCafes} lokasi siap dikunjungi &amp; diulas</span>
           </div>
         </div>
 

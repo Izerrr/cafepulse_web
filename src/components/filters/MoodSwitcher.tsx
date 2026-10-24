@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Coffee, Heart, BookOpen, Bookmark } from 'lucide-react';
+import React from "react";
+import { Coffee, Heart, BookOpen, Bookmark } from "lucide-react";
 
-export type MoodMode = 'ALL' | 'DEEP_WORK' | 'MEETING' | 'BOOKMARKS';
+export type MoodMode = "ALL" | "DEEP_WORK" | "MEETING" | "BOOKMARKS";
 
 interface MoodSwitcherProps {
   currentMood: MoodMode;
@@ -11,44 +11,38 @@ interface MoodSwitcherProps {
   totalBookmarks: number;
 }
 
-export default function MoodSwitcher({
-  currentMood,
-  onSelectMood,
-  totalBookmarks,
-}: MoodSwitcherProps) {
+export default function MoodSwitcher({ currentMood, onSelectMood, totalBookmarks }: MoodSwitcherProps) {
   const moods = [
     {
-      id: 'ALL' as MoodMode,
+      id: "ALL" as MoodMode,
       icon: Coffee,
-      label: 'Semua Kafe',
-      desc: 'Jelajahi seluruh sudut Solo',
+      label: "Semua Kafe",
+      desc: "Jelajahi seluruh sudut Solo",
     },
     {
-      id: 'MEETING' as MoodMode,
+      id: "MEETING" as MoodMode,
       icon: Heart,
-      label: 'Santai & Singgah',
-      desc: 'Ngobrol akrab & suasana hangat',
+      label: "Santai & Singgah",
+      desc: "Ngobrol akrab & suasana hangat",
     },
     {
-      id: 'DEEP_WORK' as MoodMode,
+      id: "DEEP_WORK" as MoodMode,
       icon: BookOpen,
-      label: 'Fokus & Nugas',
-      desc: 'Tenang, Wi-Fi kencang, colokan siap',
+      label: "Fokus & Nugas",
+      desc: "Tenang, Wi-Fi kencang, colokan siap",
     },
     {
-      id: 'BOOKMARKS' as MoodMode,
+      id: "BOOKMARKS" as MoodMode,
       icon: Bookmark,
       label: `Tersimpan (${totalBookmarks})`,
-      desc: 'Koleksi kafe favoritmu',
+      desc: "Koleksi kafe favoritmu",
     },
   ];
 
   return (
     <div className="border-b border-canvas-border bg-canvas-bg py-4 px-4 sm:px-6 lg:px-8">
       <div className="mx-auto max-w-7xl flex flex-wrap items-center gap-2">
-        <span className="text-[11px] font-mono text-roast-400 uppercase tracking-wider mr-2 hidden sm:inline">
-          Cari Berdasarkan Suasana:
-        </span>
+        <span className="text-[11px] font-mono text-roast-400 uppercase tracking-wider mr-2 hidden sm:inline">Cari Berdasarkan Suasana:</span>
 
         {moods.map((m) => {
           const Icon = m.icon;
@@ -58,12 +52,10 @@ export default function MoodSwitcher({
               key={m.id}
               onClick={() => onSelectMood(m.id)}
               className={`flex items-center gap-2 rounded-full px-4 py-2 text-xs font-semibold transition-all ${
-                isActive
-                  ? 'bg-roast-900 text-white shadow-xs'
-                  : 'border border-canvas-border bg-white text-roast-700 hover:border-canvas-border-hover hover:bg-canvas-surface hover:text-roast-900'
+                isActive ? "bg-roast-900 text-white shadow-xs" : "border border-canvas-border bg-white text-roast-700 hover:border-canvas-border-hover hover:bg-canvas-surface hover:text-roast-900"
               }`}
             >
-              <Icon className={`h-3.5 w-3.5 ${isActive ? 'text-crema-400' : 'text-roast-400'}`} />
+              <Icon className={`h-3.5 w-3.5 ${isActive ? "text-crema-400" : "text-roast-400"}`} />
               <span>{m.label}</span>
             </button>
           );

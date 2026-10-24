@@ -1,0 +1,82 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1440 900" fill="none">
+  <g stroke="#2C221D" stroke-linecap="round" stroke-linejoin="round">
+    <!-- Bengawan Solo River Meandering on the East -->
+    <path d="M1260 0C1240 140 1310 260 1280 410C1250 560 1170 670 1190 900" stroke-width="18" stroke-opacity="0.25"/>
+    <path d="M1260 0C1240 140 1310 260 1280 410C1250 560 1170 670 1190 900" stroke-width="2" stroke-opacity="0.5" stroke-dasharray="8 8"/>
+
+    <!-- Kali Pepe / Anyar River Channel -->
+    <path d="M180 120C360 180 520 290 740 310C960 330 1120 380 1280 410" stroke-width="8" stroke-opacity="0.2"/>
+
+    <!-- Main Corridor: Jl. Slamet Riyadi (West to East Boulevard) -->
+    <path d="M0 480L560 495L980 510L1440 490" stroke-width="4" stroke-opacity="0.65"/>
+    <path d="M0 486L560 501L980 516L1440 496" stroke-width="1.5" stroke-opacity="0.45" stroke-dasharray="6 4"/>
+
+    <!-- Northern Corridor: Jl. Adi Sucipto (Manahan - Colomadu) -->
+    <path d="M0 270L680 280L1060 240L1440 190" stroke-width="3" stroke-opacity="0.5"/>
+
+    <!-- Southern Corridor: Jl. Veteran / Laweyan - Tipes -->
+    <path d="M80 680L920 690L1380 650" stroke-width="2.5" stroke-opacity="0.45"/>
+
+    <!-- Vertical Arteries: Jl. A. Yani, Jl. Honggowongso, Jl. Gatot Subroto, Jl. Ir. Sutami -->
+    <path d="M310 0L290 485L270 900" stroke-width="2.5" stroke-opacity="0.45"/>
+    <path d="M560 0L560 495L550 900" stroke-width="3" stroke-opacity="0.5"/>
+    <path d="M760 80L750 503L745 900" stroke-width="2.5" stroke-opacity="0.45"/>
+    <path d="M980 0L980 510L970 900" stroke-width="3" stroke-opacity="0.5"/>
+
+    <!-- Manahan Stadium Complex (Iconic Oval in North-West Solo) -->
+    <g transform="translate(450, 230)">
+      <circle cx="0" cy="0" r="56" stroke-width="2" stroke-opacity="0.55"/>
+      <ellipse cx="0" cy="0" rx="36" ry="26" stroke-width="2.5" stroke-opacity="0.65"/>
+      <ellipse cx="0" cy="0" rx="20" ry="13" stroke-width="1.2" stroke-opacity="0.4"/>
+      <path d="M-56 0H-36M36 0H56M0 -56V-26M0 26V56" stroke-width="1.2" stroke-opacity="0.4"/>
+    </g>
+
+    <!-- Keraton Kasunanan & Alun-Alun Utara/Selatan Block -->
+    <g transform="translate(830, 580)">
+      <rect x="-55" y="-45" width="110" height="90" rx="4" stroke-width="2" stroke-opacity="0.55"/>
+      <rect x="-32" y="-25" width="64" height="50" stroke-width="1.5" stroke-opacity="0.4"/>
+      <rect x="-25" y="-85" width="50" height="35" stroke-width="1.5" stroke-opacity="0.45"/>
+      <rect x="-25" y="50" width="50" height="35" stroke-width="1.5" stroke-opacity="0.45"/>
+    </g>
+
+    <!-- Pura Mangkunegaran Block -->
+    <g transform="translate(700, 415)">
+      <rect x="-42" y="-32" width="84" height="64" rx="3" stroke-width="2" stroke-opacity="0.5"/>
+      <path d="M-20 -12H20V12H-20Z" stroke-width="1.2" stroke-opacity="0.4"/>
+    </g>
+
+    <!-- UNS Kentingan / Jebres Campus Zone (East Solo) -->
+    <g transform="translate(1110, 290)">
+      <path d="M-65 -45L55 -55L75 35L-50 45Z" stroke-width="2" stroke-opacity="0.5"/>
+      <path d="M-40 -20L35 -25M-35 10L40 5M0 -50L5 40" stroke-width="1.2" stroke-opacity="0.35"/>
+    </g>
+
+    <!-- Secondary Neighborhood Street Grids (Laweyan, Banjarsari, Keprabon, Pasar Gede) -->
+    <g stroke-width="1" stroke-opacity="0.3">
+      <!-- Laweyan Grid -->
+      <path d="M120 530H480M120 575H480M120 620H480"/>
+      <path d="M180 490V680M240 490V680M370 490V680M430 490V680"/>
+      <!-- Banjarsari / Manahan Grid -->
+      <path d="M560 140H960M560 190H960M560 360H960M560 420H960"/>
+      <path d="M620 100V495M680 100V495M820 100V495M890 100V495"/>
+      <!-- Jebres Grid -->
+      <path d="M980 380H1250M980 440H1250M980 570H1220"/>
+      <path d="M1040 180V660M1120 180V660M1190 220V600"/>
+    </g>
+
+    <!-- Cartographic Radar Concentric Rings Centered on Solo -->
+    <circle cx="720" cy="450" r="180" stroke-width="1" stroke-opacity="0.25" stroke-dasharray="4 6"/>
+    <circle cx="720" cy="450" r="340" stroke-width="1" stroke-opacity="0.2" stroke-dasharray="6 8"/>
+    <circle cx="720" cy="450" r="520" stroke-width="1" stroke-opacity="0.15" stroke-dasharray="8 10"/>
+
+    <!-- Subtle Coordinate Labels -->
+    <g fill="#2C221D" fill-opacity="0.45" stroke="none" font-family="monospace" font-size="10" letter-spacing="2">
+      <text x="415" y="162">MANAHAN // -7.5552</text>
+      <text x="1065" y="222">JEBRES · UNS // -7.5589</text>
+      <text x="645" y="370">MANGKUNEGARAN</text>
+      <text x="330" y="472">JL. SLAMET RIYADI</text>
+      <text x="175" y="668">LAWEYAN HERITAGE</text>
+      <text x="785" y="705">PASAR KLIWON · KERATON</text>
+    </g>
+  </g>
+</svg>

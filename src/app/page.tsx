@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useMemo } from 'react';
+import dynamic from 'next/dynamic';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
 import { Cafe, FilterState } from '@/types/cafe';
@@ -13,10 +14,36 @@ import CafeCard from '@/components/cafes/CafeCard';
 import CafeDetailModal from '@/components/cafes/CafeDetailModal';
 import AddCafeModal from '@/components/cafes/AddCafeModal';
 import EditCafeModal from '@/components/cafes/EditCafeModal';
+import { AddReviewModal } from '@/components/cafes/AddReviewModal';
+import { UserAccessModal } from '@/components/auth/UserAccessModal';
 import DeveloperApiSection from '@/components/developer/DeveloperApiSection';
 import Footer from '@/components/footer/Footer';
 import { useBookmarks } from '@/hooks/useBookmarks';
-import { Plus, Coffee, RefreshCw, AlertCircle } from 'lucide-react';
+import { useUserRole } from '@/hooks/useUserRole';
+import {
+  Plus,
+  Coffee,
+  RefreshCw,
+  AlertCircle,
+  LayoutGrid,
+  Map as MapIcon,
+  ShieldCheck,
+} from 'lucide-react';
+
+const CafeInteractiveMap = dynamic(
+  () => import('@/components/map/CafeInteractiveMap'),
+  {
+    ssr: false,
+    loading: () => (
+      <div className="h-[520px] w-full rounded-3xl border border-canvas-border bg-canvas-surface flex flex-col items-center justify-center gap-3 text-roast-600 animate-pulse">
+        <MapIcon className="w-8 h-8 text-crema-500 animate-bounce" />
+        <span className="font-mono text-xs uppercase tracking-widest">
+          Memuat Peta Interaktif Surakarta...
+        </span>
+      </div>
+    ),
+  }
+);
 
 const initialFilters: FilterState = {
   search: '',
@@ -32,16 +59,34 @@ const initialFilters: FilterState = {
 export default function HomePage() {
   const [filters, setFilters] = useState<FilterState>(initialFilters);
   const [currentMood, setCurrentMood] = useState<MoodMode>('ALL');
+  const [viewMode, setViewMode] = useState<'grid' | 'map'>('grid');
+
   const [selectedCafe, setSelectedCafe] = useState<Cafe | null>(null);
   const [editingCafe, setEditingCafe] = useState<Cafe | null>(null);
+  const [reviewingCafe, setReviewingCafe] = useState<Cafe | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isAccessModalOpen, setIsAccessModalOpen] = useState(false);
 
   const { isBookmarked, toggleBookmark, totalBookmarks, bookmarkedIds } = useBookmarks();
+  const { role, isCurator, loginAsCurator, logoutToVisitor } = useUserRole();
 
   const exploreRef = useRef<HTMLDivElement>(null);
 
   const scrollToExplore = () => {
     exploreRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleOpenMapView = () => {
+    setViewMode('map');
+    exploreRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const handleRequestEdit = (cafe: Cafe) => {
+    if (!isCurator) {
+      setIsAccessModalOpen(true);
+      return;
+    }
+    setEditingCafe(cafe);
   };
 
   const {
@@ -92,7 +137,6 @@ export default function HomePage() {
   // Filter cafes including Bookmark mode
   const filteredCafes = useMemo(() => {
     return allCafes.filter((cafe) => {
-      // If bookmarks mode active
       if (currentMood === 'BOOKMARKS' && !bookmarkedIds.includes(cafe.id)) {
         return false;
       }
@@ -122,7 +166,6 @@ export default function HomePage() {
 
   return (
     <main className="min-h-screen bg-canvas-bg text-roast-900">
-      
       {/* Top Studio Navbar */}
       <Navbar
         onOpenAddModal={() => setIsAddModalOpen(true)}
@@ -131,11 +174,15 @@ export default function HomePage() {
         onFilterBookmarks={() =>
           handleSelectMood(currentMood === 'BOOKMARKS' ? 'ALL' : 'BOOKMARKS')
         }
+        userRole={role}
+        onOpenAccessModal={() => setIsAccessModalOpen(true)}
+        onOpenMapView={handleOpenMapView}
       />
 
-      {/* Onlines.com.ar Interactive Draggable Studio Hero */}
+      {/* Onlines.com.ar Interactive Draggable Studio Hero with Surakarta Map Radar */}
       <OnlinesHero
         onScrollToExplore={scrollToExplore}
+        onOpenMapView={handleOpenMapView}
         totalCafes={allCafes.length || 2}
         onToggleFocusMode={handleToggleFocusMode}
       />
@@ -145,7 +192,6 @@ export default function HomePage() {
 
       {/* Explore Section */}
       <div ref={exploreRef} className="scroll-mt-14">
-        
         {/* Quick Mood Switcher */}
         <MoodSwitcher
           currentMood={currentMood}
@@ -164,9 +210,63 @@ export default function HomePage() {
           totalResults={filteredCafes.length}
         />
 
-        {/* Cafe Grid Container */}
-        <div className="mx-auto max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
-          
+        {/* View Mode Switcher Bar (Cards vs Interactive Solo Map) */}
+        <div className="mx-auto max-w-7xl px-4 pt-8 sm:px-6 lg:px-8">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-canvas-border">
+            <div>
+              <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-crema-600 block">
+                Direktori &amp; Peta Komunitas Surakarta
+              </span>
+              <h2 className="text-lg sm:text-xl font-bold text-roast-900 mt-0.5">
+                {viewMode === 'grid'
+                  ? `Menampilkan ${filteredCafes.length} Kafe Pilihan di Solo`
+                  : 'Peta Interaktif Surakarta & Sinkronisasi Maps'}
+              </h2>
+            </div>
+
+            <div className="flex items-center gap-2 self-start sm:self-auto">
+              <div className="inline-flex rounded-full border border-canvas-border bg-canvas-surface p-1 shadow-xs">
+                <button
+                  type="button"
+                  onClick={() => setViewMode('grid')}
+                  className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all ${
+                    viewMode === 'grid'
+                      ? 'bg-roast-900 text-canvas-bg shadow-xs'
+                      : 'text-roast-600 hover:text-roast-900'
+                  }`}
+                >
+                  <LayoutGrid className="w-3.5 h-3.5" />
+                  <span>Kartu Kafe</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setViewMode('map')}
+                  className={`flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all ${
+                    viewMode === 'map'
+                      ? 'bg-crema-500 text-canvas-surface shadow-xs'
+                      : 'text-roast-600 hover:text-roast-900'
+                  }`}
+                >
+                  <MapIcon className="w-3.5 h-3.5" />
+                  <span>Peta Interaktif &amp; Impor Maps</span>
+                </button>
+              </div>
+
+              <button
+                type="button"
+                onClick={() => setIsAccessModalOpen(true)}
+                className="hidden md:flex items-center gap-1.5 rounded-full border border-canvas-border bg-canvas-surface px-3 py-2 text-[11px] font-mono text-roast-600 hover:border-crema-500 hover:text-roast-900 transition-colors"
+                title="Klik untuk beralih antara Mode Pengunjung & Mode Kurator"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 text-crema-500" />
+                <span>{isCurator ? 'Kurator Aktif' : 'Info Akses'}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Cafe Grid or Interactive Map Container */}
+        <div className="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
           {/* Loading Skeleton */}
           {isLoading && (
             <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
@@ -212,10 +312,17 @@ export default function HomePage() {
             </div>
           )}
 
-          {/* Loaded Cafes Grid */}
+          {/* Loaded View: Either Interactive Map OR Card Grid */}
           {!isLoading && !isError && (
             <>
-              {filteredCafes.length === 0 ? (
+              {viewMode === 'map' ? (
+                <CafeInteractiveMap
+                  cafes={filteredCafes}
+                  allCafes={allCafes}
+                  onSelectCafe={(cafe) => setSelectedCafe(cafe)}
+                  onReviewCafe={(cafe) => setReviewingCafe(cafe)}
+                />
+              ) : filteredCafes.length === 0 ? (
                 <div className="rounded-2xl border border-canvas-border bg-white p-12 text-center shadow-xs">
                   <Coffee className="mx-auto h-10 w-10 text-roast-300 mb-3" />
                   <h3 className="text-base font-bold text-roast-900">
@@ -226,9 +333,9 @@ export default function HomePage() {
                   <p className="mt-1.5 text-xs text-roast-600 max-w-md mx-auto leading-relaxed">
                     {currentMood === 'BOOKMARKS'
                       ? 'Tekan ikon bookmark pada kartu kafe mana saja untuk menyimpannya ke daftar ini.'
-                      : 'Coba turunkan batas kecepatan Wi-Fi atau reset filter untuk melihat semua kafe.'}
+                      : 'Coba turunkan batas kecepatan Wi-Fi, buka Peta Interaktif untuk menarik kafe baru dari Maps, atau reset filter.'}
                   </p>
-                  <div className="mt-6 flex items-center justify-center gap-3">
+                  <div className="mt-6 flex flex-wrap items-center justify-center gap-3">
                     <button
                       onClick={() => {
                         setFilters(initialFilters);
@@ -237,6 +344,12 @@ export default function HomePage() {
                       className="rounded-full border border-canvas-border bg-white px-4 py-2 text-xs font-semibold text-roast-900 hover:border-canvas-border-hover transition-colors shadow-xs"
                     >
                       Tampilkan Semua Kafe
+                    </button>
+                    <button
+                      onClick={() => setViewMode('map')}
+                      className="rounded-full bg-crema-500 px-4 py-2 text-xs font-semibold text-white hover:bg-crema-600 transition-colors shadow-xs"
+                    >
+                      🗺️ Cari &amp; Impor dari Peta Solo
                     </button>
                     <button
                       onClick={() => setIsAddModalOpen(true)}
@@ -253,7 +366,8 @@ export default function HomePage() {
                       key={cafe.id}
                       cafe={cafe}
                       onExplore={(c) => setSelectedCafe(c)}
-                      onEdit={(c) => setEditingCafe(c)}
+                      onEdit={handleRequestEdit}
+                      onReview={(c) => setReviewingCafe(c)}
                       isBookmarked={isBookmarked(cafe.id)}
                       onToggleBookmark={toggleBookmark}
                     />
@@ -262,16 +376,14 @@ export default function HomePage() {
               )}
             </>
           )}
-
         </div>
-
       </div>
 
       {/* Floating Action Button (Studio Pill in Deep Espresso) */}
       <button
         onClick={() => setIsAddModalOpen(true)}
         className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full bg-roast-900 px-4 py-3 text-xs font-semibold text-white shadow-xl transition-transform hover:scale-105 hover:bg-crema-500 active:scale-95"
-        title="Tambah Kafe Baru"
+        title="Tambah & Sinkronkan Kafe Baru"
       >
         <Plus className="h-4 w-4 stroke-[2.5]" />
         <span className="hidden sm:inline">Tambah Kafe</span>
@@ -283,8 +395,13 @@ export default function HomePage() {
         onClose={() => setSelectedCafe(null)}
         onEdit={(cafe) => {
           setSelectedCafe(null);
-          setEditingCafe(cafe);
+          handleRequestEdit(cafe);
         }}
+        onReview={(cafe) => {
+          setSelectedCafe(null);
+          setReviewingCafe(cafe);
+        }}
+        isCurator={isCurator}
       />
 
       <AddCafeModal
@@ -297,12 +414,24 @@ export default function HomePage() {
         onClose={() => setEditingCafe(null)}
       />
 
-      {/* Dedicated Section: Open Data & Public API for Developers / Students (Dark Roast Block) */}
+      <AddReviewModal
+        cafe={reviewingCafe}
+        onClose={() => setReviewingCafe(null)}
+      />
+
+      <UserAccessModal
+        isOpen={isAccessModalOpen}
+        onClose={() => setIsAccessModalOpen(false)}
+        role={role}
+        onLoginCurator={loginAsCurator}
+        onLogoutVisitor={logoutToVisitor}
+      />
+
+      {/* Dedicated Section: Open Data & Public API for Developers / Students */}
       <DeveloperApiSection />
 
       {/* Studio Footer */}
       <Footer />
-
     </main>
   );
 }

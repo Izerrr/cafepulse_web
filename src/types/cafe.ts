@@ -20,6 +20,7 @@ export interface CafeReview {
   id: number;
   cafe_id: number;
   user_id?: number;
+  reviewer_name?: string;
   rating: number;
   comment: string;
   verified_wifi_speed?: number;
@@ -37,6 +38,7 @@ export interface Cafe {
   crowd_density: CrowdDensity;
   is_active: boolean;
   owner_id?: number;
+  rating?: number;
   total_reviews: number;
   created_at: string;
   updated_at: string;
@@ -103,4 +105,21 @@ export interface FilterState {
   acOnly: boolean;
   outdoorOnly: boolean;
   prayerRoomOnly: boolean;
+}
+
+export interface CreateReviewInput {
+  rating: number;
+  comment: string;
+  verified_wifi_speed?: number;
+  verified_crowd?: CrowdDensity;
+  reviewer_name?: string;
+}
+
+export interface MapsPlaceCandidate {
+  id: string;
+  name: string;
+  address: string;
+  latitude: number;
+  longitude: number;
+  opening_hours?: string;
 }

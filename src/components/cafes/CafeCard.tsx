@@ -1,13 +1,25 @@
 'use client';
 
 import React from 'react';
-import { Wifi, Plug, Volume2, MapPin, Clock, Star, ArrowRight, Edit2, Bookmark } from 'lucide-react';
+import {
+  Wifi,
+  Plug,
+  Volume2,
+  MapPin,
+  Clock,
+  Star,
+  ArrowRight,
+  Edit2,
+  Bookmark,
+  MessageSquarePlus,
+} from 'lucide-react';
 import { Cafe } from '@/types/cafe';
 
 interface CafeCardProps {
   cafe: Cafe;
   onExplore: (cafe: Cafe) => void;
   onEdit: (cafe: Cafe) => void;
+  onReview?: (cafe: Cafe) => void;
   isBookmarked?: boolean;
   onToggleBookmark?: (cafeId: number) => void;
 }
@@ -16,6 +28,7 @@ export default function CafeCard({
   cafe,
   onExplore,
   onEdit,
+  onReview,
   isBookmarked = false,
   onToggleBookmark,
 }: CafeCardProps) {
@@ -25,6 +38,7 @@ export default function CafeCard({
   const wifiStability = amenities?.wifi_stability || 'GOOD';
   const plugScore = amenities?.plug_score || 'MODERATE';
   const noiseLevel = amenities?.noise_level || 'MODERATE';
+  const displayRating = (cafe.rating || 5.0).toFixed(1);
 
   const getCrowdLabel = (density: string) => {
     switch (density) {
@@ -59,13 +73,13 @@ export default function CafeCard({
 
   return (
     <article className="group relative flex flex-col justify-between rounded-2xl border border-canvas-border bg-white p-6 shadow-xs transition-all duration-300 hover:border-canvas-border-hover hover:shadow-xl hover:-translate-y-1">
-      
       {/* Top Header */}
       <div>
         <div className="flex items-center justify-between gap-2 border-b border-canvas-border pb-3.5">
-          
           {/* Status keramaian */}
-          <div className={`flex items-center gap-1.5 rounded-full border px-3 py-0.5 text-[11px] font-semibold ${crowd.badge}`}>
+          <div
+            className={`flex items-center gap-1.5 rounded-full border px-3 py-0.5 text-[11px] font-semibold ${crowd.badge}`}
+          >
             <span className={`h-1.5 w-1.5 rounded-full ${crowd.dot}`} />
             <span>{crowd.text}</span>
           </div>
@@ -92,7 +106,6 @@ export default function CafeCard({
               </button>
             )}
           </div>
-
         </div>
 
         {/* Nama kafe & alamat */}
@@ -101,10 +114,15 @@ export default function CafeCard({
             <h2 className="text-xl font-bold tracking-tight text-roast-900 group-hover:text-crema-500 transition-colors">
               {cafe.name}
             </h2>
-            <div className="flex items-center gap-1 rounded-full border border-canvas-border bg-canvas-surface px-2.5 py-0.5 text-xs text-roast-700">
+            <button
+              type="button"
+              onClick={() => (onReview ? onReview(cafe) : onExplore(cafe))}
+              title="Klik untuk memberi rating kafe ini"
+              className="flex items-center gap-1 rounded-full border border-canvas-border bg-canvas-surface hover:border-crema-500 px-2.5 py-0.5 text-xs text-roast-700 transition-colors shrink-0"
+            >
               <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
-              <span className="font-mono font-semibold">5.0</span>
-            </div>
+              <span className="font-mono font-semibold">{displayRating}</span>
+            </button>
           </div>
 
           <div className="mt-2 flex items-center gap-1.5 text-xs text-roast-500">
@@ -115,7 +133,6 @@ export default function CafeCard({
 
         {/* Spesifikasi teknis (Wi-Fi, Colokan, Kebisingan) */}
         <div className="mt-5 grid grid-cols-3 gap-2.5 border-y border-canvas-border py-3.5 text-xs">
-          
           {/* Wi-Fi */}
           <div className="rounded-xl border border-canvas-border bg-canvas-surface p-2.5 text-center">
             <div className="flex items-center justify-center gap-1 text-[11px] text-roast-400">
@@ -126,7 +143,11 @@ export default function CafeCard({
               {wifiSpeed} <span className="text-[10px] font-normal text-roast-400">Mbps</span>
             </div>
             <div className="text-[10px] text-accent-blue font-medium">
-              {wifiStability === 'EXCELLENT' ? 'Sangat Stabil' : wifiStability === 'GOOD' ? 'Stabil' : 'Cukup'}
+              {wifiStability === 'EXCELLENT'
+                ? 'Sangat Stabil'
+                : wifiStability === 'GOOD'
+                ? 'Stabil'
+                : 'Cukup'}
             </div>
           </div>
 
@@ -157,7 +178,6 @@ export default function CafeCard({
               {noiseLevel === 'QUIET' ? 'Fokus nugas' : 'Musik kafe'}
             </div>
           </div>
-
         </div>
 
         {/* Fasilitas */}
@@ -185,25 +205,33 @@ export default function CafeCard({
 
       {/* Action Footer */}
       <div className="mt-6 flex items-center gap-2 border-t border-canvas-border pt-4">
-        
         <button
           onClick={() => onExplore(cafe)}
-          className="flex flex-1 items-center justify-center gap-2 rounded-full bg-roast-900 py-2.5 text-xs font-semibold text-white transition-all hover:bg-crema-500 active:scale-98 shadow-xs"
+          className="flex flex-1 items-center justify-center gap-1.5 rounded-full bg-roast-900 py-2.5 px-3 text-xs font-semibold text-white transition-all hover:bg-crema-500 active:scale-98 shadow-xs"
         >
-          <span>Lihat Suasana &amp; Detail</span>
+          <span>Lihat Detail</span>
           <ArrowRight className="h-3.5 w-3.5" />
         </button>
 
+        {onReview && (
+          <button
+            onClick={() => onReview(cafe)}
+            title="Beri rating & lapor Wi-Fi"
+            className="flex items-center gap-1 rounded-full border border-crema-500/40 bg-crema-500/10 px-3 py-2 text-xs font-semibold text-crema-600 transition-colors hover:bg-crema-500 hover:text-white"
+          >
+            <MessageSquarePlus className="h-3.5 w-3.5" />
+            <span>Ulas</span>
+          </button>
+        )}
+
         <button
           onClick={() => onEdit(cafe)}
-          title="Edit data fasilitas"
-          className="flex h-9 w-9 items-center justify-center rounded-full border border-canvas-border text-roast-400 transition-colors hover:border-canvas-border-hover hover:text-roast-900"
+          title="Edit data fasilitas (Kurator)"
+          className="flex h-9 w-9 items-center justify-center rounded-full border border-canvas-border text-roast-400 transition-colors hover:border-canvas-border-hover hover:text-roast-900 shrink-0"
         >
           <Edit2 className="h-3.5 w-3.5" />
         </button>
-
       </div>
-
     </article>
   );
 }
