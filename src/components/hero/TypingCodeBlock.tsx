@@ -67,7 +67,7 @@ export default function TypingCodeBlock() {
   }, [index, current.notes]);
 
   return (
-    <div className="relative w-[250px] select-none rounded-2xl overflow-hidden shadow-xl border border-canvas-border bg-white p-4">
+    <div className="relative w-62.5 select-none rounded-2xl overflow-hidden shadow-xl border border-canvas-border bg-white p-4">
       {/* Top Header */}
       <div className="flex items-center justify-between border-b border-canvas-border pb-2.5">
         <div className="flex items-center gap-1.5">
@@ -90,9 +90,9 @@ export default function TypingCodeBlock() {
       </div>
 
       {/* Dynamic Note Body with blinking cursor */}
-      <div className="mt-2 min-h-[52px] text-[11px] leading-relaxed text-roast-700">
+      <div className="mt-2 min-h-13 text-[11px] leading-relaxed text-roast-700">
         &ldquo;{displayText}&rdquo;
-        <span className="inline-block w-[1.5px] h-[11px] bg-crema-500 ml-0.5 align-middle animate-pulse" />
+        <span className="inline-block w-[1.5px] h-2.75 bg-crema-500 ml-0.5 align-middle animate-pulse" />
       </div>
 
       {/* Friendly Footer Pill */}

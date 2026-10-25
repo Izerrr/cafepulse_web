@@ -532,8 +532,8 @@ export default function CafeInteractiveMap({
       {/* Main Map + Inspector Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-5">
         {/* Map Canvas */}
-        <div className="lg:col-span-8 relative rounded-3xl overflow-hidden border border-canvas-border shadow-md bg-canvas-elevated min-h-[460px]">
-          <div ref={mapContainerRef} className="w-full h-[460px] sm:h-[520px] z-10" />
+        <div className="lg:col-span-8 relative rounded-3xl overflow-hidden border border-canvas-border shadow-md bg-canvas-elevated min-h-115">
+          <div ref={mapContainerRef} className="w-full h-115 sm:h-130 z-10" />
 
           {/* Floating Map Legend */}
           <div className="absolute bottom-4 left-4 z-20 p-3 rounded-2xl bg-canvas-surface/95 backdrop-blur-md border border-canvas-border shadow-lg flex flex-wrap items-center gap-3 text-[11px] font-mono">

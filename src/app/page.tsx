@@ -35,7 +35,7 @@ const CafeInteractiveMap = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="h-[520px] w-full rounded-3xl border border-canvas-border bg-canvas-surface flex flex-col items-center justify-center gap-3 text-roast-600 animate-pulse">
+      <div className="h-130 w-full rounded-3xl border border-canvas-border bg-canvas-surface flex flex-col items-center justify-center gap-3 text-roast-600 animate-pulse">
         <MapIcon className="w-8 h-8 text-crema-500 animate-bounce" />
         <span className="font-mono text-xs uppercase tracking-widest">
           Memuat Peta Google Maps Surakarta...

@@ -36,7 +36,7 @@ export default function OnlinesHero({
   return (
     <section
       ref={heroRef}
-      className="relative w-full overflow-hidden bg-canvas-bg border-b border-canvas-border select-none min-h-[750px] lg:min-h-[860px] flex flex-col justify-between"
+      className="relative w-full overflow-hidden bg-canvas-bg border-b border-canvas-border select-none min-h-187.5 lg:min-h-215 flex flex-col justify-between"
     >
       {/* 0. Subtle Surakarta Map Blueprint Overlay (Cartographic Radar Background) */}
       <div
