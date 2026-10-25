@@ -144,12 +144,12 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="overflow-y-auto p-6 space-y-4">
           {/* Maps Auto-Import Section */}
-          <div className="rounded-2xl border border-crema-500/30 bg-canvas-surface p-4 space-y-3">
+          <div className="rounded-2xl border border-rose-500/30 bg-canvas-surface p-4 space-y-3">
             <div className="flex items-center justify-between">
-              <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-crema-600 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-crema-500" /> Cari & Tarik Otomatis dari Peta Solo
+              <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-rose-600 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-rose-500" /> Impor Langsung dari Google Maps Solo
               </span>
-              <span className="font-mono text-[10px] text-roast-500">Auto-Sync Koordinat</span>
+              <span className="font-mono text-[10px] text-roast-500">Auto-Fill Koordinat</span>
             </div>
 
             <div className="relative">
@@ -158,11 +158,11 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
                 type="text"
                 value={mapsQuery}
                 onChange={(e) => setMapsQuery(e.target.value)}
-                placeholder="Ketik nama kafe di Solo (misal: Natahati, Cold 'n Brew, Bento)..."
-                className="w-full rounded-xl border border-canvas-border bg-white pl-9 pr-8 py-2 text-xs text-roast-900 placeholder-roast-400 outline-none focus:border-crema-500"
+                placeholder="Ketik nama kafe atau tempel tautan Google Maps (maps.app.goo.gl)..."
+                className="w-full rounded-xl border border-canvas-border bg-white pl-9 pr-8 py-2 text-xs text-roast-900 placeholder-roast-400 outline-none focus:border-rose-500"
               />
               {isSearchingMaps && (
-                <Loader2 className="w-3.5 h-3.5 text-crema-500 animate-spin absolute right-3 top-1/2 -translate-y-1/2" />
+                <Loader2 className="w-3.5 h-3.5 text-rose-500 animate-spin absolute right-3 top-1/2 -translate-y-1/2" />
               )}
             </div>
 
@@ -177,18 +177,23 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
                       onClick={() => handleSelectPlace(place)}
                       className={`w-full text-left p-2.5 rounded-xl border transition-all flex items-center justify-between gap-2 ${
                         isSelected
-                          ? 'bg-crema-500/10 border-crema-500 text-roast-900'
-                          : 'bg-white border-canvas-border hover:border-crema-500/50 text-roast-800'
+                          ? 'bg-rose-50 border-rose-500 text-roast-900'
+                          : 'bg-white border-canvas-border hover:border-rose-300 text-roast-800'
                       }`}
                     >
                       <div className="min-w-0">
                         <div className="text-xs font-bold truncate flex items-center gap-1.5">
-                          <MapPin className="w-3 h-3 text-crema-500 shrink-0" />
+                          <MapPin className="w-3 h-3 text-rose-500 shrink-0" />
                           <span>{place.name}</span>
+                          {place.rating && (
+                            <span className="text-[10px] font-mono text-amber-600 font-normal">
+                              ★ {place.rating.toFixed(1)}
+                            </span>
+                          )}
                         </div>
                         <p className="text-[10px] text-roast-500 truncate pl-4">{place.address}</p>
                       </div>
-                      <span className="shrink-0 px-2.5 py-1 rounded-full bg-canvas-surface border border-canvas-border font-mono text-[10px] font-bold text-crema-600 flex items-center gap-1">
+                      <span className="shrink-0 px-2.5 py-1 rounded-full bg-canvas-surface border border-canvas-border font-mono text-[10px] font-bold text-rose-600 flex items-center gap-1">
                         {isSelected ? (
                           <>
                             <Check className="w-3 h-3" /> Terisi

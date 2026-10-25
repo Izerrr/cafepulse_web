@@ -38,7 +38,7 @@ const CafeInteractiveMap = dynamic(
       <div className="h-[520px] w-full rounded-3xl border border-canvas-border bg-canvas-surface flex flex-col items-center justify-center gap-3 text-roast-600 animate-pulse">
         <MapIcon className="w-8 h-8 text-crema-500 animate-bounce" />
         <span className="font-mono text-xs uppercase tracking-widest">
-          Memuat Peta Interaktif Surakarta...
+          Memuat Peta Google Maps Surakarta...
         </span>
       </div>
     ),
@@ -220,7 +220,7 @@ export default function HomePage() {
               <h2 className="text-lg sm:text-xl font-bold text-roast-900 mt-0.5">
                 {viewMode === 'grid'
                   ? `Menampilkan ${filteredCafes.length} Kafe Pilihan di Solo`
-                  : 'Peta Interaktif Surakarta & Sinkronisasi Maps'}
+                  : 'Peta Surakarta & Sinkronisasi Kafe Google Maps'}
               </h2>
             </div>
 
@@ -248,7 +248,7 @@ export default function HomePage() {
                   }`}
                 >
                   <MapIcon className="w-3.5 h-3.5" />
-                  <span>Peta Interaktif &amp; Impor Maps</span>
+                  <span>Peta Google Maps &amp; Sync</span>
                 </button>
               </div>
 

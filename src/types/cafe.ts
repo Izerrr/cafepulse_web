@@ -122,4 +122,9 @@ export interface MapsPlaceCandidate {
   latitude: number;
   longitude: number;
   opening_hours?: string;
+  rating?: number;
+  total_reviews?: number;
+  google_maps_url?: string;
+  place_id?: string;
+  source?: 'google_places_api' | 'google_maps_curated' | 'google_maps_link' | 'osm';
 }
