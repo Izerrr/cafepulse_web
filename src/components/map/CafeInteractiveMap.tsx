@@ -44,7 +44,7 @@ export default function CafeInteractiveMap({
   const googleMapRef = useRef<google.maps.Map | null>(null);
   const googleMarkersRef = useRef<google.maps.Marker[]>([]);
 
-  // References for Leaflet Fallback Mode
+  // References for Leaflet Google Maps Tiles Mode
   const leafletMapRef = useRef<L.Map | null>(null);
   const leafletLayerRef = useRef<L.LayerGroup | null>(null);
 
@@ -83,7 +83,6 @@ export default function CafeInteractiveMap({
 
     setIsSearchingMap(true);
     try {
-      // 1. If Google Maps Live API is active and we have places service
       if (mapEngine === 'google' && googleMapRef.current && window.google?.maps?.places) {
         const service = new google.maps.places.PlacesService(googleMapRef.current);
         service.textSearch(
@@ -221,7 +220,7 @@ export default function CafeInteractiveMap({
     },
   });
 
-  // Helper to init Leaflet mode
+  // Helper to init Leaflet mode with Google Maps Roadmap Tiles
   const initLeafletMap = useCallback(() => {
     if (!mapContainerRef.current || leafletMapRef.current) return;
 
@@ -232,11 +231,12 @@ export default function CafeInteractiveMap({
       scrollWheelZoom: true,
     });
 
-    // Clean Google Maps-like Voyager tile layer
-    L.tileLayer('https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png', {
+    // 100% Genuine Google Maps Roadmap Tiles
+    L.tileLayer('https://{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+      maxZoom: 20,
+      subdomains: ['mt0', 'mt1', 'mt2', 'mt3'],
       attribution:
-        '&copy; Google Maps Data Sync &bull; OpenStreetMap &bull; CafePulse Solo',
-      maxZoom: 19,
+        '&copy; Google Maps Data &bull; Surakarta &bull; CafePulse Solo',
     }).addTo(map);
 
     const layerGroup = L.layerGroup().addTo(map);
@@ -244,7 +244,7 @@ export default function CafeInteractiveMap({
     leafletLayerRef.current = layerGroup;
   }, []);
 
-  // Initialize Map: Try Google Maps if API key provided, otherwise Leaflet
+  // Initialize Map: Try Google Maps JS API if API key provided, otherwise Google Maps Tiles mode
   useEffect(() => {
     let isCancelled = false;
 
@@ -268,7 +268,7 @@ export default function CafeInteractiveMap({
           setMapEngine('google');
         })
         .catch((err: unknown) => {
-          console.warn('Google Maps API failed, falling back to interactive map view:', err);
+          console.warn('Google Maps API failed, falling back to Google Maps tiles mode:', err);
           setMapEngine('leaflet');
           initLeafletMap();
         });
@@ -286,7 +286,7 @@ export default function CafeInteractiveMap({
     };
   }, [apiKey, initLeafletMap]);
 
-  // Update Markers for Leaflet Engine
+  // Update Markers with Interactive Popups directly on the pointers
   useEffect(() => {
     if (mapEngine !== 'leaflet') return;
     const map = leafletMapRef.current;
@@ -295,8 +295,8 @@ export default function CafeInteractiveMap({
 
     layerGroup.clearLayers();
 
-    // 1. Synced Database Cafes (Deep Roast / Amber Crema)
-    cafes.forEach((cafe) => {
+    // 1. Synced Database Cafes (Deep Roast / Amber Crema Pins with Interactive Popups)
+    cafes.forEach((cafe, index) => {
       const lat = cafe.latitude ?? -7.565;
       const lng = cafe.longitude ?? 110.825;
       const isSelected = selectedCafe?.id === cafe.id;
@@ -308,6 +308,13 @@ export default function CafeInteractiveMap({
           : cafe.crowd_density === 'MODERATE'
           ? '#D07D2B'
           : '#C43B3B';
+
+      const crowdText =
+        cafe.crowd_density === 'LOW'
+          ? 'Sepi'
+          : cafe.crowd_density === 'MODERATE'
+          ? 'Sedang'
+          : 'Ramai';
 
       const icon = L.divIcon({
         className: 'cafepulse-db-pin',
@@ -321,7 +328,7 @@ export default function CafeInteractiveMap({
             background: ${isSelected ? '#C86237' : '#1E1714'};
             color: #FFFDF9;
             border: 2px solid #FFFDF9;
-            box-shadow: 0 8px 20px rgba(30,23,20,0.3);
+            box-shadow: 0 8px 20px rgba(30,23,20,0.35);
             font-family: monospace;
             font-size: 11px;
             font-weight: 700;
@@ -339,15 +346,88 @@ export default function CafeInteractiveMap({
       });
 
       const marker = L.marker([lat, lng], { icon });
+
+      // Direct interactive popup attached to pointer
+      const popupHtml = `
+        <div id="popup-cafe-${cafe.id}" style="font-family: inherit; min-width: 220px; max-width: 260px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px;">
+            <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #2A7B52; background: rgba(42,123,82,0.12); padding: 2px 8px; border-radius: 99px;">
+              ✓ Di Database
+            </span>
+            <span style="font-size: 11px; font-weight: 700; color: #D97706;">
+              ★ ${(cafe.rating || 5.0).toFixed(1)}
+            </span>
+          </div>
+          <h4 style="font-size: 14px; font-weight: 800; color: #1E1714; margin: 0 0 4px 0; line-height: 1.25;">
+            ${cafe.name}
+          </h4>
+          <p style="font-size: 11px; color: #68554B; margin: 0 0 8px 0; line-height: 1.35;">
+            ${cafe.address}
+          </p>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px; margin-bottom: 10px; font-size: 10px; font-family: monospace;">
+            <div style="background: #FBF9F5; border: 1px solid rgba(45,30,20,0.08); padding: 4px 6px; border-radius: 8px; text-align: center;">
+              <span style="color: #7E6A5E; display: block; font-size: 9px;">WI-FI</span>
+              <b style="color: #0284C7; font-size: 11px;">${wifiSpeed} Mbps</b>
+            </div>
+            <div style="background: #FBF9F5; border: 1px solid rgba(45,30,20,0.08); padding: 4px 6px; border-radius: 8px; text-align: center;">
+              <span style="color: #7E6A5E; display: block; font-size: 9px;">SUASANA</span>
+              <b style="color: ${badgeColor}; font-size: 11px;">${crowdText}</b>
+            </div>
+          </div>
+          <div style="display: flex; gap: 6px;">
+            <button class="btn-review-cafe" style="flex: 1.2; background: #C86237; color: #FFFDF9; border: none; padding: 6px 10px; border-radius: 99px; font-size: 11px; font-weight: 700; cursor: pointer; transition: background 0.2s;">
+              ⭐ Ulas &amp; Tes
+            </button>
+            <button class="btn-detail-cafe" style="flex: 1; background: #1E1714; color: #FFFDF9; border: none; padding: 6px 10px; border-radius: 99px; font-size: 11px; font-weight: 700; cursor: pointer;">
+              Detail
+            </button>
+          </div>
+        </div>
+      `;
+
+      marker.bindPopup(popupHtml, {
+        maxWidth: 280,
+        className: 'cafepulse-custom-popup',
+        offset: [0, -10],
+      });
+
+      marker.on('popupopen', () => {
+        setSelectedCandidate(null);
+        setSelectedCafe(cafe);
+        setTimeout(() => {
+          const container = document.getElementById(`popup-cafe-${cafe.id}`);
+          if (container) {
+            const reviewBtn = container.querySelector('.btn-review-cafe');
+            reviewBtn?.addEventListener('click', (e) => {
+              e.stopPropagation();
+              onReviewCafe(cafe);
+            });
+            const detailBtn = container.querySelector('.btn-detail-cafe');
+            detailBtn?.addEventListener('click', (e) => {
+              e.stopPropagation();
+              onSelectCafe(cafe);
+            });
+          }
+        }, 50);
+      });
+
       marker.on('click', () => {
         setSelectedCandidate(null);
         setSelectedCafe(cafe);
-        map.flyTo([lat, lng], 15, { duration: 0.7 });
+        map.flyTo([lat, lng], 15, { duration: 0.6 });
       });
+
       marker.addTo(layerGroup);
+
+      // Auto-open first cafe popup on map load so the pointer card is immediately visible!
+      if (index === 0 && !selectedCandidate) {
+        setTimeout(() => {
+          marker.openPopup();
+        }, 300);
+      }
     });
 
-    // 2. Unsynced Google Maps Candidates
+    // 2. Unsynced Google Maps Solo Candidates (Red Google Pins with 1-Click Sync Popups)
     unsyncedCandidates.forEach((cand) => {
       const isSelected = selectedCandidate?.id === cand.id;
 
@@ -363,7 +443,7 @@ export default function CafeInteractiveMap({
             background: ${isSelected ? '#EA4335' : '#FFFDF9'};
             color: ${isSelected ? '#FFFDF9' : '#C5221F'};
             border: 1.5px solid #EA4335;
-            box-shadow: 0 6px 16px rgba(234,67,53,0.25);
+            box-shadow: 0 6px 16px rgba(234,67,53,0.3);
             font-family: monospace;
             font-size: 10px;
             font-weight: 700;
@@ -371,7 +451,7 @@ export default function CafeInteractiveMap({
             transform: translate(-50%, -50%) scale(${isSelected ? '1.1' : '1'});
           ">
             <span>📍 ${cand.name}</span>
-            <span style="background: rgba(234,67,53,0.12); padding: 1px 5px; border-radius: 99px; font-size: 9px;">+Sync</span>
+            <span style="background: rgba(234,67,53,0.15); padding: 1px 5px; border-radius: 99px; font-size: 9px;">+Sync</span>
           </div>
         `,
         iconSize: [140, 28],
@@ -379,25 +459,76 @@ export default function CafeInteractiveMap({
       });
 
       const marker = L.marker([cand.latitude, cand.longitude], { icon });
+
+      // Direct interactive popup on the pointer
+      const candPopupHtml = `
+        <div id="popup-cand-${cand.id}" style="font-family: inherit; min-width: 230px; max-width: 270px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px;">
+            <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #EA4335; background: rgba(234,67,53,0.12); padding: 2px 8px; border-radius: 99px;">
+              📍 Google Maps Solo
+            </span>
+            ${
+              cand.rating
+                ? `<span style="font-size: 11px; font-weight: 700; color: #D97706;">★ ${cand.rating.toFixed(
+                    1
+                  )}</span>`
+                : ''
+            }
+          </div>
+          <h4 style="font-size: 14px; font-weight: 800; color: #1E1714; margin: 0 0 4px 0; line-height: 1.25;">
+            ${cand.name}
+          </h4>
+          <p style="font-size: 11px; color: #68554B; margin: 0 0 8px 0; line-height: 1.35;">
+            ${cand.address}
+          </p>
+          <div style="background: rgba(234,67,53,0.06); border: 1px solid rgba(234,67,53,0.2); padding: 6px 8px; border-radius: 10px; margin-bottom: 8px; font-size: 11px; color: #52423A; line-height: 1.3;">
+            Terdaftar di Google Maps. Klik tombol untuk memasukkan ke database CafePulse &amp; mulai peratingan!
+          </div>
+          <button class="btn-sync-cand" style="width: 100%; background: #1E1714; color: #FFFDF9; border: none; padding: 7px 12px; border-radius: 99px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
+            📥 Masukkan ke Database &amp; Mulai Rating
+          </button>
+        </div>
+      `;
+
+      marker.bindPopup(candPopupHtml, {
+        maxWidth: 290,
+        className: 'cafepulse-custom-popup',
+        offset: [0, -10],
+      });
+
+      marker.on('popupopen', () => {
+        setSelectedCafe(null);
+        setSelectedCandidate(cand);
+        setTimeout(() => {
+          const container = document.getElementById(`popup-cand-${cand.id}`);
+          if (container) {
+            const syncBtn = container.querySelector('.btn-sync-cand');
+            syncBtn?.addEventListener('click', (e) => {
+              e.stopPropagation();
+              syncSingleMutation.mutate(cand);
+            });
+          }
+        }, 50);
+      });
+
       marker.on('click', () => {
         setSelectedCafe(null);
         setSelectedCandidate(cand);
-        map.flyTo([cand.latitude, cand.longitude], 15, { duration: 0.7 });
+        map.flyTo([cand.latitude, cand.longitude], 15, { duration: 0.6 });
       });
+
       marker.addTo(layerGroup);
     });
-  }, [mapEngine, cafes, unsyncedCandidates, selectedCafe, selectedCandidate]);
+  }, [mapEngine, cafes, unsyncedCandidates, selectedCafe, selectedCandidate, onReviewCafe, onSelectCafe, syncSingleMutation]);
 
-  // Update Markers for Native Google Maps Engine
+  // Update Markers for Native Google Maps Engine (if API Key provided)
   useEffect(() => {
     if (mapEngine !== 'google' || !googleMapRef.current) return;
     const map = googleMapRef.current;
 
-    // Clear existing markers
     googleMarkersRef.current.forEach((m) => m.setMap(null));
     googleMarkersRef.current = [];
 
-    // Add Synced Cafes
     cafes.forEach((cafe) => {
       const lat = cafe.latitude ?? -7.565;
       const lng = cafe.longitude ?? 110.825;
@@ -415,7 +546,6 @@ export default function CafeInteractiveMap({
       googleMarkersRef.current.push(marker);
     });
 
-    // Add Unsynced Candidates
     unsyncedCandidates.forEach((cand) => {
       const marker = new google.maps.Marker({
         position: { lat: cand.latitude, lng: cand.longitude },
@@ -451,21 +581,21 @@ export default function CafeInteractiveMap({
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="text-sm font-bold text-roast-900">
-                Peta Kafe Surakarta &bull; Sinkronisasi Google Maps
+                Peta Google Maps Surakarta &bull; Pin &amp; Popup Interaktif
               </h3>
               <span className="px-2 py-0.5 rounded-full bg-status-green/15 text-status-green font-mono text-[10px] font-bold">
-                {cafes.length} di Database API
+                {cafes.length} di Database
               </span>
               <span className="px-2 py-0.5 rounded-full bg-rose-500/15 text-rose-600 font-mono text-[10px] font-bold flex items-center gap-1">
                 <MapPin className="w-3 h-3" />
                 {unsyncedCandidates.length} Kafe Google Maps Siap Sync
               </span>
-              <span className="px-2 py-0.5 rounded-full bg-canvas-bg border border-canvas-border text-roast-600 font-mono text-[9px] uppercase">
-                {mapEngine === 'google' ? 'Google Maps Live API' : 'Google Maps Hybrid Mode'}
+              <span className="px-2 py-0.5 rounded-full bg-canvas-bg border border-canvas-border text-roast-600 font-mono text-[9px] uppercase font-bold">
+                Google Maps Engine
               </span>
             </div>
             <p className="text-xs text-roast-600 mt-0.5">
-              Klik pin merah untuk memasukkan kafe dari Google Maps ke database &amp; membuka rating, atau tempel link Google Maps di bawah.
+              Klik pointer mana saja di peta Google Maps untuk langsung membuka kartu popup kafe, melihat kecepatan Wi-Fi, atau memasukkannya ke database.
             </p>
           </div>
         </div>

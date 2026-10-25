@@ -209,3 +209,44 @@ body {
 .animate-marquee:hover {
   animation-play-state: paused;
 }
+
+/* Custom Google Maps Leaflet Popup Styling */
+.leaflet-popup-content-wrapper {
+  background: #FFFFFF !important;
+  color: #1E1714 !important;
+  border-radius: 20px !important;
+  border: 1px solid rgba(45, 30, 20, 0.12) !important;
+  box-shadow: 0 14px 35px rgba(30, 23, 20, 0.22) !important;
+  padding: 6px !important;
+}
+
+.leaflet-popup-content {
+  margin: 10px 12px !important;
+  line-height: 1.4 !important;
+}
+
+.leaflet-popup-tip {
+  background: #FFFFFF !important;
+  border: 1px solid rgba(45, 30, 20, 0.12) !important;
+  box-shadow: 0 4px 10px rgba(30, 23, 20, 0.15) !important;
+}
+
+.leaflet-container a.leaflet-popup-close-button {
+  top: 10px !important;
+  right: 12px !important;
+  width: 22px !important;
+  height: 22px !important;
+  border-radius: 999px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  color: #7E6A5E !important;
+  font-size: 14px !important;
+  background: #F5EFEB !important;
+  transition: all 0.2s ease !important;
+}
+
+.leaflet-container a.leaflet-popup-close-button:hover {
+  color: #1E1714 !important;
+  background: #EDE5DF !important;
+}
