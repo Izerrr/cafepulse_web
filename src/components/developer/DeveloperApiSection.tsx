@@ -35,11 +35,11 @@ for cafe in data.get('data', []):
   };
 
   return (
-    <section id="developer-api" className="bg-[#140F0D] py-20 lg:py-24 text-white">
+    <section id="developer-api" className="bg-roast-950 py-20 lg:py-24 text-white">
       <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
         
         {/* Onlines dark roast card wrapper */}
-        <div className="rounded-[24px] border border-white/8 bg-[#1E1714] p-8 sm:p-12 lg:p-16 shadow-2xl relative overflow-hidden">
+        <div className="rounded-3xl border border-white/8 bg-roast-900 p-8 sm:p-12 lg:p-16 shadow-2xl relative overflow-hidden">
           
           {/* Subtle warm dot pattern background */}
           <div
@@ -63,7 +63,7 @@ for cafe in data.get('data', []):
                 Akses data CafePulse untuk karya &amp; penelitianmu<span className="text-crema-400">.</span>
               </h2>
 
-              <p className="text-sm leading-relaxed text-[#C5B8B1]">
+              <p className="text-sm leading-relaxed text-roast-200">
                 Selain sebagai direktori kafe publik, seluruh data kafe di Surakarta terbuka gratis bagi mahasiswa yang menyusun tugas akhir, pegiat riset, atau pengembang aplikasi melalui REST API dengan dukungan CORS penuh.
               </p>
 
@@ -76,7 +76,7 @@ for cafe in data.get('data', []):
                 >
                   <Terminal className="h-3.5 w-3.5 text-crema-400" />
                   <span>Cek Telemetri /db-check</span>
-                  <ExternalLink className="h-3 w-3 text-[#A8958A]" />
+                  <ExternalLink className="h-3 w-3 text-roast-300" />
                 </a>
 
                 <a
@@ -87,22 +87,22 @@ for cafe in data.get('data', []):
                 >
                   <span className="font-mono text-crema-400">GET</span>
                   <span>/api/cafes</span>
-                  <ExternalLink className="h-3 w-3 text-[#A8958A]" />
+                  <ExternalLink className="h-3 w-3 text-roast-300" />
                 </a>
               </div>
             </div>
 
             {/* Right Column: Interactive Code Console */}
             <div className="lg:col-span-7">
-              <div className="rounded-2xl border border-white/8 bg-[#120D0B] overflow-hidden shadow-2xl">
+              <div className="rounded-2xl border border-white/8 bg-roast-950 overflow-hidden shadow-2xl">
                 
                 {/* Top Terminal Bar */}
-                <div className="flex items-center justify-between border-b border-white/8 bg-[#1A1310] px-4 py-3">
+                <div className="flex items-center justify-between border-b border-white/8 bg-roast-900 px-4 py-3">
                   <div className="flex items-center gap-2">
-                    <span className="h-3 w-3 rounded-full bg-[#E06C75]" />
-                    <span className="h-3 w-3 rounded-full bg-[#E5C07B]" />
-                    <span className="h-3 w-3 rounded-full bg-[#98C379]" />
-                    <span className="ml-2 font-mono text-xs text-[#8A7970] hidden sm:inline">
+                    <span className="h-3 w-3 rounded-full bg-rose-500" />
+                    <span className="h-3 w-3 rounded-full bg-amber-400" />
+                    <span className="h-3 w-3 rounded-full bg-emerald-400" />
+                    <span className="ml-2 font-mono text-xs text-roast-400 hidden sm:inline">
                       api.cafepulse.izerworks.my.id
                     </span>
                   </div>
@@ -116,7 +116,7 @@ for cafe in data.get('data', []):
                         className={`rounded-md px-2.5 py-1 font-mono text-xs transition-colors ${
                           activeTab === tab
                             ? 'bg-crema-500 text-white font-medium shadow-xs'
-                            : 'text-[#9E8E84] hover:text-white'
+                            : 'text-roast-300 hover:text-white'
                         }`}
                       >
                         {tab === 'curl' ? 'cURL' : tab === 'js' ? 'JS (fetch)' : 'Python'}
@@ -125,7 +125,7 @@ for cafe in data.get('data', []):
 
                     <button
                       onClick={handleCopy}
-                      className="ml-2 flex items-center gap-1 rounded-md border border-white/8 bg-white/4 px-2.5 py-1 text-xs text-[#C5B8B1] hover:text-white transition-colors"
+                      className="ml-2 flex items-center gap-1 rounded-md border border-white/8 bg-white/4 px-2.5 py-1 text-xs text-roast-200 hover:text-white transition-colors"
                       title="Salin kode"
                     >
                       {copied ? (
@@ -145,7 +145,7 @@ for cafe in data.get('data', []):
 
                 {/* Code Body */}
                 <div className="p-4 sm:p-5 overflow-x-auto">
-                  <pre className="font-mono text-xs sm:text-[13px] text-[#F0EBE8] leading-relaxed">
+                  <pre className="font-mono text-xs text-roast-100 leading-relaxed">
                     <code>{codeSnippets[activeTab]}</code>
                   </pre>
                 </div>
