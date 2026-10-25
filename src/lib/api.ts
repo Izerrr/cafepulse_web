@@ -349,6 +349,33 @@ export const api = {
     return { status: 'success', review: newReview };
   },
 
+  // Reverse geocode a latitude & longitude to get place / road name in Surakarta
+  async reverseGeocode(lat: number, lng: number): Promise<{ name: string; address: string }> {
+    try {
+      const res = await fetch(
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`,
+        { headers: { 'Accept-Language': 'id' } }
+      );
+      if (res.ok) {
+        const data = await res.json();
+        const road =
+          data.address?.road ||
+          data.address?.neighbourhood ||
+          data.address?.suburb ||
+          'Surakarta';
+        const name = data.name || data.address?.amenity || `Kafe di ${road}`;
+        const address = data.display_name || `${road}, Surakarta`;
+        return { name, address };
+      }
+    } catch {
+      // fallback
+    }
+    return {
+      name: `Kafe Baru (${lat.toFixed(4)}, ${lng.toFixed(4)})`,
+      address: `Surakarta, Jawa Tengah (${lat.toFixed(4)}, ${lng.toFixed(4)})`,
+    };
+  },
+
   // Parse a Google Maps URL (or share link) to extract cafe metadata
   parseGoogleMapsUrl(input: string): MapsPlaceCandidate | null {
     const trimmed = input.trim();

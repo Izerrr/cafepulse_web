@@ -20,6 +20,7 @@ import {
   Loader2,
   Globe2,
   Layers,
+  Compass,
 } from 'lucide-react';
 
 interface CafeInteractiveMapProps {
@@ -47,6 +48,7 @@ export default function CafeInteractiveMap({
   // References for Leaflet Google Maps Tiles Mode
   const leafletMapRef = useRef<L.Map | null>(null);
   const leafletLayerRef = useRef<L.LayerGroup | null>(null);
+  const clickedMarkerRef = useRef<L.Marker | null>(null);
 
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY?.trim() || '';
   const [mapEngine, setMapEngine] = useState<'google' | 'leaflet'>(apiKey ? 'google' : 'leaflet');
@@ -173,9 +175,10 @@ export default function CafeInteractiveMap({
       setSelectedCandidate(null);
       setSelectedCafe(createdCafe);
       setSyncNotice(
-        `"${createdCafe.name}" berhasil ditarik dari Google Maps & masuk ke database API! Sekarang Anda bisa langsung memberikan rating.`
+        `"${createdCafe.name}" berhasil ditarik dari Google Maps & masuk ke database CafePulse! Form rating kini terbuka.`
       );
-      setTimeout(() => setSyncNotice(null), 6000);
+      setTimeout(() => setSyncNotice(null), 7000);
+      onReviewCafe(createdCafe);
     },
   });
 
@@ -242,7 +245,104 @@ export default function CafeInteractiveMap({
     const layerGroup = L.layerGroup().addTo(map);
     leafletMapRef.current = map;
     leafletLayerRef.current = layerGroup;
-  }, []);
+
+    // Direct click anywhere on the Google Maps canvas to drop a pointer and detect a cafe!
+    map.on('click', async (e: L.LeafletMouseEvent) => {
+      const { lat, lng } = e.latlng;
+      const geo = await api.reverseGeocode(lat, lng);
+
+      const candidate: MapsPlaceCandidate = {
+        id: `gmap-clicked-${Date.now()}`,
+        name: geo.name,
+        address: geo.address,
+        latitude: lat,
+        longitude: lng,
+        opening_hours: '08:00 - 23:00',
+        rating: 4.7,
+        google_maps_url: `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`,
+        source: 'google_maps_link',
+      };
+
+      setSelectedCafe(null);
+      setSelectedCandidate(candidate);
+
+      if (clickedMarkerRef.current) {
+        map.removeLayer(clickedMarkerRef.current);
+      }
+
+      const dropIcon = L.divIcon({
+        className: 'cafepulse-drop-pin',
+        html: `
+          <div style="
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            border-radius: 999px;
+            background: #EA4335;
+            color: #FFFDF9;
+            border: 2px solid #FFFDF9;
+            box-shadow: 0 10px 24px rgba(234,67,53,0.45);
+            font-family: monospace;
+            font-size: 11px;
+            font-weight: 700;
+            white-space: nowrap;
+            transform: translate(-50%, -50%);
+            animation: pulse 1.5s infinite;
+          ">
+            <span>📍 Titik Terpilih</span>
+            <span style="background: rgba(255,255,255,0.25); padding: 1px 6px; border-radius: 99px; font-size: 9px;">+Tambah</span>
+          </div>
+        `,
+        iconSize: [140, 32],
+        iconAnchor: [70, 16],
+      });
+
+      const dropMarker = L.marker([lat, lng], { icon: dropIcon }).addTo(map);
+      clickedMarkerRef.current = dropMarker;
+
+      const popupHtml = `
+        <div id="popup-drop-${candidate.id}" style="font-family: inherit; min-width: 240px; max-width: 280px;">
+          <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px;">
+            <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #EA4335; background: rgba(234,67,53,0.12); padding: 2px 8px; border-radius: 99px;">
+              📍 Titik Google Maps Terpilih
+            </span>
+          </div>
+          <h4 style="font-size: 14px; font-weight: 800; color: #1E1714; margin: 0 0 4px 0; line-height: 1.25;">
+            ${candidate.name}
+          </h4>
+          <p style="font-size: 11px; color: #68554B; margin: 0 0 8px 0; line-height: 1.35;">
+            ${candidate.address}
+          </p>
+          <div style="background: rgba(234,67,53,0.06); border: 1px solid rgba(234,67,53,0.2); padding: 6px 8px; border-radius: 10px; margin-bottom: 8px; font-size: 11px; color: #52423A; line-height: 1.3;">
+            Ingin mendaftarkan kafe di titik ini ke database CafePulse? Klik tombol di bawah:
+          </div>
+          <button class="btn-sync-drop" style="width: 100%; background: #1E1714; color: #FFFDF9; border: none; padding: 8px 12px; border-radius: 99px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
+            📥 Masukkan ke Database &amp; Mulai Rating
+          </button>
+        </div>
+      `;
+
+      dropMarker.bindPopup(popupHtml, {
+        maxWidth: 300,
+        className: 'cafepulse-custom-popup',
+        offset: [0, -10],
+      }).openPopup();
+
+      dropMarker.on('popupopen', () => {
+        setTimeout(() => {
+          const container = document.getElementById(`popup-drop-${candidate.id}`);
+          if (container) {
+            const btn = container.querySelector('.btn-sync-drop');
+            btn?.addEventListener('click', (ev) => {
+              ev.stopPropagation();
+              syncSingleMutation.mutate(candidate);
+            });
+          }
+        }, 50);
+      });
+    });
+  }, [syncSingleMutation]);
 
   // Initialize Map: Try Google Maps JS API if API key provided, otherwise Google Maps Tiles mode
   useEffect(() => {
@@ -316,6 +416,8 @@ export default function CafeInteractiveMap({
           ? 'Sedang'
           : 'Ramai';
 
+      const gmapsDirUrl = `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
+
       const icon = L.divIcon({
         className: 'cafepulse-db-pin',
         html: `
@@ -349,7 +451,7 @@ export default function CafeInteractiveMap({
 
       // Direct interactive popup attached to pointer
       const popupHtml = `
-        <div id="popup-cafe-${cafe.id}" style="font-family: inherit; min-width: 220px; max-width: 260px;">
+        <div id="popup-cafe-${cafe.id}" style="font-family: inherit; min-width: 230px; max-width: 270px;">
           <div style="display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 6px;">
             <span style="font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: #2A7B52; background: rgba(42,123,82,0.12); padding: 2px 8px; border-radius: 99px;">
               ✓ Di Database
@@ -374,19 +476,22 @@ export default function CafeInteractiveMap({
               <b style="color: ${badgeColor}; font-size: 11px;">${crowdText}</b>
             </div>
           </div>
-          <div style="display: flex; gap: 6px;">
-            <button class="btn-review-cafe" style="flex: 1.2; background: #C86237; color: #FFFDF9; border: none; padding: 6px 10px; border-radius: 99px; font-size: 11px; font-weight: 700; cursor: pointer; transition: background 0.2s;">
-              ⭐ Ulas &amp; Tes
+          <div style="display: flex; gap: 6px; margin-bottom: 6px;">
+            <button class="btn-review-cafe" style="flex: 1.2; background: #C86237; color: #FFFDF9; border: none; padding: 7px 10px; border-radius: 99px; font-size: 11px; font-weight: 700; cursor: pointer; transition: background 0.2s;">
+              ⭐ Ulas &amp; Tes Wi-Fi
             </button>
-            <button class="btn-detail-cafe" style="flex: 1; background: #1E1714; color: #FFFDF9; border: none; padding: 6px 10px; border-radius: 99px; font-size: 11px; font-weight: 700; cursor: pointer;">
+            <button class="btn-detail-cafe" style="flex: 1; background: #1E1714; color: #FFFDF9; border: none; padding: 7px 10px; border-radius: 99px; font-size: 11px; font-weight: 700; cursor: pointer;">
               Detail
             </button>
           </div>
+          <a href="${gmapsDirUrl}" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; justify-content: center; gap: 4px; padding: 5px; border-radius: 99px; border: 1px solid rgba(45,30,20,0.12); color: #251D18; font-size: 10px; font-weight: 700; text-decoration: none; background: #F5EFEB;">
+            <span>🗺️ Rute Google Maps</span>
+          </a>
         </div>
       `;
 
       marker.bindPopup(popupHtml, {
-        maxWidth: 280,
+        maxWidth: 290,
         className: 'cafepulse-custom-popup',
         offset: [0, -10],
       });
@@ -430,6 +535,11 @@ export default function CafeInteractiveMap({
     // 2. Unsynced Google Maps Solo Candidates (Red Google Pins with 1-Click Sync Popups)
     unsyncedCandidates.forEach((cand) => {
       const isSelected = selectedCandidate?.id === cand.id;
+      const gmapsPlaceUrl =
+        cand.google_maps_url ||
+        `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+          `${cand.name} ${cand.address}`
+        )}`;
 
       const icon = L.divIcon({
         className: 'cafepulse-gmap-pin',
@@ -484,9 +594,12 @@ export default function CafeInteractiveMap({
           <div style="background: rgba(234,67,53,0.06); border: 1px solid rgba(234,67,53,0.2); padding: 6px 8px; border-radius: 10px; margin-bottom: 8px; font-size: 11px; color: #52423A; line-height: 1.3;">
             Terdaftar di Google Maps. Klik tombol untuk memasukkan ke database CafePulse &amp; mulai peratingan!
           </div>
-          <button class="btn-sync-cand" style="width: 100%; background: #1E1714; color: #FFFDF9; border: none; padding: 7px 12px; border-radius: 99px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px;">
+          <button class="btn-sync-cand" style="width: 100%; background: #1E1714; color: #FFFDF9; border: none; padding: 7px 12px; border-radius: 99px; font-size: 11px; font-weight: 700; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 4px; margin-bottom: 6px;">
             📥 Masukkan ke Database &amp; Mulai Rating
           </button>
+          <a href="${gmapsPlaceUrl}" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; justify-content: center; gap: 4px; padding: 5px; border-radius: 99px; border: 1px solid rgba(45,30,20,0.12); color: #251D18; font-size: 10px; font-weight: 700; text-decoration: none; background: #F5EFEB;">
+            <span>🗺️ Buka di Google Maps</span>
+          </a>
         </div>
       `;
 
@@ -581,7 +694,7 @@ export default function CafeInteractiveMap({
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="text-sm font-bold text-roast-900">
-                Peta Google Maps Surakarta &bull; Pin &amp; Popup Interaktif
+                Peta Google Maps Surakarta &bull; Terintegrasi Langsung
               </h3>
               <span className="px-2 py-0.5 rounded-full bg-status-green/15 text-status-green font-mono text-[10px] font-bold">
                 {cafes.length} di Database
@@ -595,7 +708,7 @@ export default function CafeInteractiveMap({
               </span>
             </div>
             <p className="text-xs text-roast-600 mt-0.5">
-              Klik pointer mana saja di peta Google Maps untuk langsung membuka kartu popup kafe, melihat kecepatan Wi-Fi, atau memasukkannya ke database.
+              Klik pointer kafe mana saja di peta untuk membuka info &amp; rute Google Maps, atau <strong>klik titik mana pun di peta</strong> untuk mendaftarkan kafe baru ke database!
             </p>
           </div>
         </div>
@@ -665,13 +778,16 @@ export default function CafeInteractiveMap({
         <div className="lg:col-span-8 relative rounded-3xl overflow-hidden border border-canvas-border shadow-md bg-canvas-elevated min-h-115">
           <div ref={mapContainerRef} className="w-full h-115 sm:h-130 z-10" />
 
-          {/* Floating Map Legend */}
+          {/* Floating Map Legend & Interactive Tip */}
           <div className="absolute bottom-4 left-4 z-20 p-3 rounded-2xl bg-canvas-surface/95 backdrop-blur-md border border-canvas-border shadow-lg flex flex-wrap items-center gap-3 text-[11px] font-mono">
             <span className="flex items-center gap-1.5 text-roast-900 font-bold">
-              <span className="w-2.5 h-2.5 rounded-full bg-roast-900 inline-block" /> Di Database (Siap Rating)
+              <span className="w-2.5 h-2.5 rounded-full bg-roast-900 inline-block" /> Di Database
             </span>
             <span className="flex items-center gap-1.5 text-rose-600 font-bold">
-              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block" /> Dari Google Maps (Klik untuk Sync)
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 inline-block" /> Dari Google Maps
+            </span>
+            <span className="text-roast-500 text-[10px] hidden sm:inline border-l border-canvas-border pl-2">
+              💡 Klik di mana saja pada peta untuk menambah kafe
             </span>
           </div>
         </div>
@@ -743,7 +859,7 @@ export default function CafeInteractiveMap({
                   </span>
                 </div>
                 <div className="flex items-center justify-between text-xs">
-                  <span className="text-roast-500">Koordinat Peta</span>
+                  <span className="text-roast-500">Koordinat Google Maps</span>
                   <span className="font-mono text-[11px] text-roast-600">
                     {selectedCafe.latitude?.toFixed(4)}, {selectedCafe.longitude?.toFixed(4)}
                   </span>
@@ -770,14 +886,13 @@ export default function CafeInteractiveMap({
                   </button>
 
                   <a
-                    href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                      `${selectedCafe.name} ${selectedCafe.address}`
-                    )}`}
+                    href={`https://www.google.com/maps/dir/?api=1&destination=${selectedCafe.latitude},${selectedCafe.longitude}`}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="py-2.5 px-3 rounded-full border border-canvas-border hover:border-roast-900 text-roast-800 font-mono text-[11px] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-1"
+                    className="py-2.5 px-3 rounded-full border border-canvas-border hover:border-roast-900 text-roast-800 font-mono text-[11px] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-1 bg-canvas-bg"
                   >
-                    <span>Buka di Google Maps</span>
+                    <Compass className="w-3.5 h-3.5 text-crema-500" />
+                    <span>Rute Maps</span>
                     <ExternalLink className="w-3 h-3" />
                   </a>
                 </div>
@@ -803,13 +918,13 @@ export default function CafeInteractiveMap({
 
               <div className="p-4 rounded-2xl bg-canvas-bg border border-canvas-border space-y-2 text-xs text-roast-600">
                 <div className="flex items-center justify-between pb-1 border-b border-canvas-border text-[11px]">
-                  <span className="text-roast-500">Status Google Maps:</span>
+                  <span className="text-roast-500">Integrasi Google Maps:</span>
                   <span className="font-mono font-bold text-roast-800">
                     {selectedCandidate.total_reviews ? `${selectedCandidate.total_reviews} ulasan publik` : 'Terdaftar di Solo'}
                   </span>
                 </div>
                 <p className="leading-relaxed pt-1">
-                  Kafe ini terdaftar di Google Maps. Klik tombol di bawah untuk **memasukkannya otomatis ke database CafePulse** agar pengunjung bisa langsung memberikan rating kecepatan Wi-Fi dan suasananya!
+                  Kafe ini terdeteksi dari Google Maps. Klik tombol di bawah untuk <strong>memasukkannya otomatis ke database CafePulse</strong> agar pengunjung bisa langsung memberikan rating kecepatan Wi-Fi dan suasananya!
                 </p>
               </div>
 
@@ -836,16 +951,14 @@ export default function CafeInteractiveMap({
                 <a
                   href={
                     selectedCandidate.google_maps_url ||
-                    `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
-                      `${selectedCandidate.name} ${selectedCandidate.address}`
-                    )}`
+                    `https://www.google.com/maps/dir/?api=1&destination=${selectedCandidate.latitude},${selectedCandidate.longitude}`
                   }
                   target="_blank"
                   rel="noopener noreferrer"
                   className="w-full py-2 px-3 rounded-full border border-canvas-border hover:border-roast-900 text-roast-700 font-mono text-[11px] font-bold uppercase tracking-wider transition-colors flex items-center justify-center gap-1.5"
                 >
                   <ExternalLink className="w-3.5 h-3.5" />
-                  <span>Lihat di Halaman Google Maps</span>
+                  <span>Buka di Halaman Google Maps</span>
                 </a>
               </div>
             </div>
@@ -854,7 +967,7 @@ export default function CafeInteractiveMap({
               <Navigation className="w-8 h-8 text-crema-500 mx-auto" />
               <h4 className="text-sm font-bold text-roast-900">Pilih Kafe di Peta Google</h4>
               <p className="text-xs text-roast-500 max-w-xs mx-auto">
-                Pilih salah satu pin merah untuk menarik kafe dari Google Maps ke database CafePulse dan mulai peratingan.
+                Klik pointer kafe mana saja untuk melihat info &amp; rute, atau klik titik mana pun di peta untuk mendaftarkan kafe baru.
               </p>
             </div>
           )}
