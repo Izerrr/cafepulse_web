@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api, CURATED_SOLO_PLACES } from '@/lib/api';
 import {
@@ -31,6 +31,8 @@ export default function AddCafeModal({
     CURATED_SOLO_PLACES.slice(0, 4)
   );
   const [isSearchingMaps, setIsSearchingMaps] = useState(false);
+  const [isConvertingLink, setIsConvertingLink] = useState(false);
+  const [conversionSuccessMsg, setConversionSuccessMsg] = useState<string | null>(null);
   const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(
     initialCandidate?.id || null
   );
@@ -67,12 +69,68 @@ export default function AddCafeModal({
     };
   }, [isOpen, onClose]);
 
+  const handleSelectPlace = useCallback((place: MapsPlaceCandidate) => {
+    setSelectedPlaceId(place.id);
+    setFormData((prev) => ({
+      ...prev,
+      name: place.name,
+      address: place.address,
+      latitude: place.latitude,
+      longitude: place.longitude,
+      opening_hours: place.opening_hours || prev.opening_hours,
+    }));
+  }, []);
+
+  const handleConvertGmapsLink = useCallback(
+    async (customUrl?: string) => {
+      const raw = (customUrl ?? mapsQuery).trim();
+      if (!raw) return;
+
+      setIsConvertingLink(true);
+      setErrorMessage(null);
+      setConversionSuccessMsg(null);
+
+      try {
+        const candidate = await api.parseGoogleMapsUrl(raw);
+        if (candidate) {
+          handleSelectPlace(candidate);
+          setConversionSuccessMsg(
+            `Tautan Google Maps berhasil dikonversi ke titik "${candidate.name}" (${candidate.latitude.toFixed(4)}, ${candidate.longitude.toFixed(4)})!`
+          );
+          setMapsResults([candidate]);
+        } else {
+          setErrorMessage(
+            'Tautan tidak dapat diurai. Pastikan tautan berasal dari Google Maps (misal: https://maps.app.goo.gl/... atau google.com/maps/place/...).'
+          );
+        }
+      } catch (err: unknown) {
+        setErrorMessage(
+          err instanceof Error ? err.message : 'Gagal memproses tautan Google Maps.'
+        );
+      } finally {
+        setIsConvertingLink(false);
+      }
+    },
+    [mapsQuery, handleSelectPlace]
+  );
+
   useEffect(() => {
     let active = true;
+    const query = mapsQuery.trim();
+
+    // Skip text search if it's a URL
+    if (
+      query.includes('maps.app.goo.gl') ||
+      query.includes('google.com/maps') ||
+      query.includes('goo.gl/maps')
+    ) {
+      return;
+    }
+
     const timer = setTimeout(async () => {
       setIsSearchingMaps(true);
       try {
-        const res = await api.searchSoloPlacesFromMaps(mapsQuery);
+        const res = await api.searchSoloPlacesFromMaps(query);
         if (active) {
           setMapsResults(res.slice(0, 5));
         }
@@ -86,18 +144,6 @@ export default function AddCafeModal({
       clearTimeout(timer);
     };
   }, [mapsQuery]);
-
-  const handleSelectPlace = (place: MapsPlaceCandidate) => {
-    setSelectedPlaceId(place.id);
-    setFormData((prev) => ({
-      ...prev,
-      name: place.name,
-      address: place.address,
-      latitude: place.latitude,
-      longitude: place.longitude,
-      opening_hours: place.opening_hours || prev.opening_hours,
-    }));
-  };
 
   const mutation = useMutation({
     mutationFn: (newCafe: CreateCafeInput) => api.createCafe(newCafe),
@@ -170,13 +216,13 @@ export default function AddCafeModal({
               </div>
             </div>
           )}
-          {/* Maps Auto-Import Section */}
+          {/* Maps Auto-Import & Link Converter Section */}
           <div className="rounded-2xl border border-rose-500/30 bg-canvas-surface p-4 space-y-3">
             <div className="flex items-center justify-between">
               <span className="font-mono text-[10px] font-bold uppercase tracking-widest text-rose-600 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-rose-500" /> Impor Langsung dari Google Maps Solo
+                <Sparkles className="w-3.5 h-3.5 text-rose-500" /> Konversi Link Google Maps / Cari Kafe Solo
               </span>
-              <span className="font-mono text-[10px] text-roast-500">Auto-Fill Koordinat</span>
+              <span className="font-mono text-[10px] text-roast-500">Auto-Extract Koordinat Asli</span>
             </div>
 
             <div className="relative">
@@ -185,13 +231,45 @@ export default function AddCafeModal({
                 type="text"
                 value={mapsQuery}
                 onChange={(e) => setMapsQuery(e.target.value)}
-                placeholder="Ketik nama kafe atau tempel tautan Google Maps (maps.app.goo.gl)..."
-                className="w-full rounded-xl border border-canvas-border bg-white pl-9 pr-8 py-2 text-xs text-roast-900 placeholder-roast-400 outline-none focus:border-rose-500"
+                onPaste={(e) => {
+                  const pasted = e.clipboardData.getData('text');
+                  if (
+                    pasted.includes('maps.app.goo.gl') ||
+                    pasted.includes('google.com/maps') ||
+                    pasted.includes('goo.gl/maps')
+                  ) {
+                    setMapsQuery(pasted);
+                    handleConvertGmapsLink(pasted);
+                  }
+                }}
+                placeholder="Tempel tautan Google Maps (maps.app.goo.gl/...) atau ketik nama kafe..."
+                className="w-full rounded-xl border border-canvas-border bg-white pl-9 pr-24 py-2.5 text-xs text-roast-900 placeholder-roast-400 outline-none focus:border-rose-500"
               />
-              {isSearchingMaps && (
-                <Loader2 className="w-3.5 h-3.5 text-rose-500 animate-spin absolute right-3 top-1/2 -translate-y-1/2" />
-              )}
+              <div className="absolute right-1.5 top-1/2 -translate-y-1/2 flex items-center gap-1">
+                {isConvertingLink || isSearchingMaps ? (
+                  <div className="flex items-center gap-1 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-600 font-mono text-[10px] font-bold">
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                    <span>Memproses...</span>
+                  </div>
+                ) : (
+                  <button
+                    type="button"
+                    onClick={() => handleConvertGmapsLink()}
+                    disabled={!mapsQuery.trim()}
+                    className="px-2.5 py-1 rounded-lg bg-roast-900 hover:bg-rose-600 disabled:opacity-40 text-white font-mono text-[10px] font-bold transition-colors"
+                  >
+                    Konversi Link
+                  </button>
+                )}
+              </div>
             </div>
+
+            {conversionSuccessMsg && (
+              <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs text-emerald-800 flex items-center gap-2">
+                <Check className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span className="font-medium">{conversionSuccessMsg}</span>
+              </div>
+            )}
 
             {mapsResults.length > 0 && (
               <div className="space-y-1.5 max-h-36 overflow-y-auto pr-1">

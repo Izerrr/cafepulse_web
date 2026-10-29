@@ -112,20 +112,52 @@ export default function CafeInteractiveMap({ cafes, allCafes, onSelectCafe, onRe
   }, [discoveredPlaces, allCafes, categoryFilter]);
 
   // Handle Search or Link Paste
-  const handleSearchMaps = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!mapSearchQuery.trim()) {
+  const handleSearchMaps = async (e?: React.FormEvent, customQuery?: string) => {
+    e?.preventDefault();
+    const query = (customQuery ?? mapSearchQuery).trim();
+    if (!query) {
       setDiscoveredPlaces(CURATED_SOLO_PLACES);
       return;
     }
 
     setIsSearchingMap(true);
+
+    // 1. Check if user pasted a Google Maps link (maps.app.goo.gl, goo.gl/maps, or google.com/maps)
+    if (
+      query.includes('maps.app.goo.gl') ||
+      query.includes('google.com/maps') ||
+      query.includes('goo.gl/maps')
+    ) {
+      try {
+        const parsed = await api.parseGoogleMapsUrl(query);
+        if (parsed) {
+          setSelectedCandidate(parsed);
+          setSelectedCafe(null);
+          setDiscoveredPlaces([parsed]);
+          if (mapEngine === 'leaflet' && leafletMapRef.current) {
+            leafletMapRef.current.flyTo([parsed.latitude, parsed.longitude], 17, { duration: 0.8 });
+          } else if (mapEngine === 'google' && googleMapRef.current) {
+            googleMapRef.current.panTo({ lat: parsed.latitude, lng: parsed.longitude });
+            googleMapRef.current.setZoom(17);
+          }
+          setSyncNotice(`Tautan Google Maps berhasil dikonversi ke titik "${parsed.name}"!`);
+          setTimeout(() => setSyncNotice(null), 5000);
+          return;
+        }
+      } catch (err) {
+        console.warn('Gagal memproses tautan Google Maps:', err);
+      } finally {
+        setIsSearchingMap(false);
+      }
+    }
+
+    // 2. Normal search
     try {
-      if (mapEngine === "google" && googleMapRef.current && window.google?.maps?.places) {
+      if (mapEngine === 'google' && googleMapRef.current && window.google?.maps?.places) {
         const service = new google.maps.places.PlacesService(googleMapRef.current);
         service.textSearch(
           {
-            query: `${mapSearchQuery} Surakarta Solo`,
+            query: `${query} Surakarta Solo`,
             location: new google.maps.LatLng(SOLO_CENTER.lat, SOLO_CENTER.lng),
             radius: 10000,
           },
@@ -135,20 +167,20 @@ export default function CafeInteractiveMap({ cafes, allCafes, onSelectCafe, onRe
           ) => {
             if (status === 'OK' && results && results.length > 0) {
               const mapped: MapsPlaceCandidate[] = results.map((place: google.maps.places.PlaceResult) => {
-                const placeName = place.name || "Kafe Solo";
+                const placeName = place.name || 'Kafe Solo';
                 return {
                   id: `gmap-live-${place.place_id || Date.now()}`,
                   name: placeName,
-                  address: place.formatted_address || "Surakarta, Jawa Tengah",
+                  address: place.formatted_address || 'Surakarta, Jawa Tengah',
                   latitude: place.geometry?.location?.lat() || SOLO_CENTER.lat,
                   longitude: place.geometry?.location?.lng() || SOLO_CENTER.lng,
-                  opening_hours: "08:00 - 23:00",
-                  rating: place.rating || 4.7,
-                  total_reviews: place.user_ratings_total || 100,
+                  opening_hours: place.opening_hours?.weekday_text?.join(', '),
+                  rating: place.rating,
+                  total_reviews: place.user_ratings_total,
                   place_id: place.place_id,
                   google_maps_url: `https://www.google.com/maps/place/?q=place_id:${place.place_id}`,
-                  category: inferPlaceCategory(placeName, place.types?.join(" ")),
-                  source: "google_places_api",
+                  category: inferPlaceCategory(placeName, place.types?.join(' ')),
+                  source: 'google_places_api',
                 };
               });
 
@@ -160,30 +192,31 @@ export default function CafeInteractiveMap({ cafes, allCafes, onSelectCafe, onRe
                 googleMapRef.current?.setZoom(16);
               }
             } else {
-              fallbackSearch();
+              fallbackSearch(query);
             }
-          },
+          }
         );
       } else {
-        await fallbackSearch();
+        await fallbackSearch(query);
       }
     } catch {
-      await fallbackSearch();
+      await fallbackSearch(query);
     } finally {
       setIsSearchingMap(false);
     }
   };
 
-  const fallbackSearch = async () => {
-    const results = await api.searchSoloPlacesFromMaps(mapSearchQuery);
+  const fallbackSearch = async (queryText?: string) => {
+    const q = queryText || mapSearchQuery;
+    const results = await api.searchSoloPlacesFromMaps(q);
     setDiscoveredPlaces(results);
     if (results.length > 0) {
       const top = results[0];
       setSelectedCandidate(top);
       setSelectedCafe(null);
-      if (mapEngine === "leaflet" && leafletMapRef.current) {
+      if (mapEngine === 'leaflet' && leafletMapRef.current) {
         leafletMapRef.current.flyTo([top.latitude, top.longitude], 16, { duration: 0.8 });
-      } else if (mapEngine === "google" && googleMapRef.current) {
+      } else if (mapEngine === 'google' && googleMapRef.current) {
         googleMapRef.current.panTo({ lat: top.latitude, lng: top.longitude });
         googleMapRef.current.setZoom(16);
       }
@@ -319,11 +352,10 @@ export default function CafeInteractiveMap({ cafes, allCafes, onSelectCafe, onRe
         address: geo.address,
         latitude: lat,
         longitude: lng,
-        opening_hours: geo.opening_hours || "08:00 - 23:00",
-        rating: 4.7,
+        opening_hours: geo.opening_hours,
         google_maps_url: `https://www.google.com/maps/search/?api=1&query=${lat},${lng}`,
         category: geo.category,
-        source: "google_maps_link",
+        source: 'google_maps_link',
       };
 
       setSelectedCafe(null);
@@ -469,13 +501,13 @@ export default function CafeInteractiveMap({ cafes, allCafes, onSelectCafe, onRe
                       address: place.formatted_address || "Surakarta, Jawa Tengah",
                       latitude: lat,
                       longitude: lng,
-                      opening_hours: "08:00 - 23:00",
-                      rating: place.rating || 4.7,
-                      total_reviews: place.user_ratings_total || 100,
+                      opening_hours: place.opening_hours?.weekday_text?.join(', '),
+                      rating: place.rating,
+                      total_reviews: place.user_ratings_total,
                       place_id: event.placeId,
                       google_maps_url: `https://www.google.com/maps/place/?q=place_id:${event.placeId}`,
-                      category: inferPlaceCategory(pName, place.types?.join(" ")),
-                      source: "google_places_api",
+                      category: inferPlaceCategory(pName, place.types?.join(' ')),
+                      source: 'google_places_api',
                     };
                     setSelectedCafe(null);
                     setSelectedCandidate(cand);
@@ -491,10 +523,9 @@ export default function CafeInteractiveMap({ cafes, allCafes, onSelectCafe, onRe
                 address: geo.address,
                 latitude: lat,
                 longitude: lng,
-                opening_hours: geo.opening_hours || "08:00 - 23:00",
-                rating: 4.7,
+                opening_hours: geo.opening_hours,
                 category: geo.category,
-                source: "google_maps_link",
+                source: 'google_maps_link',
               });
             }
           });
@@ -835,17 +866,54 @@ export default function CafeInteractiveMap({ cafes, allCafes, onSelectCafe, onRe
 
           <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
             {/* Search or Paste Google Maps URL */}
-            <form onSubmit={handleSearchMaps} className="relative flex-1 sm:w-72">
+            <form onSubmit={(e) => handleSearchMaps(e)} className="relative flex-1 sm:w-80">
               <Search className="w-3.5 h-3.5 text-roast-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
               <input
                 type="text"
                 value={mapSearchQuery}
-                onChange={(e) => setMapSearchQuery(e.target.value)}
-                placeholder="Cari kafe/warkop atau paste link Maps..."
-                className="w-full pl-9 pr-16 py-2 rounded-full bg-canvas-bg border border-canvas-border text-xs text-roast-900 placeholder-roast-400 focus:outline-none focus:border-crema-500"
+                onChange={(e) => {
+                  const val = e.target.value;
+                  setMapSearchQuery(val);
+                  if (
+                    val.includes('maps.app.goo.gl') ||
+                    val.includes('google.com/maps') ||
+                    val.includes('goo.gl/maps')
+                  ) {
+                    handleSearchMaps(undefined, val);
+                  }
+                }}
+                onPaste={(e) => {
+                  const pasted = e.clipboardData.getData('text');
+                  if (
+                    pasted.includes('maps.app.goo.gl') ||
+                    pasted.includes('google.com/maps') ||
+                    pasted.includes('goo.gl/maps')
+                  ) {
+                    setMapSearchQuery(pasted);
+                    handleSearchMaps(undefined, pasted);
+                  }
+                }}
+                placeholder="Tempel tautan Google Maps (maps.app.goo.gl) atau cari..."
+                className="w-full pl-9 pr-24 py-2 rounded-full bg-canvas-bg border border-canvas-border text-xs text-roast-900 placeholder-roast-400 focus:outline-none focus:border-crema-500"
               />
-              <button type="submit" disabled={isSearchingMap} className="absolute right-1.5 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-full bg-roast-900 text-canvas-bg font-mono text-[10px] font-bold hover:bg-crema-500 transition-colors">
-                {isSearchingMap ? "..." : "Cari"}
+              <button
+                type="submit"
+                disabled={isSearchingMap}
+                className="absolute right-1.5 top-1/2 -translate-y-1/2 px-2.5 py-1 rounded-full bg-roast-900 text-canvas-bg font-mono text-[10px] font-bold hover:bg-crema-500 transition-colors flex items-center gap-1"
+              >
+                {isSearchingMap ? (
+                  <>
+                    <Loader2 className="w-3 h-3 animate-spin" />
+                    <span>Urai...</span>
+                  </>
+                ) : mapSearchQuery.includes('http') || mapSearchQuery.includes('maps') ? (
+                  <>
+                    <Sparkles className="w-3 h-3 text-crema-400" />
+                    <span>Konversi</span>
+                  </>
+                ) : (
+                  'Cari'
+                )}
               </button>
             </form>
 
@@ -1045,9 +1113,13 @@ export default function CafeInteractiveMap({ cafes, allCafes, onSelectCafe, onRe
                 <span className="px-2.5 py-1 rounded-full bg-rose-500/15 text-rose-600 font-mono text-[10px] font-bold uppercase tracking-wider flex items-center gap-1">
                   <Sparkles className="w-3 h-3" /> {CATEGORY_LABELS[selectedCandidate.category || inferPlaceCategory(selectedCandidate.name)]}
                 </span>
-                {selectedCandidate.rating && (
+                {selectedCandidate.rating ? (
                   <span className="font-mono text-xs font-bold text-amber-600 flex items-center gap-1">
                     <Star className="w-3.5 h-3.5 fill-amber-500" /> {selectedCandidate.rating.toFixed(1)} di Maps
+                  </span>
+                ) : (
+                  <span className="font-mono text-[10px] text-roast-500 bg-canvas-bg px-2 py-0.5 rounded-full border border-canvas-border">
+                    Belum Diaudit
                   </span>
                 )}
               </div>

@@ -543,7 +543,7 @@ export const api = {
             name: poi.tags.name,
             address: `${street}${houseNo}, Surakarta`,
             category: inferPlaceCategory(poi.tags.name, poi.tags.amenity, poi.tags.cuisine),
-            opening_hours: poi.tags.opening_hours || '08:00 - 23:00',
+            opening_hours: poi.tags.opening_hours || undefined,
           };
         }
       }
@@ -655,8 +655,7 @@ export const api = {
           address: `${street}${houseNumber}, ${city}`,
           latitude: lat,
           longitude: lon,
-          opening_hours: el.tags?.opening_hours || '08:00 - 23:00',
-          rating: 4.6,
+          opening_hours: el.tags?.opening_hours || undefined,
           google_maps_url: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
             `${name} Surakarta`
           )}`,
@@ -671,14 +670,35 @@ export const api = {
     }
   },
 
-  // Parse a Google Maps URL (or share link) to extract cafe metadata
-  parseGoogleMapsUrl(input: string): MapsPlaceCandidate | null {
+  // Parse a Google Maps URL (or share link) to extract real place metadata via server resolver
+  async parseGoogleMapsUrl(input: string): Promise<MapsPlaceCandidate | null> {
     const trimmed = input.trim();
-    if (!trimmed.includes('google.com/maps') && !trimmed.includes('maps.app.goo.gl')) {
+    if (
+      !trimmed.includes('google.com/maps') &&
+      !trimmed.includes('maps.app.goo.gl') &&
+      !trimmed.includes('goo.gl/maps')
+    ) {
       return null;
     }
 
-    // Try match place name and coordinates: /place/Name/@lat,lng
+    // Call server-side API parser (handles redirect unshortening & exact coordinates)
+    try {
+      const res = await fetch('/api/gmaps/parse', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: trimmed }),
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data.candidate) {
+          return data.candidate;
+        }
+      }
+    } catch (err) {
+      console.warn('Server parse route unreachable, fallback to client regex:', err);
+    }
+
+    // Local regex fallback without fabricated ratings
     const placeRegex = /\/place\/([^/@]+)(?:.*@(-?\d+\.\d+),(-?\d+\.\d+))?/;
     const placeMatch = trimmed.match(placeRegex);
 
@@ -689,18 +709,15 @@ export const api = {
       return {
         id: `gmap-link-${Date.now()}`,
         name: rawName,
-        address: `${rawName}, Surakarta (Impor Google Maps)`,
+        address: `${rawName}, Surakarta`,
         latitude: lat,
         longitude: lng,
-        opening_hours: '08:00 - 23:00',
-        rating: 4.7,
         google_maps_url: trimmed,
         category: inferPlaceCategory(rawName),
         source: 'google_maps_link',
       };
     }
 
-    // Try match query coordinates: ?q=lat,lng
     const qCoordsRegex = /[?&]q=(-?\d+\.\d+),(-?\d+\.\d+)/;
     const qCoordsMatch = trimmed.match(qCoordsRegex);
     if (qCoordsMatch) {
@@ -708,31 +725,17 @@ export const api = {
       const lng = parseFloat(qCoordsMatch[2]);
       return {
         id: `gmap-coords-${Date.now()}`,
-        name: 'Kafe Baru dari Google Maps',
-        address: 'Surakarta, Jawa Tengah (Titik Google Maps)',
+        name: 'Titik dari Tautan Google Maps',
+        address: `Surakarta (${lat.toFixed(4)}, ${lng.toFixed(4)})`,
         latitude: lat,
         longitude: lng,
-        opening_hours: '08:00 - 23:00',
-        rating: 4.7,
         google_maps_url: trimmed,
         category: 'cafe',
         source: 'google_maps_link',
       };
     }
 
-    // Generic Google Maps link fallback
-    return {
-      id: `gmap-generic-${Date.now()}`,
-      name: 'Kafe dari Tautan Google Maps',
-      address: 'Surakarta, Jawa Tengah',
-      latitude: -7.562,
-      longitude: 110.818,
-      opening_hours: '08:00 - 23:00',
-      rating: 4.7,
-      google_maps_url: trimmed,
-      category: 'cafe',
-      source: 'google_maps_link',
-    };
+    return null;
   },
 
   // Search cafes in Surakarta from Google Maps Curated Directory + Links + OpenStreetMap Nominatim
@@ -740,8 +743,12 @@ export const api = {
     const q = query.trim().toLowerCase();
 
     // 1. Check if user pasted a Google Maps URL
-    if (query.includes('google.com/maps') || query.includes('maps.app.goo.gl')) {
-      const parsed = api.parseGoogleMapsUrl(query);
+    if (
+      query.includes('google.com/maps') ||
+      query.includes('maps.app.goo.gl') ||
+      query.includes('goo.gl/maps')
+    ) {
+      const parsed = await api.parseGoogleMapsUrl(query);
       if (parsed) return [parsed];
     }
 
@@ -782,8 +789,6 @@ export const api = {
           address: addr,
           latitude: parseFloat(item.lat),
           longitude: parseFloat(item.lon),
-          opening_hours: '08:00 - 23:00',
-          rating: 4.6,
           category: inferPlaceCategory(title, item.type),
           source: 'osm',
         };
