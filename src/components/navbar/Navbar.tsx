@@ -86,16 +86,21 @@ export default function Navbar({
             <button
               onClick={onOpenAccessModal}
               className={`flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
-                userRole === 'curator'
+                userRole === 'curator' || userRole === 'staff'
                   ? 'border-crema-500 bg-crema-500/10 text-crema-600 font-bold'
                   : 'border-canvas-border bg-white text-roast-600 hover:border-canvas-border-hover hover:text-roast-900'
               }`}
-              title="Pengaturan Mode Akses (Pengunjung / Kurator)"
+              title="Pengaturan Kelas Pengguna (Pengunjung / Staff Kafe / Kurator)"
             >
               {userRole === 'curator' ? (
                 <>
                   <ShieldCheck className="h-3.5 w-3.5 text-crema-500" />
-                  <span className="hidden sm:inline">Mode Kurator</span>
+                  <span className="hidden sm:inline">Mode Kurator / Dev</span>
+                </>
+              ) : userRole === 'staff' ? (
+                <>
+                  <ShieldCheck className="h-3.5 w-3.5 text-amber-600" />
+                  <span className="hidden sm:inline">Mode Staff Kafe</span>
                 </>
               ) : (
                 <>

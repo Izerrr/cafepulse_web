@@ -16,9 +16,14 @@ import { X, Plus, AlertCircle, Loader2, Search, MapPin, Sparkles, Check } from '
 interface AddCafeModalProps {
   isOpen: boolean;
   onClose: () => void;
+  initialCandidate?: MapsPlaceCandidate | null;
 }
 
-export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
+export default function AddCafeModal({
+  isOpen,
+  onClose,
+  initialCandidate,
+}: AddCafeModalProps) {
   const queryClient = useQueryClient();
 
   const [mapsQuery, setMapsQuery] = useState('');
@@ -26,15 +31,17 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
     CURATED_SOLO_PLACES.slice(0, 4)
   );
   const [isSearchingMaps, setIsSearchingMaps] = useState(false);
-  const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(null);
+  const [selectedPlaceId, setSelectedPlaceId] = useState<string | null>(
+    initialCandidate?.id || null
+  );
 
   const [formData, setFormData] = useState<CreateCafeInput>({
-    name: '',
-    address: '',
-    opening_hours: '08:00 - 23:00',
+    name: initialCandidate?.name || '',
+    address: initialCandidate?.address || '',
+    opening_hours: initialCandidate?.opening_hours || '08:00 - 23:00',
     crowd_density: 'LOW',
-    latitude: -7.565,
-    longitude: 110.828,
+    latitude: initialCandidate?.latitude ?? -7.565,
+    longitude: initialCandidate?.longitude ?? 110.828,
     amenities: {
       wifi_speed_mbps: 85,
       wifi_stability: 'EXCELLENT',
@@ -50,10 +57,15 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
 
   useEffect(() => {
     document.body.style.overflow = isOpen ? 'hidden' : 'unset';
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isOpen) onClose();
+    };
+    window.addEventListener('keydown', handleKeyDown);
     return () => {
       document.body.style.overflow = 'unset';
+      window.removeEventListener('keydown', handleKeyDown);
     };
-  }, [isOpen]);
+  }, [isOpen, onClose]);
 
   useEffect(() => {
     let active = true;
@@ -127,7 +139,9 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
         <div className="flex items-center justify-between border-b border-canvas-border bg-canvas-surface px-6 py-4">
           <div className="flex items-center gap-2">
             <span className="text-sm font-bold text-roast-900">
-              Tambah & Sinkronkan Kafe Baru
+              {initialCandidate
+                ? `Audit & Tambah ke Database: ${initialCandidate.name}`
+                : 'Tambah & Sinkronkan Kafe Baru'}
             </span>
             <span className="text-xs font-mono text-roast-400">/ Surakarta</span>
           </div>
@@ -143,6 +157,19 @@ export default function AddCafeModal({ isOpen, onClose }: AddCafeModalProps) {
 
         {/* Form Body */}
         <form onSubmit={handleSubmit} className="overflow-y-auto p-6 space-y-4">
+          {initialCandidate && (
+            <div className="rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-3.5 text-xs text-roast-800 flex items-start gap-2.5">
+              <Check className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
+              <div>
+                <p className="font-bold text-roast-900">
+                  Titik Peta Terdeteksi ({initialCandidate.latitude.toFixed(4)}, {initialCandidate.longitude.toFixed(4)})
+                </p>
+                <p className="text-[11px] text-roast-600 mt-0.5">
+                  Nama, alamat, dan koordinat dari Google Maps sudah terisi otomatis. Silakan audit spesifikasi Wi-Fi, colokan, dan suasana di bawah sebelum menyimpan ke database.
+                </p>
+              </div>
+            </div>
+          )}
           {/* Maps Auto-Import Section */}
           <div className="rounded-2xl border border-rose-500/30 bg-canvas-surface p-4 space-y-3">
             <div className="flex items-center justify-between">

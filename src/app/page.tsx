@@ -4,7 +4,7 @@ import React, { useState, useRef, useMemo } from 'react';
 import dynamic from 'next/dynamic';
 import { useQuery } from '@tanstack/react-query';
 import { api } from '@/lib/api';
-import { Cafe, FilterState } from '@/types/cafe';
+import { Cafe, FilterState, MapsPlaceCandidate } from '@/types/cafe';
 import Navbar from '@/components/navbar/Navbar';
 import OnlinesHero from '@/components/hero/OnlinesHero';
 import MarqueeTicker from '@/components/hero/MarqueeTicker';
@@ -64,6 +64,12 @@ export default function HomePage() {
   const [selectedCafe, setSelectedCafe] = useState<Cafe | null>(null);
   const [editingCafe, setEditingCafe] = useState<Cafe | null>(null);
   const [reviewingCafe, setReviewingCafe] = useState<Cafe | null>(null);
+  const [auditCandidate, setAuditCandidate] = useState<MapsPlaceCandidate | null>(null);
+  const [pendingEditCafe, setPendingEditCafe] = useState<Cafe | null>(null);
+  const [pendingAuditCandidate, setPendingAuditCandidate] = useState<MapsPlaceCandidate | null>(
+    null
+  );
+  const [pendingActionMessage, setPendingActionMessage] = useState<string | null>(null);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isAccessModalOpen, setIsAccessModalOpen] = useState(false);
 
@@ -83,10 +89,42 @@ export default function HomePage() {
 
   const handleRequestEdit = (cafe: Cafe) => {
     if (!isCurator) {
+      setPendingEditCafe(cafe);
+      setPendingAuditCandidate(null);
+      setPendingActionMessage(
+        `Verifikasi PIN Staff Kafe atau Kurator diperlukan untuk mengubah spesifikasi "${cafe.name}".`
+      );
       setIsAccessModalOpen(true);
       return;
     }
     setEditingCafe(cafe);
+  };
+
+  const handleAuditCandidate = (candidate: MapsPlaceCandidate) => {
+    if (!isCurator) {
+      setPendingAuditCandidate(candidate);
+      setPendingEditCafe(null);
+      setPendingActionMessage(
+        `Verifikasi PIN Staff Kafe atau Kurator diperlukan untuk mengaudit & mendaftarkan "${candidate.name}" ke database.`
+      );
+      setIsAccessModalOpen(true);
+      return;
+    }
+    setAuditCandidate(candidate);
+    setIsAddModalOpen(true);
+  };
+
+  const handleResumeAfterAuth = () => {
+    setIsAccessModalOpen(false);
+    setPendingActionMessage(null);
+    if (pendingAuditCandidate) {
+      setAuditCandidate(pendingAuditCandidate);
+      setPendingAuditCandidate(null);
+      setIsAddModalOpen(true);
+    } else if (pendingEditCafe) {
+      setEditingCafe(pendingEditCafe);
+      setPendingEditCafe(null);
+    }
   };
 
   const {
@@ -321,6 +359,12 @@ export default function HomePage() {
                   allCafes={allCafes}
                   onSelectCafe={(cafe) => setSelectedCafe(cafe)}
                   onReviewCafe={(cafe) => setReviewingCafe(cafe)}
+                  onAuditCandidate={handleAuditCandidate}
+                  isCurator={isCurator}
+                  onRequestCuratorAccess={(reason) => {
+                    setPendingActionMessage(reason);
+                    setIsAccessModalOpen(true);
+                  }}
                 />
               ) : filteredCafes.length === 0 ? (
                 <div className="rounded-2xl border border-canvas-border bg-white p-12 text-center shadow-xs">
@@ -405,8 +449,13 @@ export default function HomePage() {
       />
 
       <AddCafeModal
+        key={auditCandidate?.id || 'new-cafe'}
         isOpen={isAddModalOpen}
-        onClose={() => setIsAddModalOpen(false)}
+        onClose={() => {
+          setIsAddModalOpen(false);
+          setAuditCandidate(null);
+        }}
+        initialCandidate={auditCandidate}
       />
 
       <EditCafeModal
@@ -421,10 +470,17 @@ export default function HomePage() {
 
       <UserAccessModal
         isOpen={isAccessModalOpen}
-        onClose={() => setIsAccessModalOpen(false)}
+        onClose={() => {
+          setIsAccessModalOpen(false);
+          setPendingActionMessage(null);
+          setPendingAuditCandidate(null);
+          setPendingEditCafe(null);
+        }}
         role={role}
         onLoginCurator={loginAsCurator}
         onLogoutVisitor={logoutToVisitor}
+        pendingActionMessage={pendingActionMessage}
+        onSuccessAuth={handleResumeAfterAuth}
       />
 
       {/* Dedicated Section: Open Data & Public API for Developers / Students */}

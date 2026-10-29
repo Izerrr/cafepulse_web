@@ -2,7 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { api } from '@/lib/api';
+import { api, deleteLocalReview, getLocalReviews } from '@/lib/api';
 import { Cafe } from '@/types/cafe';
 import {
   X,
@@ -69,6 +69,7 @@ export default function CafeDetailModal({
   const currentCafe = detailData?.data || cafe;
   const amenities = currentCafe.amenities;
   const reviews = currentCafe.reviews || [];
+  const localReviewIds = new Set(getLocalReviews(currentCafe.id).map((r) => r.id));
   const displayRating = (currentCafe.rating || 5.0).toFixed(1);
 
   const handleShare = () => {
@@ -421,8 +422,22 @@ export default function CafeDetailModal({
                       &ldquo;{rev.comment}&rdquo;
                     </p>
 
-                    <div className="mt-2 text-right text-[10px] font-mono text-roast-400">
-                      {rev.created_at ? rev.created_at.slice(0, 10) : '2026-10-04'}
+                    <div className="mt-2 flex items-center justify-between text-[10px] font-mono text-roast-400">
+                      <span>{rev.created_at ? rev.created_at.slice(0, 10) : '2026-10-04'}</span>
+                      {localReviewIds.has(rev.id) && (
+                        <button
+                          type="button"
+                          onClick={() => {
+                            deleteLocalReview(currentCafe.id, rev.id);
+                            queryClient.invalidateQueries({
+                              queryKey: ['cafe-detail', currentCafe.id],
+                            });
+                          }}
+                          className="text-rose-500 hover:underline font-semibold"
+                        >
+                          Hapus Ulasan Lokal Saya
+                        </button>
+                      )}
                     </div>
                   </div>
                 ))}

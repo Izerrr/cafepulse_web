@@ -6,6 +6,7 @@ import {
   CreateCafeInput,
   CreateReviewInput,
   MapsPlaceCandidate,
+  PlaceCategory,
   SystemStatus,
   UpdateCafeInput,
 } from '@/types/cafe';
@@ -15,6 +16,77 @@ const PRIMARY_API_URL =
 const FALLBACK_API_URL = 'https://cafepulse-api.vercel.app';
 
 const LOCAL_REVIEWS_KEY = 'cafepulse_community_reviews_v1';
+
+export function inferPlaceCategory(
+  name: string,
+  amenity?: string,
+  cuisine?: string
+): PlaceCategory {
+  const lower = `${name} ${amenity || ''} ${cuisine || ''}`.toLowerCase();
+  if (
+    lower.includes('warkop') ||
+    lower.includes('warmindo') ||
+    lower.includes('wedangan') ||
+    lower.includes('angkringan') ||
+    lower.includes('kedai kopi')
+  ) {
+    return 'warkop';
+  }
+  if (
+    lower.includes('kopi') ||
+    lower.includes('coffee') ||
+    lower.includes('cafe') ||
+    lower.includes('kafe') ||
+    lower.includes('roastery') ||
+    lower.includes('espresso') ||
+    amenity === 'cafe'
+  ) {
+    return 'cafe';
+  }
+  return 'resto';
+}
+
+export function calculateDistanceMeters(
+  lat1: number,
+  lon1: number,
+  lat2: number,
+  lon2: number
+): number {
+  const R = 6371000;
+  const toRad = (deg: number) => (deg * Math.PI) / 180;
+  const dLat = toRad(lat2 - lat1);
+  const dLon = toRad(lon2 - lon1);
+  const a =
+    Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+    Math.cos(toRad(lat1)) *
+      Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) *
+      Math.sin(dLon / 2);
+  return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+}
+
+export function isPlaceAlreadySynced(
+  candidate: MapsPlaceCandidate,
+  existingCafes: Cafe[]
+): boolean {
+  const candNorm = candidate.name.toLowerCase().trim();
+  for (const cafe of existingCafes) {
+    const existingNorm = cafe.name.toLowerCase().trim();
+    if (existingNorm.includes(candNorm) || candNorm.includes(existingNorm)) {
+      return true;
+    }
+    if (cafe.latitude && cafe.longitude) {
+      const dist = calculateDistanceMeters(
+        candidate.latitude,
+        candidate.longitude,
+        cafe.latitude,
+        cafe.longitude
+      );
+      if (dist < 25) return true;
+    }
+  }
+  return false;
+}
 
 export const CURATED_SOLO_PLACES: MapsPlaceCandidate[] = [
   {
@@ -28,6 +100,7 @@ export const CURATED_SOLO_PLACES: MapsPlaceCandidate[] = [
     total_reviews: 420,
     google_maps_url: 'https://maps.google.com/?q=Tanaku+Kopi+Manahan+Surakarta',
     place_id: 'ChIJb6x0tanaku',
+    category: 'cafe',
     source: 'google_maps_curated',
   },
   {
@@ -41,6 +114,7 @@ export const CURATED_SOLO_PLACES: MapsPlaceCandidate[] = [
     total_reviews: 1250,
     google_maps_url: 'https://maps.google.com/?q=Cold+N+Brew+Slamet+Riyadi+Surakarta',
     place_id: 'ChIJz8f9coldnbrew',
+    category: 'cafe',
     source: 'google_maps_curated',
   },
   {
@@ -54,6 +128,7 @@ export const CURATED_SOLO_PLACES: MapsPlaceCandidate[] = [
     total_reviews: 940,
     google_maps_url: 'https://maps.google.com/?q=Natahati+Coffee+Surakarta',
     place_id: 'ChIJ9x_natahati',
+    category: 'cafe',
     source: 'google_maps_curated',
   },
   {
@@ -67,6 +142,7 @@ export const CURATED_SOLO_PLACES: MapsPlaceCandidate[] = [
     total_reviews: 810,
     google_maps_url: 'https://maps.google.com/?q=Kopi+Nako+Manahan+Surakarta',
     place_id: 'ChIJ_kopinako',
+    category: 'cafe',
     source: 'google_maps_curated',
   },
   {
@@ -80,19 +156,49 @@ export const CURATED_SOLO_PLACES: MapsPlaceCandidate[] = [
     total_reviews: 350,
     google_maps_url: 'https://maps.google.com/?q=Kolektif+Coffee+Keprabon+Surakarta',
     place_id: 'ChIJ_kolektif',
+    category: 'cafe',
     source: 'google_maps_curated',
   },
   {
     id: 'gmap-loske',
-    name: 'Loske Coffee Service Pasar Gede',
-    address: 'Jl. Teuku Umar No. 20, Keprabon, Banjarsari, Surakarta',
-    latitude: -7.5682,
-    longitude: 110.8241,
+    name: 'Loske Coffee Service',
+    address: 'Jl. Teuku Umar No. 50, Keprabon, Banjarsari, Surakarta',
+    latitude: -7.56948,
+    longitude: 110.82292,
     opening_hours: '07:00 - 22:00',
     rating: 4.8,
     total_reviews: 620,
     google_maps_url: 'https://maps.google.com/?q=Loske+Coffee+Service+Surakarta',
     place_id: 'ChIJ_loske',
+    category: 'cafe',
+    source: 'google_maps_curated',
+  },
+  {
+    id: 'gmap-sototriwindu',
+    name: 'Soto Triwindu Keprabon',
+    address: 'Jl. Teuku Umar No. 43, Keprabon, Banjarsari, Surakarta',
+    latitude: -7.56962,
+    longitude: 110.82235,
+    opening_hours: '05:30 - 15:30',
+    rating: 4.7,
+    total_reviews: 3400,
+    google_maps_url: 'https://maps.google.com/?q=Soto+Triwindu+Surakarta',
+    place_id: 'ChIJ_sototriwindu',
+    category: 'resto',
+    source: 'google_maps_curated',
+  },
+  {
+    id: 'gmap-reddog',
+    name: 'REDDog Keprabon Korean',
+    address: 'Jl. Ronggowarsito No. 65, Keprabon, Banjarsari, Surakarta',
+    latitude: -7.56898,
+    longitude: 110.82218,
+    opening_hours: '10:00 - 22:00',
+    rating: 4.6,
+    total_reviews: 410,
+    google_maps_url: 'https://maps.google.com/?q=RedDog+Keprabon+Surakarta',
+    place_id: 'ChIJ_reddog',
+    category: 'resto',
     source: 'google_maps_curated',
   },
   {
@@ -106,6 +212,35 @@ export const CURATED_SOLO_PLACES: MapsPlaceCandidate[] = [
     total_reviews: 730,
     google_maps_url: 'https://maps.google.com/?q=Bento+Kopi+Solo+UNS',
     place_id: 'ChIJ_bentokopi',
+    category: 'warkop',
+    source: 'google_maps_curated',
+  },
+  {
+    id: 'gmap-wedanganpendopo',
+    name: 'Wedangan Pendopo Mangkunegaran',
+    address: 'Jl. Sugiyopranoto No. 20, Keprabon, Banjarsari, Surakarta',
+    latitude: -7.5679,
+    longitude: 110.8252,
+    opening_hours: '16:00 - 23:59',
+    rating: 4.6,
+    total_reviews: 1180,
+    google_maps_url: 'https://maps.google.com/?q=Wedangan+Pendopo+Surakarta',
+    place_id: 'ChIJ_wedanganpendopo',
+    category: 'warkop',
+    source: 'google_maps_curated',
+  },
+  {
+    id: 'gmap-warmindouns',
+    name: 'Warkop & Warmindo Surya Kentingan',
+    address: 'Jl. Surya Utama, Jebres, Belakang Kampus UNS, Surakarta',
+    latitude: -7.5575,
+    longitude: 110.8581,
+    opening_hours: '07:00 - 02:00',
+    rating: 4.5,
+    total_reviews: 290,
+    google_maps_url: 'https://maps.google.com/?q=Warmindo+Kentingan+UNS+Surakarta',
+    place_id: 'ChIJ_warmindouns',
+    category: 'warkop',
     source: 'google_maps_curated',
   },
   {
@@ -119,6 +254,7 @@ export const CURATED_SOLO_PLACES: MapsPlaceCandidate[] = [
     total_reviews: 580,
     google_maps_url: 'https://maps.google.com/?q=Sekutu+Kopi+Laweyan+Surakarta',
     place_id: 'ChIJ_sekutu',
+    category: 'cafe',
     source: 'google_maps_curated',
   },
   {
@@ -132,6 +268,7 @@ export const CURATED_SOLO_PLACES: MapsPlaceCandidate[] = [
     total_reviews: 490,
     google_maps_url: 'https://maps.google.com/?q=Bhumi+Kopi+Kotabarat+Surakarta',
     place_id: 'ChIJ_bhumikopi',
+    category: 'cafe',
     source: 'google_maps_curated',
   },
   {
@@ -145,6 +282,7 @@ export const CURATED_SOLO_PLACES: MapsPlaceCandidate[] = [
     total_reviews: 310,
     google_maps_url: 'https://maps.google.com/?q=Arah+Kopi+Kentingan+UNS+Surakarta',
     place_id: 'ChIJ_arahkopi',
+    category: 'cafe',
     source: 'google_maps_curated',
   },
   {
@@ -158,6 +296,7 @@ export const CURATED_SOLO_PLACES: MapsPlaceCandidate[] = [
     total_reviews: 440,
     google_maps_url: 'https://maps.google.com/?q=Selaras+Coffee+Purwosari+Surakarta',
     place_id: 'ChIJ_selaras',
+    category: 'cafe',
     source: 'google_maps_curated',
   },
   {
@@ -171,6 +310,7 @@ export const CURATED_SOLO_PLACES: MapsPlaceCandidate[] = [
     total_reviews: 510,
     google_maps_url: 'https://maps.google.com/?q=Halo+Jae+Coffee+Sumber+Surakarta',
     place_id: 'ChIJ_halojae',
+    category: 'cafe',
     source: 'google_maps_curated',
   },
 ];
@@ -194,6 +334,20 @@ function saveLocalReview(cafeId: number, review: CafeReview) {
     const parsed: Record<number, CafeReview[]> = raw ? JSON.parse(raw) : {};
     const existing = parsed[cafeId] || [];
     parsed[cafeId] = [review, ...existing];
+    localStorage.setItem(LOCAL_REVIEWS_KEY, JSON.stringify(parsed));
+  } catch {
+    // ignore storage errors
+  }
+}
+
+export function deleteLocalReview(cafeId: number, reviewId: number) {
+  if (typeof window === 'undefined') return;
+  try {
+    const raw = localStorage.getItem(LOCAL_REVIEWS_KEY);
+    if (!raw) return;
+    const parsed: Record<number, CafeReview[]> = JSON.parse(raw);
+    if (!parsed[cafeId]) return;
+    parsed[cafeId] = parsed[cafeId].filter((r) => r.id !== reviewId);
     localStorage.setItem(LOCAL_REVIEWS_KEY, JSON.stringify(parsed));
   } catch {
     // ignore storage errors
@@ -349,11 +503,58 @@ export const api = {
     return { status: 'success', review: newReview };
   },
 
-  // Reverse geocode a latitude & longitude to get place / road name in Surakarta
-  async reverseGeocode(lat: number, lng: number): Promise<{ name: string; address: string }> {
+  // Reverse geocode & snap to nearby POI (Cafe, Warkop, Resto) in Surakarta
+  async reverseGeocode(
+    lat: number,
+    lng: number
+  ): Promise<{ name: string; address: string; category: PlaceCategory; opening_hours?: string }> {
+    // 1. Check if click is right on top of a known curated Solo place (< 55m)
+    for (const curated of CURATED_SOLO_PLACES) {
+      if (calculateDistanceMeters(lat, lng, curated.latitude, curated.longitude) < 55) {
+        return {
+          name: curated.name,
+          address: curated.address,
+          category: curated.category || inferPlaceCategory(curated.name),
+          opening_hours: curated.opening_hours,
+        };
+      }
+    }
+
+    // 2. Check Overpass API for exact nearby POI within 45 meters (Cafe / Warkop / Resto)
+    try {
+      const overpassQuery = `[out:json][timeout:4];(node(around:45,${lat},${lng})["name"];way(around:45,${lat},${lng})["name"];);out center 5;`;
+      const ovRes = await fetch(
+        `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(overpassQuery)}`
+      );
+      if (ovRes.ok) {
+        const ovData = await ovRes.json();
+        const elements: Array<{
+          tags?: Record<string, string>;
+        }> = ovData.elements || [];
+        const poi = elements.find(
+          (el) =>
+            el.tags?.name &&
+            (el.tags?.amenity || el.tags?.shop || el.tags?.cuisine || el.tags?.tourism)
+        );
+        if (poi && poi.tags?.name) {
+          const street = poi.tags['addr:street'] || 'Surakarta';
+          const houseNo = poi.tags['addr:housenumber'] ? ` No. ${poi.tags['addr:housenumber']}` : '';
+          return {
+            name: poi.tags.name,
+            address: `${street}${houseNo}, Surakarta`,
+            category: inferPlaceCategory(poi.tags.name, poi.tags.amenity, poi.tags.cuisine),
+            opening_hours: poi.tags.opening_hours || '08:00 - 23:00',
+          };
+        }
+      }
+    } catch {
+      // continue to Nominatim fallback
+    }
+
+    // 3. Nominatim zoom=18 reverse geocode
     try {
       const res = await fetch(
-        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&addressdetails=1`,
+        `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=18&addressdetails=1&namedetails=1`,
         { headers: { 'Accept-Language': 'id' } }
       );
       if (res.ok) {
@@ -363,17 +564,111 @@ export const api = {
           data.address?.neighbourhood ||
           data.address?.suburb ||
           'Surakarta';
-        const name = data.name || data.address?.amenity || `Kafe di ${road}`;
+        const rawName =
+          data.name ||
+          data.namedetails?.name ||
+          data.address?.cafe ||
+          data.address?.restaurant ||
+          data.address?.fast_food ||
+          data.address?.amenity ||
+          `Kafe di ${road}`;
         const address = data.display_name || `${road}, Surakarta`;
-        return { name, address };
+        return {
+          name: rawName,
+          address,
+          category: inferPlaceCategory(rawName, data.type),
+        };
       }
     } catch {
       // fallback
     }
     return {
-      name: `Kafe Baru (${lat.toFixed(4)}, ${lng.toFixed(4)})`,
+      name: `Titik Kafe (${lat.toFixed(4)}, ${lng.toFixed(4)})`,
       address: `Surakarta, Jawa Tengah (${lat.toFixed(4)}, ${lng.toFixed(4)})`,
+      category: 'cafe',
     };
+  },
+
+  // Scan visible map bounding box in Surakarta for real Cafes, Warkops & Restos via Overpass POI API
+  async scanSoloAreaPOIs(bounds?: {
+    south: number;
+    west: number;
+    north: number;
+    east: number;
+  }): Promise<MapsPlaceCandidate[]> {
+    const bbox = bounds || {
+      south: -7.585,
+      west: 110.785,
+      north: -7.54,
+      east: 110.865,
+    };
+
+    try {
+      const query = `[out:json][timeout:8];(node["amenity"~"cafe|restaurant|fast_food"](${bbox.south},${bbox.west},${bbox.north},${bbox.east});way["amenity"~"cafe|restaurant|fast_food"](${bbox.south},${bbox.west},${bbox.north},${bbox.east});node["shop"="coffee"](${bbox.south},${bbox.west},${bbox.north},${bbox.east}););out center 55;`;
+      const res = await fetch(
+        `https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`
+      );
+
+      if (!res.ok) return CURATED_SOLO_PLACES;
+
+      const data = await res.json();
+      const elements: Array<{
+        id: number;
+        lat?: number;
+        lon?: number;
+        center?: { lat: number; lon: number };
+        tags?: Record<string, string>;
+      }> = data.elements || [];
+
+      const discovered: MapsPlaceCandidate[] = [...CURATED_SOLO_PLACES];
+
+      for (const el of elements) {
+        const name = el.tags?.name?.trim();
+        if (!name) continue;
+
+        const lat = el.lat ?? el.center?.lat;
+        const lon = el.lon ?? el.center?.lon;
+        if (typeof lat !== 'number' || typeof lon !== 'number') continue;
+
+        // Avoid duplicates with curated or already added items
+        const isDup = discovered.some(
+          (d) =>
+            d.name.toLowerCase() === name.toLowerCase() ||
+            calculateDistanceMeters(lat, lon, d.latitude, d.longitude) < 30
+        );
+        if (isDup) continue;
+
+        const street =
+          el.tags?.['addr:street'] ||
+          el.tags?.['addr:full'] ||
+          el.tags?.['addr:subdistrict'] ||
+          'Surakarta';
+        const houseNumber = el.tags?.['addr:housenumber']
+          ? ` No. ${el.tags['addr:housenumber']}`
+          : '';
+        const city = el.tags?.['addr:city'] || 'Surakarta';
+        const category = inferPlaceCategory(name, el.tags?.amenity, el.tags?.cuisine);
+
+        discovered.push({
+          id: `poi-${el.id}`,
+          name,
+          address: `${street}${houseNumber}, ${city}`,
+          latitude: lat,
+          longitude: lon,
+          opening_hours: el.tags?.opening_hours || '08:00 - 23:00',
+          rating: 4.6,
+          google_maps_url: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(
+            `${name} Surakarta`
+          )}`,
+          category,
+          source: 'overpass_poi',
+        });
+      }
+
+      return discovered;
+    } catch {
+      return CURATED_SOLO_PLACES;
+    }
   },
 
   // Parse a Google Maps URL (or share link) to extract cafe metadata
@@ -400,6 +695,7 @@ export const api = {
         opening_hours: '08:00 - 23:00',
         rating: 4.7,
         google_maps_url: trimmed,
+        category: inferPlaceCategory(rawName),
         source: 'google_maps_link',
       };
     }
@@ -419,6 +715,7 @@ export const api = {
         opening_hours: '08:00 - 23:00',
         rating: 4.7,
         google_maps_url: trimmed,
+        category: 'cafe',
         source: 'google_maps_link',
       };
     }
@@ -433,6 +730,7 @@ export const api = {
       opening_hours: '08:00 - 23:00',
       rating: 4.7,
       google_maps_url: trimmed,
+      category: 'cafe',
       source: 'google_maps_link',
     };
   },
@@ -459,7 +757,7 @@ export const api = {
     try {
       const osmUrl = `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(
         `${query} Surakarta`
-      )}&limit=6&addressdetails=1`;
+      )}&limit=8&addressdetails=1`;
       const res = await fetch(osmUrl, {
         headers: { 'Accept-Language': 'id' },
       });
@@ -469,6 +767,7 @@ export const api = {
         place_id: number;
         display_name: string;
         name?: string;
+        type?: string;
         lat: string;
         lon: string;
       }> = await res.json();
@@ -485,6 +784,7 @@ export const api = {
           longitude: parseFloat(item.lon),
           opening_hours: '08:00 - 23:00',
           rating: 4.6,
+          category: inferPlaceCategory(title, item.type),
           source: 'osm',
         };
       });
